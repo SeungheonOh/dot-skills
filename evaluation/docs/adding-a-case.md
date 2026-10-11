@@ -28,6 +28,8 @@ The [checker](../examples/action-handoff/check.py) accepts either action order a
 
 Write both valid equivalents and deliberate errors. The [authored controls](../examples/action-handoff/test_check.py) include a correct answer, reversed order/changed whitespace, an invented owner or date, a promoted suggestion, duplicate or missing actions, malformed JSON, and missing fields. If an acceptable equivalent fails, or a relevant wrong answer passes, fix the assertion before freezing the study.
 
+If a checker defect is discovered after outputs have been collected, preserve the frozen checker, original artifacts and original reports. Document the defect, affected assertions, discovery timing and correction in a separately versioned analysis. Any separately authorized regrading must apply the same corrected criteria to every affected captured artifact across both conditions, retain unavailable outcomes as unassessed, and link each corrected assessment to its original. Disclose changes to inclusion rules, denominators or missing-outcome handling, and any answer or grading-feedback exposure before later collection. Label the correction post hoc and explain changed conclusions; do not overwrite published historical packages or selectively regrade favorable outputs. Recomputing assessments of saved artifacts creates no new candidate trials and does not establish fresh held-out performance. This procedure does not authorize execution or collection.
+
 From the repository root, with POSIX Python 3.12 and no dependency installation:
 
 ```sh
