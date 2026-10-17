@@ -51,6 +51,14 @@ Inspect the documented test/build command and the scripts it invokes before exec
 
 Capture the command, working directory, runtime, relevant file state, exit code, and concise observed result. If exact reproduction is impossible, say why. A miniature model can support a hypothesis, but cannot establish that the real project is fixed.
 
+### Establish what the reported success actually covers
+
+Keep the tested process's result separate from its shell wrapper, logger or report uploader. In Bash, a pipeline normally returns the last command's status; a successful `tee` can therefore conceal an earlier build failure. Inspect the actual shell and wrapper, and retain the build/test process's own status or an already-supported pipeline failure mechanism. If that evidence was lost, classify the outcome as unresolved and repeat only the permitted focused check with reliable status capture; do not change repository-wide shell options merely to improve the report. See the [Bash pipeline rules](https://www.gnu.org/software/bash/manual/html_node/Pipelines).
+
+For tests, reconcile the expected test identities with discovered, executed, skipped and deselected cases. A zero exit code or an `OK` summary does not establish that the regression assertion ran. Inspect filters, discovery roots and import locations when counts or names differ; a missing or skipped regression remains unverified, even if unrelated tests pass. Collection itself can import project modules, so it needs the same side-effect review as execution. Python's [discovery guidance](https://docs.python.org/3/library/unittest.html#test-discovery) and [skip behavior](https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures) illustrate these distinctions.
+
+**Fictional, unexecuted illustration:** the Alder export build exits 2, while its log-copy command exits 0. The build is failed, not repaired. A later run with zero discovered export tests still supplies no regression evidence; correct the permitted discovery scope and verify the named assertion before claiming the defect is fixed.
+
 ## Make the smallest justified repair
 
 When edits are authorized:
