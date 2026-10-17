@@ -76,6 +76,16 @@ Link a refund to the refunded items and their original allocation. Reverse the r
 
 Preserve explicit personal exclusions even when an overall receipt looks work-related. Keep unsigned/unsupported exceptions unresolved. Never mark “approved” because a report was generated or a form accepted it.
 
+### Reconcile prior funding before claiming the remainder
+
+When supplied records include employer funding or earlier reimbursement, keep the expense's policy eligibility separate from the amount newly claimable by this claimant. Record the funding source, amount, currency, completion status and linked transaction/allocation or earlier report reference. A card's label alone does not establish who ultimately bears the expense. A pending or merely approved earlier claim is not paid, but overlapping lines must stay out of a second ready-to-submit claim until their disposition is established.
+
+Apply completed funding only under the supplied policy and against the allocations it actually covers. One reimbursement covering several receipts needs a supported allocation or group-level reconciliation; do not deduct its full amount from every receipt or invent a distribution. Identify repeated evidence for the same payment, and reconcile the sum of its mapped portions to the amount being applied, leaving any unallocated balance visible. An advance with no established expense allocation remains unresolved rather than being spread across convenient lines. Keep unlike currencies and unsupported conversions separate.
+
+Preserve the merchant expense and any genuine merchant credit. A reimbursement is settlement evidence, not another receipt or a negative merchant transaction. Where policy excludes an already-funded portion from this incremental claim, show that portion once as a specifically explained already-settled exclusion; do not subtract it again after summing allowed lines. If a later refund or correction reduces eligibility below prior funding, expose the discrepancy and follow the supplied adjustment rule or leave that adjustment unresolved. Do not clip it to zero or initiate a repayment.
+
+Fictional, unexecuted illustration: policy treats a EUR 100 expense as eligible but excludes recorded employer funding from a new reimbursement request. Evidence maps EUR 20 paid directly by the employer and a separate, completed EUR 30 reimbursement to disjoint portions of that expense. Preserve the EUR 100 source gross and reconcile the current claim as EUR 50 allowed plus EUR 50 already-funded exclusion. A second copy of the EUR 30 reimbursement adds no exclusion; subtracting EUR 50 again from the allowed subtotal would incorrectly produce zero. If the earlier EUR 30 claim is only pending, hold its overlap for review instead of labeling it paid.
+
 ## 5. Reconcile independent views
 
 Validate from original evidence, not only from the transformed report:
