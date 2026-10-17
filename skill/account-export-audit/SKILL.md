@@ -54,6 +54,8 @@ Do not call a listing complete because it contains the expected number of rows. 
 
 Build one lineage record per source occurrence before deduplicating. Keep native IDs as strings, including leading zeros. Record object kind, lifecycle state, revision, parent/owner IDs, attachment references, supplied timestamps, archive digest, member and row/index location. A locally derived ordinal is a locator, not a provider object ID.
 
+Establish the format's actual ID namespace before indexing objects or resolving references. IDs may be unique only within an account, object kind or collection; retain the required scope components rather than joining equal text globally. Conversely, do not add collection membership to an object's identity when the source treats that object as the same entity across collections. Keep object identity separate from its export occurrences and membership edges. Resolve each reference in its documented scope and target kind; hold an ambiguous reference instead of choosing the first matching ID. The same-ID conflict below means the same identity within this established namespace.
+
 Preserve original field values and distinguish these cases:
 
 | Observation | Meaning to retain |
@@ -92,6 +94,10 @@ required part IDs = supplied supported part IDs + missing required part IDs
 ```
 
 Report the property-level denominator: five objects can match identities while only four required bodies are present. Hashes for two attachments do not establish text fidelity for the record bodies. Missing rich formatting, history or permissions can matter even when every object ID appears. Let the stated need decide whether a gap is blocking; make tolerated exclusions explicit rather than quietly lowering the requirement.
+
+When the need includes collection membership or other relationships, reconcile their independent expected population too. Retain scoped endpoint identities, relationship kind/direction, and any meaningful multiplicity or order. All expected objects can exist while an edge is missing, redirected or duplicated. Check missing and unexpected edges separately; object-count agreement cannot cancel either. If controls enumerate objects but not their relationships, report preservation of exported edges separately from unconfirmed source-relationship coverage. Recounting those same exported edges does not supply the missing independent evidence.
+
+Fictional, unexecuted illustration: one snapshot's format defines a separate ID namespace for each object kind. Its controls name collections `003` and `007`, note `007`, and memberships from that note to both collections. The export contains all three objects but only the membership to collection `003`. Collection `007` and note `007` are distinct identities, not conflicting duplicates. Object coverage is 3/3 while required membership coverage is 1/2; a complete-copy claim for both placements remains held. This illustration adds no executed fixture or adapter capability.
 
 ## 5. Move from evidence to the allowed local action
 
