@@ -39,6 +39,14 @@ Where values are stored in more than one place, identify the authoritative sourc
 
 Use the chosen engine and relevant version to decide what a declaration can express. Verify engine-specific claims against primary documentation or inspected behavior and cite the applicable source. If a required constraint cannot be represented directly, name the remaining enforcement obligation rather than presenting a broader schema as sufficient.
 
+## Keep a composite relationship intact
+
+When a relationship identifies its target by a tuple, carry that whole identity through the uniqueness rule, reference, joins and interchange. Checking that each component exists somewhere does not establish that the combination exists. A surrogate target ID can identify a row, but does not by itself enforce a separate requirement that the target belongs to the child's tenant or owner. State that invariant and its enforcement explicitly.
+
+Define whether an optional reference can be partially supplied. For a required tuple, require every component; for an all-or-none optional tuple, reject partial absence separately from checking the parent match. SQLite exempts a composite foreign key from requiring a parent when any child-key component is NULL, and parses but does not enforce `MATCH FULL`. Use an explicit all-or-none constraint when that is the contract rather than relying on accepted syntax. Its foreign-key comparisons also use the parent key's collation and affinity; align those rules with the intended identity instead of assuming bytewise text equality. See [SQLite composite references](https://www.sqlite.org/foreignkeys.html#composite_foreign_key_constraints) and [MATCH limitations](https://www.sqlite.org/foreignkeys.html#limits_and_unsupported_features).
+
+**Fictional, unexecuted illustration:** The only project identities are `(north, cedar)` and `(south, maple)`. A link to `(north, maple)` must fail even though both component values occur somewhere. Under an optional all-or-none link contract, `(north, NULL)` must also fail, while `(NULL, NULL)` means no link. Walk these three cases through the proposed definitions; a diagram or two independent membership checks cannot establish the tuple rule.
+
 ## Shape storage around the required work
 
 Trace the important writes and reads through the proposed model. A read description should identify its population, filters, ordering, time interpretation, and expected result shape where relevant. A write should identify the records or documents affected and the invariants that must hold together. Resolve ambiguous phrases such as “latest” or “active” using the domain rules.
