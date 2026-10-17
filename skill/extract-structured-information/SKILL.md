@@ -27,6 +27,12 @@ Read enough context to establish boundaries, attribution and qualifications. For
 
 Use text extraction or OCR when appropriate, checking the underlying page where layout or recognition affects meaning. Keep track of unreadable pages, truncated messages, missing attachments and inaccessible sections. These are coverage gaps, not evidence that the requested field or record is absent. Continue with readable material and identify the affected portion precisely.
 
+### Resume without mixing source versions
+
+For changing or interrupted sources, bind saved progress to the inspected version or snapshot and selected range. Record the last completely inspected record boundary, not merely the last output row. Resume with enough preceding context to recover continued tables or messages, and reconcile overlap by source occurrence locator. Re-reading the same occurrence after a retry must not append a new record; two genuinely distinct occurrences must still survive.
+
+If the source changed, re-extract the affected version and reconcile its records rather than joining an old prefix to a new suffix. When no stable version or comparison is available, identify the mixed-version risk and withhold a completeness claim for that portion. A stable URL alone does not establish unchanged content.
+
 ## Extract values without changing their meaning
 
 Associate each value with its correct record and field. Preserve negation, conditional language, approximations, attribution and time scope when they affect interpretation. A request, forecast or reported statement must not become a confirmed fact or completed event merely because the target column is shorter.
@@ -52,6 +58,12 @@ Check field meanings as well as schema shape. A well-formed date under the wrong
 Reopen or parse the actual saved output. Verify its fields, types, record count, repeat occurrences, relationships and representative exact values. For small datasets, check every record against the source. For larger ones, sample across sources and layouts, include ordinary records and difficult cases, and check consequential or unresolved fields directly. Inspect values reported as absent against the relevant source context. Expand checks and repair the extraction when a sample reveals a systematic problem; repeat affected checks after saving corrections.
 
 Use checks appropriate to the format: parse machine-readable output, inspect CSV quoting and missing-value encoding, or read stored spreadsheet values and representative visible cells. Do not substitute an in-memory check for saved-file verification or imply every value was checked when only a sample was reviewed.
+
+### Check representation limits at the handoff
+
+Check exact values through the intended reader when available, not only through a parser with the same generous types as the writer. JSON implementations may limit numeric precision; [RFC 8259, section 6](https://www.rfc-editor.org/rfc/rfc8259.html#section-6) identifies the interoperable exact-integer range for commonly used binary64 numbers. Keep identifiers as strings and use the contract's exact representation for quantities. If the required representation cannot preserve a value, report the incompatibility rather than silently rounding it or changing a fixed schema. Successful parsing alone is insufficient evidence of fidelity; if the intended reader is unavailable, state that compatibility limit.
+
+**Fictional, unexecuted example:** Two rows on different pages of catalog edition 4 both carry item code `00017`; the second also carries external ID `9007199254740993`. A retry rereads page 2. The expected output still has two source occurrences, with both codes and the long ID preserved exactly as text. Appending a third row, collapsing the two original rows, or accepting a rounded numeric ID fails this extraction. If page 2 now belongs to edition 5, reconcile a coherent edition before claiming complete coverage.
 
 ## Deliver the usable result
 
