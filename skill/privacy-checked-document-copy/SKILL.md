@@ -107,6 +107,16 @@ Return the new copy and a separate private removal/review record to the user in 
 
 If sending was explicitly authorized, match the final file identity/fingerprint, actual recipients, permissions and requested message against the approval immediately before sharing. Send only the verified output, excluding originals, working copies, backups, source links and the private record. Check any archive or attachment list. Verify actual delivery or access afterward and report success only when observed. If the service transforms the file or exposes unexpected history, hold or report that unresolved state rather than transferring the earlier check to it.
 
+### Reconcile an interrupted release or a later defect
+
+For an authorized release, retain a minimal private attempt record: reviewed output identity/revision or digest, intended audience, destination, attempt time, returned message/upload/item identifier and observed result. Keep “copy verified,” “transmission confirmed” and “recipient access or reading observed” separate. A timeout does not establish failure. Inspect the supported sent-item, upload or destination record before retrying, matching the actual attached or shared object rather than its filename alone. If the service exposes no payload/version evidence, report that limit; do not upgrade a filename match to verified delivery of the checked bytes.
+
+If the delivered object differs from the checked copy, or a relevant defect is discovered later, stop further release of that candidate and tell the user promptly which output, audience and content category are affected without repeating the private values. Preserve the necessary existing evidence privately and prepare a corrected copy only within the original preparation scope. A corrected local file does not replace an already-sent attachment or establish that earlier recipients no longer have it.
+
+Deletion, recall, permission removal and contacting recipients are separate actions: use existing authority if it covers the exact recovery, otherwise ask for that specific action and destination. Verify any authorized containment separately from past exposure. [Google's sharing guidance notes that its download/copy controls cannot prevent every other way of sharing content](https://support.google.com/drive/answer/2494893?hl=en-GB); do not equate a subsequently restricted link with proof that no copy was retained.
+
+**Fictional illustration, not executed:** A checked venue brief has digest label `copy-B`. An authorized send times out; a later fictional sent-item record confirms the intended recipient but identifies attachment `copy-A`, an earlier version containing an internal contact section. Record the wrong-version delivery, stop using A and report the affected category. Keep B as the separately checked candidate; do not silently resend it, delete the sent record or claim the earlier attachment was recalled. No message was sent, recalled or inspected in a live service for this illustration.
+
 ## Private removal/review record
 
 Keep these fields, using only the detail needed for recovery and review:
