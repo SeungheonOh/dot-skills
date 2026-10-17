@@ -33,6 +33,8 @@ Distinguish facts and constraints from editorial choices. Watch especially for n
 
 Work from the selected source in the requested form. Preserve native document elements needed by the user, including tables, headings, links, notes, and review markup. Use format-aware tools when necessary; do not rebuild a structured document as plain text and silently discard those elements. For an in-place edit, inspect the current source before writing so intervening changes are not overwritten. When no in-place update is requested, return revised text or a revised copy appropriate to the input.
 
+For an in-place edit, keep the source identity and revision used for the work, or a retained copy when no revision identifier is available. Immediately before saving, compare the current source with that baseline. If it changed, incorporate compatible changes only within the requested editorial scope; keep conflicting wording visible for a decision. Use revision-conditioned updates when the tool supports them. Without that protection, do not describe a pre-save read as a guarantee against concurrent edits.
+
 Resolve organization and emphasis before polishing individual sentences when restructuring is in scope. Put the purpose, conclusion, or requested action where the reader needs it. Remove redundant material without losing a distinct reason, exception, counterargument, or necessary context. Tighten explanations to the reader's knowledge rather than stripping away every qualification or making every paragraph the same length.
 
 Preserve meaning through the transformation:
@@ -51,7 +53,19 @@ Read the revised document as the intended audience, then compare it with the sou
 
 For a proofread, inspect the corrections in context and stop when the requested defects are fixed. For a substantive rewrite, review changed claims and transitions alongside the original. For restructuring, also account for moved or removed content, update headings and cross-references, and check that definitions precede their use and sections still connect.
 
+Make that comparison concrete at the changed passages. Check who does what, to whom, by when, under which condition, and with what degree of certainty against the original. For a moved paragraph, inspect its new heading and neighboring sentences: “this,” “they,” or “the following” may now point to a different thing. Compare before/after tables by row and column labels, not merely by retained numbers. For a substantial rewrite, account for removed passages as redundant, intentionally out of scope, or retained elsewhere; an unexplained deletion needs review.
+
 When editing a file or native document, reopen the saved result and confirm the intended changes and necessary structure survived. Inspect affected layout where text changes can disrupt tables, captions, or pagination. Use a separate export-fidelity workflow only when the task also calls for conversion or delivery-format checking; editing one draft does not require a version-reconciliation ledger or an export audit.
+
+Treat save verification separately from editorial review. Read back the actual destination identity and contents; confirm changed passages, nearby protected wording, and affected native elements. If a save times out, inspect that destination before retrying. If readback is unavailable, return the prepared revision with “save not verified” and the exact missing check. If the saved result loses a table, note, or review markup, stop further overwrites and repair from the preserved source without overwriting newer edits, or deliver a clearly labeled separate candidate within the requested scope.
+
+For requested tracked changes, verify that insertions/deletions are genuine reviewable changes in the delivered document; colored text or a prose change summary is not equivalent. Do not accept or discard pre-existing review markup merely to produce a clean-looking result. When the available format cannot preserve the requested review features, disclose the limitation and preserve the source with its existing review information alongside the editable candidate.
+
+### A meaning-preservation example
+
+Fictional, unexecuted illustration: the source says, “If the pilot meets the agreed targets, we may extend it to two teams in June. Costs exclude support.” A faithful tightening is, “We may extend the pilot to two teams in June if it meets the agreed targets. Costs exclude support.”
+
+“We'll expand to two teams in June at the quoted total cost” is not an equivalent edit: it removes the condition, upgrades possibility to commitment, and loses the support-cost exclusion. The acceptance check is that both qualifying statements survive in context, not that the revised sentence is shorter. If the document also gives conflicting June and July dates, leave that factual choice unresolved instead of treating consistency as authority to select one.
 
 ## Return the revised document
 
