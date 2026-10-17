@@ -43,10 +43,22 @@ Keep picture, sound, overlays and any captions on the same final timeline. Reche
 
 Save a distinct output in the requested format and destination. Export problems or a documented target compatibility requirement may warrant `media-export-compatibility` when available; this guide owns the editorial result, not a duplicate codec checklist. Do not upload or publish merely to demonstrate that export succeeded.
 
+Before starting the final export, identify the intended saved sequence/revision, export range, first and last intended content, and a distinct candidate filename. Check for a leftover preview range, an older sequence or disabled required tracks. If an export's status is uncertain, inspect its job and output before starting another; an existing filename may be an earlier or incomplete candidate. Bind review notes to the actual candidate delivered, not simply to “the final video.”
+
+When proxies or previews are involved, check which media the export will use and whether it matches the intended source revision. Adobe's [proxy export guidance](https://helpx.adobe.com/premiere/desktop/organize-media/ingest-proxy-workflow/export-proxies.html), for example, distinguishes export settings from the editing proxy toggle. Follow the available editor's current behavior. Relink a missing original using source identity and content, not only a matching filename; do not silently deliver an enlarged proxy as full-detail footage.
+
 Review the exported file, not only the editing timeline. When playback is available, watch and listen through a short deliverable; for longer work, cover the sequence and concentrate additional checks on cuts, altered timing, dense text and uncertain source material. State any unreviewed intervals. Frame inspection and technical checks can find defects but do not establish that playback was watched or audio was heard.
 
 Check that the final file contains the intended sequence and ending, meets the requested runtime and viewing shape, opens or decodes with an available tool, and has the expected sound and text. Look for blank gaps, unintended repeated frames or sections, missing media, broken overlays, lost context and drift between sound and picture. Correct material defects and recheck the affected passages in the new export.
 
 If an editable project was requested, save it with the assets or references needed to reopen it, subject to the authorized delivery scope. Check for missing dependencies when reopening is available. Identify required application/version or external assets that affect usability; a rendered video or shot list is not an editable project.
 
+For a requested portable project, reopen the delivered copy and check that its media references resolve within the supplied package or the explicitly agreed external locations. A project that opens only because the authoring machine still has the original paths is not evidence of a portable handoff. Use the editor's supported collection mechanism where appropriate, such as Adobe's [project-copy guidance](https://helpx.adobe.com/premiere/desktop/organize-media/create-projects/copy-project.html), then verify the resulting copy. If a dependency cannot be included or relinked, identify that exact dependency and keep project portability unresolved; do not flatten it away when editability is required.
+
 Lead the handoff with the saved video and requested project. Briefly state the duration, meaningful editorial choices and any unresolved limits. Describe only the checks actually performed. Stop when the requested artifacts are usable and reviewed to the stated extent, or explain the precise missing source, decision or access that prevents completion.
+
+## Fictional export recovery, not executed
+
+A fictional 42-second assembly demonstration needs the final four-second result shot and an editable project. The editor still has a preview range ending at 38 seconds. The expected acceptance check rejects that export even if it decodes cleanly: its ending does not match the intended sequence. Correct the range and inspect the new candidate's ending, sound and associated captions; do not reuse a review attached to the shorter file.
+
+Suppose the packaged project then reports a missing title graphic. Relink the authorized graphic in the delivered copy, verify its appearance, and re-export if the corrected project changes the picture. If the graphic is unavailable, keep that project dependency open rather than calling the package complete. No editor, export, playback or project-reopening test was run for this illustration.
