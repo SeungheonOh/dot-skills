@@ -29,6 +29,16 @@ Keep physical byte identity separate from logical records after parsing. Report 
 
 For each summary, include included-value count and missing-value count. Distinct-value counts use an explicit exact-text or normalized-text rule. A column’s inferred numeric shape does not override a supplied semantic role such as postal code or client ID. Keep the output bounded so a top-category list does not disclose a large private roster unnecessarily.
 
+### Keep an interrupted profile separate from a complete scan
+
+Record the source digest, decoder, full CSV dialect, header decision and parser/version before calculating summaries. Treat automatic header detection as a proposal: Python's [CSV documentation](https://docs.python.org/3/library/csv.html#csv.Sniffer) calls it a heuristic that can produce false positives and negatives. With Python, preserve newline handling with `newline=''`, select strict parsing where appropriate, and check widths separately; parser acceptance alone does not settle the intended table. Set file, field and record limits before expensive processing.
+
+A preview cap must not silently become a scan cap. If only a prefix or sample is inspected, label every derived count, distribution and missingness rate with that population and the sampling rule. Do not claim global uniqueness, absence or total row count from it. On interruption, preserve the last complete logical-record boundary and stop reason; restart from the unchanged source or a verified parser-safe checkpoint. Seeking to the next physical line can start inside a quoted field. A changed source digest requires a new profile rather than appending summaries from different versions.
+
+Reopen the saved report and reconcile its column naming map, denominators and displayed values against the inspected records. Keep formula-looking category labels literal in the chosen review format, and distinguish a shortened display from the complete category value used for counting. If a safe faithful spreadsheet representation is unavailable, use an authorized text/JSON report rather than modifying source values. Recheck the original digest and state whether the scan ended normally or remains partial.
+
+**Fictional, unexecuted example:** A limit stops a read after 250 complete records, immediately before a quoted multiline record. The report may describe those 250 records and their observed duplicates, but cannot say the file has 250 rows or no later duplicates. A 20-row preview of a fully completed scan is different: its summaries may use the full verified population while the preview remains visibly capped.
+
 ## Output
 
 A profile containing source identity, parse decisions, row/column counts, missingness, candidate types, anomalies and scoped summaries, with the original unchanged.
