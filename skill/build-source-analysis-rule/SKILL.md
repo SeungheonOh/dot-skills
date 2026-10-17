@@ -57,6 +57,14 @@ Specify duplicate, override and ambiguous-definition behavior from the real form
 
 Attach both use-site and declaration evidence to a relationship finding. For a negative claim, explain what makes the searched definition scope complete; there is no source span for a declaration that is absent. Reanalyzing changed declaration inputs should update the affected usage result under the same rule. If caching is requested, include those dependencies in its identity; do not introduce caching merely to complete a small check.
 
+## Respect the accepted suppression scope
+
+When integrating with an existing linter, establish whether inline directives may suppress this rule and use the host's mechanism. Preserve its rule identifiers and line, region or file scope; finding a directive-shaped comment is not enough to disable every finding in the file. For a standalone checker, support only the suppression behavior its contract declares, rather than accidentally importing another tool's convention.
+
+Keep a suppressed violation distinct from an assessed nonviolation where the report needs that accounting. A reporting suppression must not conceal parse/input failures or unrelated rules. ESLint, for example, [supports scoped rule-disable comments while still parsing the whole file](https://eslint.org/docs/latest/use/configure/rules); this is a host behavior to verify, not a universal syntax to reimplement.
+
+Fictional, unexecuted illustration: `eslint-disable-next-line cedar/require-timeout` precedes one violating call, with a second violation on the following line. With inline configuration enabled, check through the real linter that only the intended first finding is suppressed and the second remains. Then introduce a parse error in a separate copy and check that suppression does not hide it. No checker or example was executed for this illustration.
+
 ## Produce trustworthy diagnostics
 
 Give each retained finding its rule identity, affected source/version, original location, reason and the evidence that supports applicability. Include a useful excerpt when appropriate. Keep a location in the use separate from a location in its import, declaration or related file. For unknown outcomes, identify the missing fact or unsupported construct instead of presenting an unexplained confidence score.
