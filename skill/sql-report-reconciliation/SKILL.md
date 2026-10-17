@@ -44,6 +44,14 @@ Bind data values as parameters. Choose identifiers from the verified schema rath
 
 For ratios, reconcile numerator and denominator populations separately and specify zero/unknown denominator behavior. For snapshots or slowly changing dimensions, verify that the time-aware join yields at most one eligible row per entity; do not arbitrarily select the latest record.
 
+## Preserve the population through absence filters
+
+Check NULL behavior in selection predicates as well as in amounts. In a `WHERE` condition, an unknown result does not retain a row. `NOT IN` can therefore discard an otherwise unmatched key when its exclusion set contains NULL. Use a correlated `NOT EXISTS` when the agreed meaning is absence of a matching record, with the complete identity and scope in its predicate. Keep missing outer keys and unidentified exclusion records visible; changing syntax cannot decide their business eligibility. See [PostgreSQL subquery semantics](https://www.postgresql.org/docs/18/functions-subquery.html#FUNCTIONS-SUBQUERY-NOTIN).
+
+For a retained-parent report, restrict qualifying children before a left join or in its `ON` condition as appropriate. A child-only filter in `WHERE` can discard the null-extended parent rows and silently change the population. Distinguish selecting parents that have qualifying children from retaining every parent with only its qualifying children. See [outer-join predicate placement](https://www.postgresql.org/docs/18/queries-table-expressions.html#QUERIES-JOIN). If counting matched children directly after the join, count a guaranteed non-null child identity rather than `COUNT(*)`, which also counts the unmatched placeholder row. Reconcile missing/unknown children under the established coverage rule.
+
+**Fictional, unexecuted illustration:** A complete customer extract contains C1 and C2; an exclusion extract contains C1 and one missing customer key. The supplied rule excludes only identified matching customers and reports unidentified exclusions separately. C2 must remain, with the missing exclusion key flagged; a `NOT IN` filter would retain neither customer. If the missing key instead leaves eligibility unresolved under the owner's rule, report that uncertainty rather than adopting this example's policy. No query was executed for this illustration.
+
 ## Reconcile before reporting
 
 Compare source population counts to the agreed control evidence, child row counts before/after reduction, and final entity counts. Explain discrepancies rather than making totals fit. A sample validates examples, not source completeness. Page through a bounded authorized extract when needed; if pagination, truncation or late-arrival coverage is unresolved, preserve that limitation.
