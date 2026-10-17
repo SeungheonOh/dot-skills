@@ -57,6 +57,14 @@ Put rules spanning several rows in the operation that can enforce them together 
 
 Verify the consequential constraints on a disposable copy through a freshly initialized connection: attempt a relevant duplicate, missing required value, invalid type/range, or orphan as the schema warrants. Inspect the actual rejection and leave the probe uncommitted. A caller rejecting input before SQL is useful boundary evidence, but does not prove the database constraint is active.
 
+## Check what a write returns
+
+If an operation uses `RETURNING`, check its public result separately from committed state. SQLite does not promise returned-row order, include additional rows changed by triggers or foreign-key actions, or reflect subsequent `AFTER`-trigger changes in returned column values. Receiving a row also does not establish commit. See [SQLite RETURNING semantics](https://www.sqlite.org/lang_returning.html).
+
+When the contract promises final stored values, finish the statement and read the affected stable identities within the operation's transaction after trigger effects, then commit successfully before reporting success. Define any promised order explicitly; do not pair input and returned rows by position. A response intentionally describing only the direct statement effect should say so. Keep this conditional on the SQL and result contract actually used.
+
+Fictional, unexecuted illustration: an insert supplies label `cedar`, while an `AFTER INSERT` trigger stores `CEDAR`. A command promising the stored label must not report `cedar` merely because `RETURNING label` supplied it. Check the public response against a reopened read by the same record ID. This illustration was not executed and supplies no transaction or runtime evidence.
+
 ## Extend only the branches the task needs
 
 - **Imports, exports, or richer reports:** Read [identity, import authority, and read models](references/imports-and-read-models.md). Reuse domain rules while selecting the appropriate whole-batch or item-level commit owner
