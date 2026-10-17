@@ -29,6 +29,14 @@ For source breakpoints, distinguish what the client requested, what the engine a
 
 Treat running-state pause as a separate requirement. Establish an actual stopping mechanism and its limits before offering it. For example, bdb's `set_continue()` can remove tracing when no breakpoints remain; a pause request handler alone cannot restore control of execution. Cooperative checkpoints do not promise interruption of arbitrary blocking calls. Keep exceptions, multiple threads, value mutation, and expression evaluation conditional on the requested experience and supported engine.
 
+## Preserve the scope of a stop or resume
+
+When the requested integration supports multiple threads, maintain their execution states separately where the engine can stop or resume a subset. A `threads` response enumerates identities; it does not establish that every thread is suspended. In DAP, `stopped.body.allThreadsStopped: true` permits inspection of all threads. If that field is false or absent, the event establishes inspection availability only for its given `threadId`. The resume default differs: an omitted `allThreadsContinued` in a `continued` event or successful `continue` response means all threads resumed. See [stopped](https://microsoft.github.io/debug-adapter-protocol/specification#Events_Stopped), [continued](https://microsoft.github.io/debug-adapter-protocol/specification#Events_Continued) and [continue](https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue).
+
+Do not infer an exact resumed subset from `allThreadsContinued: false` alone. Reconcile the requested control and actual engine observations, and make the emitted scope truthful. Use `singleThread` only when `supportsSingleThreadExecutionRequests` is supported; naming a `threadId` by itself does not promise single-thread resumption. Keep stopped-state inspection and its lifetime rules aligned with these transitions instead of using one session-wide “paused” flag.
+
+**Fictional illustration, not executed:** Threads 41 and 52 start running. A `stopped` event names 41 and omits `allThreadsStopped`; it does not justify showing 52's stack as inspectable. Later, an unsolicited `continued` event names 41 and omits `allThreadsContinued`; the client must treat both as running. Contrast explicit all-thread stop and supported single-thread resume cases when those are in scope. These expected interpretations are a review scenario, not evidence that an engine or client was exercised.
+
 ## Make inspection describe the current stop
 
 Obtain stack frames and values from the real suspension. Relate the displayed statement to when it executes: a value visible before an assignment may belong to the previous iteration. Define any filtering of runtime or library frames so the client does not mistake a teaching view for a complete stack.
