@@ -51,6 +51,14 @@ overlap area = max(0, ix) * max(0, iy)
 
 Keep modeled and unmodeled issues separate. A floor footprint does not establish that an item can be carried through doorways, hall turns, stairs or elevators, assembled there, supported by a wall/floor, or used comfortably. Physical delivery routes and relevant vertical/operating dimensions need their own supplied measurements. Do not advise modifications to buildings or safety-critical equipment.
 
+### Check motion and shared operating space when required
+
+Separate stored footprint, occupied operating positions and the space swept while changing positions. Closed and fully open endpoints alone cannot prove that a hinged door, folding panel or swivel clears an intervening object. Use a supplied complete swept envelope, or derive it only from known pivot, shape and motion limits with a suitable geometry method. A conservative enclosing rectangle can prove clearance when it stays clear, but its intersection alone cannot prove an actual collision. If only endpoints are known, keep the static checks and mark operation unresolved; the rectangle fixture below does not calculate motion sweeps.
+
+Overlapping empty-space reserves remain compatible as reserves. Separately establish which uses must be possible simultaneously and which are explicitly allowed as alternatives. A moving component occupying a shared reserve is different from two requirements to leave that area empty. Check the relevant occupied configurations against each other and against routes required to remain clear during use. Do not turn an always-clear route into a temporarily blocked one, assume users will take turns, or reject all shared reserves without the requested operating rule. When the rule is missing and changes the decision, return a conditional result and ask that specific question. If a layout needs an operating sequence, state it rather than calling every configuration feasible.
+
+Fictional, unexecuted illustration: an idealized 80 cm cabinet leaf pivots at (0,0) from east to south through 90 degrees. A stool occupies x=50 to 60 cm and y=50 to 60 cm. The leaf's closed and fully open centerlines avoid the stool, but at 45 degrees the leaf passes through (55,55), about 77.8 cm from the pivot. Thus the endpoint-only check misses an intervening obstruction. This nominal planar counterexample does not model thickness, handles, height or uncertainty, and no room fixture, simulation or physical movement was executed.
+
 ## Return a decision-ready plan
 
 Lead with the most useful result: which candidate meets the supplied constraints, which is rejected, and what prevents a stronger conclusion. Include:
