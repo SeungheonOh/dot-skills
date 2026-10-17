@@ -55,6 +55,14 @@ Concatenate data shards in index order, truncate to the exact original length, a
 
 If final verification fails, report the precise failed layer and retain inputs unchanged. Do not substitute another manifest, guess ordering or relax a digest comparison to produce a successful-looking result.
 
+### Check the layout and parity relationship, not only individual hashes
+
+Once all data shards are available and individually verified, including any reconstructed shard, validate their combined layout against the declared original length and padding rule. Require enough total capacity for that length and enforce the selected chunk-size rule. Inspect the discarded tail before truncation: under the zero-padding contract above, every byte beyond L must be zero. A correct digest of the truncated payload cannot establish that the padded representation is valid.
+
+When supplied parity is individually digest-valid, recompute the bytewise XOR of all complete data shards and compare it with that parity. Matching each piece to a manifest does not establish that the pieces satisfy the manifest's claimed coding relationship. Reject a layout or padding failure before offering verified output. A parity disagreement instead invalidates the supplied set's parity protection: if every data shard was already present and the layout, per-shard and whole-file checks pass, a separately labeled intact-payload result is still permitted. This is not verified missing-shard reconstruction. Keep that same distinction when parity is absent or digest-invalid. Preserve the supplied pieces and manifest rather than silently regenerating parity or changing expected hashes.
+
+**Fictional illustration, not executed:** For the five-byte example below, suppose supplied parity is `[5, 7, 8]` and its manifest digest agrees with those bytes. The intact data still produce the expected five-byte payload, but their XOR is `[5, 7, 3]`. Individual digest agreement therefore cannot certify this recovery set. These are authored byte values and expected decisions; no encoding, hashing or recovery was executed for this illustration.
+
 ### 6. Test losses independently of the encoder
 
 For each small fixture, remove each data shard in turn and recover the exact original bytes. Also remove parity, corrupt one data shard, remove two data shards, duplicate an index, mix two sets and alter expected digests. Include empty input, non-multiple lengths, real trailing zeros and the configured maximum size.
