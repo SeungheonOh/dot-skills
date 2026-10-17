@@ -23,6 +23,14 @@ A design review needs numeric contrast evidence for specific color pairs, not a 
 4. If repairs are requested, search a declared candidate family under the permitted changes. Recompute after quantizing to actual output hex values. A sampled RGB ray is not the globally nearest perceptual color.
 5. Return an impossible foreground-only result when no allowed candidate passes; do not lower the threshold or change the background without permission.
 
+### Distinguish a failed search from an impossible repair
+
+A candidate family is not necessarily the full permitted set. If a sampled hue-preserving path finds nothing, report that search's failure rather than claiming no foreground can pass. For an exhaustive finite palette, a no-candidate conclusion applies to that palette only.
+
+For a fixed background with relative luminance `L` and unrestricted opaque sRGB foregrounds, the maximum possible contrast is `max((L + 0.05) / 0.05, 1.05 / (L + 0.05))`: compare black and white. This follows directly from the [W3C contrast and luminance definitions](https://www.w3.org/TR/WCAG22/#dfn-contrast-ratio), since moving foreground luminance toward either extreme increases contrast on that side of the background. If both extremes fail the requested threshold, no intermediate opaque sRGB foreground can pass. If an extreme passes but is forbidden by the palette, hue or other supplied constraint, it establishes no permitted repair; retain that distinction. This bound establishes feasibility, not the closest-looking replacement.
+
+**Fictional, unexecuted illustration:** a fixed background has luminance 0.20. Black gives 5:1 and white 4.2:1. A 7:1 foreground-only target is impossible in this model; a failed restricted search at 4.5:1 is not proof of that broader impossibility, because black passes if allowed. These are formula-derived values, not an executed color search or rendered-design check.
+
 ### Record the rendered-use assumptions
 
 Collect the actual foreground/background pair for each relevant state, not only the default brand colors. Opaque-pair arithmetic cannot establish contrast over a changing image, gradient or translucent layer. Obtain the composited color or flag that case as outside the calculation.
