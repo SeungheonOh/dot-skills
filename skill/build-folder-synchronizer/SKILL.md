@@ -25,6 +25,16 @@ Make rename, type, and metadata behavior explicit. Treat disappearance plus crea
 
 A one-way generated mirror has an authoritative input and rebuildable output. A backup preserves historical versions. A document merge produces a candidate with its own acceptance rules. Do not apply those authority assumptions to independently editable folders.
 
+### Check that both sides can represent distinct selected names
+
+Before applying independent per-path decisions across different filesystem or API naming rules, check whether distinct selected paths remain distinct on each destination. Use the actual volume, directory and access API's case, character and path rules, not an operating-system label alone. Microsoft's [file-naming documentation](https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/FileIO/naming-a-file.md) describes filesystem-specific rules, reserved names and case-sensitivity differences; the [Unison manual's cross-platform section](https://raw.githubusercontent.com/bcpierce00/unison/master/doc/unison-manual.tex) describes refusing case conflicts and unsupported filenames.
+
+Check the complete affected name group, including parent components and existing destination entries that must be preserved. Two eligible source paths can otherwise resolve to one target, or a selected name can alias an excluded destination entry. Hold the colliding paths and affected structural operations before copying or advancing their agreement. An equal byte digest does not authorize collapsing two source identities, and a successful write to one spelling does not establish preservation of both. Independent paths may proceed only when their effects are separate from the held group.
+
+Do not fix representability by silently lowercasing, stripping characters, adding suffixes or changing filesystem settings. Preserve original names in the comparison and report the conflict or unsupported name. If the accepted workflow supports a reversible name mapping, validate its uniqueness and reverse interpretation on both sides and bind it to the retained policy; otherwise obtain the needed rename or scope decision. Exercise a relevant colliding pair in isolated copies during later authorized verification when cross-filesystem naming is part of the task.
+
+**Fictional illustration, not executed:** A case-sensitive source contains distinct `Plan.md` and `plan.md` files. The selected destination's actual name lookup is case-insensitive. Both would target one entry, so the proposed synchronizer would hold both paths, preserve their previous agreement, and report a naming conflict rather than choose a winner or accept one file twice. No folders, naming settings or synchronization engine were accessed or changed for this illustration.
+
 ## Retain agreement with its meaning intact
 
 Keep enough state to distinguish each selected path's last accepted contents or absence from both current copies. Bind that state to the pair, selection and comparison policy, consequential conflict/deletion rules, and a supported state format. Use the engine's own archive when suitable; a small implementation may use an ordinary versioned file or existing database. A digest identifies compared content but cannot restore or merge the old bytes when those capabilities need them.
