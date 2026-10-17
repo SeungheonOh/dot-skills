@@ -43,6 +43,16 @@ If nearest-neighbor matching, resampling or interpolation is required, establish
 
 Keep unmatched observations available as their own stream where useful. A magnetic observation without a simultaneous plasma record can still belong on its own trace; it must not acquire an invented paired plasma value.
 
+#### Check interval support and source-row reuse
+
+Establish whether each value is an instantaneous sample, an interval mean, an accumulated total or another statistic. Retain interval start/end and whether the displayed timestamp denotes the start, center or end when the provider supplies them. Equal timestamp labels do not establish equal measurement intervals. For example, a ten-minute mean ending at 10:00 and an instantaneous 10:00 sample remain different observations after an exact join. [CF's cell-method guidance](https://cfconventions.org/Data/cf-conventions/cf-conventions-1.12/cf-conventions.html#cell-methods) distinguishes point values, means and sums together with their cell bounds. Use the actual provider contract; do not invent interval bounds from a regular-looking cadence.
+
+If a common aggregation window is needed, state its boundaries, endpoint inclusion, statistic, missing-coverage rule and retained source intervals. A mean of available readings is not automatically a full-duration mean. Do not sum overlapping accumulated intervals or split an interval total in proportion to overlap without a justified within-interval model. Keep a supported label-based alignment usable while marking an unresolved interval comparison as unresolved.
+
+For a tolerant join, also define whether one source row may serve several output rows. An as-of match selects a counterpart for each left row, as described by [pandas' merge-asof reference](https://pandas.pydata.org/docs/reference/api/pandas.merge_asof.html); that is not a one-to-one assignment guarantee. Retain both source record IDs, count distinct matched records on each side, and report counterpart reuse separately from output-pair count. Reusing a measurement does not create another independent observation. If one-to-one matching is required, use an explicit assignment and tie policy rather than silently discarding repeated counterparts after the join.
+
+**Fictional, unexecuted illustration:** two eligible point observations at 09:59:58 and 10:00:02 UTC can both match a single eligible counterpart at 10:00:00 under a nearest rule with a three-second tolerance and reuse allowed. The output has two pairs but only one distinct counterpart, used twice. Report that multiplicity before computing a paired summary; two rows are not evidence of two independently measured counterpart values. No feed, join or statistical analysis was executed for this illustration.
+
 ### 4. Separate freshness from history
 
 Compute freshness for each instrument independently at the time the result is viewed. A recently downloaded response may contain old measurements. A cached response must retain its original retrieval time.
