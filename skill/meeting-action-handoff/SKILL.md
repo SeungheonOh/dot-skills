@@ -40,6 +40,8 @@ An explicit commitment includes a person's promise or an accepted assignment. �
 
 Split a passage into separate actions only when its outcomes can complete independently. Preserve prerequisites between those actions. If “publish the guide” includes preparation and approval as inseparable steps, keep one deliverable with milestones rather than manufacturing three commitments.
 
+Keep conditions such as “if funding is approved” attached to the commitment, with the evidence that would establish the trigger. A conditional promise is neither an unconditional assignment nor merely a suggestion. While its trigger is unmet or unknown, show it separately from work ready to start; once evidenced, assess remaining prerequisites normally. Do not treat silence as approval. Another action's completion does not establish the trigger unless the source actually makes that connection.
+
 ### 3. Deduplicate by outcome and retain history
 
 Compare project, deliverable, affected system or audience and completion condition. Merge repeated mentions only when they refer to the same outcome. Matching wording or matching owner alone is insufficient. The English and French editions of a checklist remain separate if each must be delivered.
@@ -48,11 +50,15 @@ Assign stable action IDs and keep every supporting source locator. When revisiti
 
 Treat changed owners, deadlines and scope as dated events. An explicit accepted reassignment can supersede the earlier owner; a third person's assumption cannot. If two authoritative statements conflict and no resolution is available, show the conflict and ask which governs. Recency alone does not settle authority.
 
+Apply a cancellation or scope reduction only to the deliverable, edition, recipient group, or phase the accepted change covers. Preserve independent remaining commitments and their original sources; do not mark them complete or canceled because a related action stopped. Retain the earlier scope and the superseding decision so a narrower handoff cannot erase unfinished work. If the cancellation's reach is ambiguous, show the affected items as unresolved while continuing the rest.
+
 ### 4. Resolve dates without inventing deadlines
 
 Store both the original wording and the normalized value. Resolve “tomorrow” from the source's local calendar date, not the analysis date. Preserve date-only deadlines as dates; do not add a time such as 17:00. Resolve “next Friday” only when the intended convention is established. Otherwise retain the wording and ask.
 
 For a timed deadline, include its timezone. For “before review,” record a dependency unless the review's date is evidenced. Treat a date-only action as past its due date only after that local date has ended. Separate `due_date_passed` from `overdue_confirmed`: a past due date with only a completion claim is an evidence question, not proof of lateness.
+
+For a deadline relative to a condition, such as “two days after approval,” keep the relative rule and trigger together. Resolve it only when the trigger date and the intended calendar-day or working-day convention are established. Retain any independently agreed fixed deadline separately; missing trigger evidence does not cancel that date or establish that the conditional work is overdue.
 
 ### 5. Reconcile progress against the actual completion condition
 
@@ -106,6 +112,10 @@ Use [the fictional worked example](example.md) to rehearse duplicate handling, a
 ```text
 dot, turn these launch-meeting notes and follow-up updates into a private action handoff for the project lead as of [DATE AND TIMEZONE]. Separate commitments from suggestions, merge repeat mentions, and preserve unknown owners or dates. Show what is reported complete versus what the supplied evidence actually establishes. Return the action ledger and the few questions needed to resolve it; do not send messages or update a tracker.
 ```
+
+## Fictional conditional-scope illustration (not executed)
+
+Lea promises an English guide by October 20 and, if funding is approved, a French edition two working days after approval. A later accepted decision cancels only the French edition. The handoff keeps the English commitment and its date, marks the French commitment canceled with the decision's source, and retains its original funding condition in history. Without that cancellation or evidence of funding, the French deadline would remain unresolved rather than borrowing the English date. No guide, approval, cancellation, or message has actually been executed in this illustration.
 
 ## Evidence status
 
