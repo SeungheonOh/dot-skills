@@ -42,6 +42,10 @@ Write the brief around observable outcomes. Include the following only to the de
 
 **Acceptance criteria.** Translate each important requirement into an observable example or check. State the starting condition, action or supplied input, expected result, and relevant exception. Match the check to the work: a reader can find the required answer in a guide; an exported file preserves specified fields; an application handles an empty result without losing the query. Do not use “intuitive,” “robust,” or “high quality” as the only acceptance criterion.
 
+When a check depends on a threshold, sample, supported environment, or a person's acceptance, state the relevant condition and its basis. Keep an agreed requirement distinct from a proposed check that needs a consequential choice. A useful acceptance example is not evidence that the result already passed it; a walkthrough of the brief establishes only that the requirement is understandable and discriminating.
+
+For existing work, identify the reference version and the properties that must survive the change where they matter: identifiers, ordering, exceptions, access boundaries, or supplied wording. Check those properties separately from the new behavior. If the reference cannot be inspected, mark the preservation check pending rather than promising that everything else is unchanged.
+
 **Inputs and dependencies.** Name the sources, access, decisions, or other deliverables actually needed. Distinguish what is available from what is assumed. Say which part is blocked by a missing dependency rather than labeling the whole project blocked.
 
 **Open decisions.** State the choice, why it matters, and who can resolve it if known. Record an assumption as an assumption, not as a user decision. Do not invent an owner, deadline, estimate, or commitment.
@@ -63,5 +67,9 @@ Return the usable brief in the requested format. A practical default is a short 
 If the user asked only for a brief, finish there. If they asked for the work itself, continue into the authorized implementation when the brief is sufficiently clear. Ask only for a consequential unresolved choice or an action that still requires approval. Do not insert a new approval round merely because you wrote the brief.
 
 As new evidence changes the task, update the affected scope and acceptance criteria. Explain a material change before work that depends on it. Report proposed, implemented, and verified outcomes accurately; a finished brief is not a delivered project.
+
+## Fictional acceptance illustration (not executed)
+
+A user asks for a reordered copy of a catalogue while preserving each record's identifier and an agreed exception note. The brief names the supplied catalogue revision as the baseline, separates the new ordering check from exact identifier/note preservation, and leaves the source untouched. If a reviewer suggests “at least 95% of records preserved,” that proposal cannot silently weaken the user's requirement to preserve every record. These are planned checks; no catalogue has been transformed or verified in this illustration.
 
 [Examples](examples.md) show a vague software request, an editorial request, and a clear task that should proceed without a formal briefing exercise.
