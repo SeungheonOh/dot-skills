@@ -59,6 +59,21 @@ Fix problems that prevent the requested task, then recheck the affected behavior
 
 Stop when the requested behavior and justified available checks are complete, or a concrete blocker prevents further progress. Do not impose a subjective perfection score, endless visual revisions, or unrelated infrastructure work as completion criteria.
 
+### Check the delivered URL and storage boundary
+
+For a site with multiple routes, open a representative nested URL directly and reload it, in addition to following in-app navigation. Check that the expected page, styles, images and scripts load under the intended deployment path; success at the root of a development server does not establish success under a hosted subdirectory. If a direct route fails while in-app navigation works, inspect the chosen host's documented routing and asset-base configuration. Repair within scope and recheck, or report the missing hosting capability instead of masking it with an unrelated redirect.
+
+For browser-local state, record the tested origin and storage mode. [MDN documents that localStorage belongs to an origin, differs between HTTP and HTTPS, and can be blocked by browser policy](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage). Do not promise that data entered on a preview hostname will appear at a different published hostname, or treat a directly opened local file as equivalent to the deployed site.
+
+When local saving is part of the contract, distinguish a successful write/readback from an unavailable or failed store. Preserve usable in-memory input and explain that it is unsaved; offer only a copy/export path the tool actually implements. Do not clear existing storage or change browser privacy settings to make a check pass. Use disposable test state or supported failure simulation within scope, and report any unexercised failure branch.
+
+Fictional acceptance illustration, not an executed site test: a device-local workshop planner has a nested `/planner/session-a` route and a temporary preview on a different origin from its authorized final site.
+
+- Opening the nested final URL directly must show the planner with its assets, not require a prior visit to the home page
+- A test value saved at that same final origin must survive reload under the stated storage contract; a value stored only at the preview origin is not expected to transfer automatically
+- If saving fails, the visible input remains available in the current page and the message says it is unsaved; any supplied export must contain that input
+- If no production publication is authorized, these remain acceptance checks for later delivery; report only the preview behavior actually exercised
+
 ## Deliver source and a usable handoff
 
 Lead with what the site now lets its audience do. Provide the source location or artifact and a verified preview link when one is available. Distinguish a temporary preview from a durable published site; do not promise availability the environment does not provide.
