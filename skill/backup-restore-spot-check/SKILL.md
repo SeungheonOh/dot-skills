@@ -56,6 +56,14 @@ Before writing:
 
 Leave unexpected destination contents untouched. On a timeout or uncertain copy response, inspect destination state and version before retrying; do not create multiple copies or overwrite an uncertain result. Never delete restored copies automatically at the end of a real run.
 
+### Check required properties beyond the main byte stream
+
+Before choosing the copy route, identify any filesystem properties the intended use requires beyond ordinary content bytes, such as a resource fork, alternate data stream, extended attribute or permission information. Establish separately whether the selected capture contains that property and whether the restore route and destination can represent it. Missing historical evidence is not the same as a copy dropping an evidenced property. Keep a content-only check content-only when none of these properties is required.
+
+Do not infer complete preservation from a tool's metadata-preserving option. For example, [Python 3.14's copy documentation](https://docs.python.org/3.14/library/shutil.html) describes platform-specific metadata omissions and notes that `copy2()` need not fail when metadata cannot be preserved. Inspect the required properties on the restored copy through an available supported reader and compare them with the selected capture's evidence. Report main-stream byte agreement and property preservation separately; unavailable inspection remains unverified. Do not copy historical access grants onto the recovery destination or change permissions to manufacture a passing result. Hold any property whose restoration would exceed the approved access boundary.
+
+**Fictional illustration, not executed:** Suppose a backed-up file has ordinary content plus a required annotation in an alternate stream. The recovered ordinary content matches its digest, but the supported stream inventory shows that the evidenced annotation is absent. The result is byte-matched main content with incomplete required-property recovery, not a fully preserved file. Keep both copies and report the missing stream; no file, stream or restore tool was accessed for this illustration.
+
 ## 3. Retrieve and verify separate properties
 
 Read back the restored copies, rather than trusting a success response. Keep separate results for each property; one passing property cannot stand in for another.
