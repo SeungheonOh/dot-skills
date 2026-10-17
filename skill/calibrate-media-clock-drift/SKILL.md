@@ -29,6 +29,14 @@ Retain the anchor source, corresponding target moment and the confidence or revi
 
 After mapping, report every cue outside the anchor interval as extrapolated. Reconcile cue count and exact wording before and after. If rounding collapses a short interval, hold that cue instead of inventing a minimum duration. Keep overlap flags separate from unsupported timing because overlapping speech can be intentional.
 
+### Retime timestamps inside cue content
+
+Before retiming, distinguish spoken text from timing embedded in the payload. WebVTT permits timestamp tags inside a cue; its [cue-timestamp rules](https://www.w3.org/TR/webvtt1/#webvtt-cue-timestamp) require increasing times strictly inside that cue's interval. For supported WebVTT, map these absolute media times with the same scale and offset as the boundaries, preserving words, other markup and tag order. Do not replace timestamp-looking prose. If the parser cannot preserve and retime these tags, leave the affected cues unresolved rather than calling a boundary-only export complete.
+
+After serialization, check every internal timestamp against its rounded neighbors and cue boundaries. Rounding can make previously distinct times equal or move one onto a boundary; flag the affected cue instead of deleting a tag or inventing timing.
+
+**Fictional, unexecuted illustration:** A cue at 10.000–12.000 seconds contains `Go <00:11.000>now`. An evidenced +2.000-second offset would produce a 12.000–14.000 cue with `Go <00:13.000>now`. Keeping 11.000 would leave that tag before the new cue start. No subtitle file or player was exercised for this illustration.
+
 ## Output
 
 The mapping coefficients, anchor evidence, retimed copy and cue exceptions, with originals unchanged and media-review limits explicit.
