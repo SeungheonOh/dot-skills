@@ -76,6 +76,14 @@ Already-paid membership is not a new checkout charge, but it must actually apply
 
 Keep gift cards, store credit, rewards and payment instruments distinct from price reductions. Show pre-credit purchase cost and cash due if relevant; a consumed balance still has value. Future cashback, points or rebates do not reduce today's payable total. Note their conditions separately and do not promise receipt.
 
+### Keep basket-dependent costs comparable
+
+When an offer depends on a shared basket, define the comparison boundary before allocating shipping or discounts. For a product-only comparison, use the required product and quantity alone. If the user explicitly includes other planned purchases, hold those exact goods and quantities constant in every scenario and compare the complete baskets needed to obtain them. Do not assume unrelated purchases will happen to unlock a threshold.
+
+Retain a supported baseline basket without the target item and a complete basket with it. Show each basket's items, promotion eligibility, shipping and total at a consistent destination and price basis. Incremental cost is the with-item total minus the without-item total; it can differ from the item's price because a threshold changes an order-level charge. Label that difference as basket-dependent, retain the actual full payable total, and do not allocate the same shipping saving or discount independently to several items. A changed basket invalidates its old threshold result; recompute the affected scenario rather than combining the lowest fields from different carts.
+
+Fictional, unexecuted illustration: the user intends to buy the same EUR 42 of other goods in either scenario. Supplied tax-inclusive quotes state EUR 6 shipping below a EUR 60 merchandise threshold and zero shipping at that threshold, with no other charges. The baseline basket is EUR 48 delivered. Adding the exact EUR 18 target item gives EUR 60 delivered, an incremental EUR 12. A separate EUR 16 delivered offer gives EUR 48 + EUR 16 = EUR 64 for the same full requirement. Without the other planned goods, the first item's standalone total is EUR 24, so the EUR 12 incremental figure cannot be reused. These are supplied fictional terms, not live offers or authority to change a cart.
+
 ### 5. Compare feasible offers and commercial tradeoffs
 
 Rank only offers with sufficient evidence for the exact variant, quantity, delivered cost and required delivery constraints. Describe the best supported offer **as of the recorded check**, not the cheapest offer everywhere. If all totals or availability are unresolved, return the partial comparison and the next fact needed; a winner is not mandatory.
