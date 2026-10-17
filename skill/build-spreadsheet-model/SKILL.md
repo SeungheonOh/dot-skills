@@ -57,6 +57,24 @@ Recalculate and reopen the saved artifact in an available compatible consumer wh
 
 Inspect the saved layout at a usable scale. Check visible labels, clipped values, sheet navigation, formula/input distinctions, chart labels, and any requested print or export view. Restore the intended delivery inputs after experiments and verify that the delivered file contains those values.
 
+### Check pasted inputs and recovery
+
+A validation dropdown or warning is not proof that every entry path enforces the model's rules. For Excel, [Microsoft documents that copying or filling can admit invalid data without a validation message](https://support.microsoft.com/en-us/excel/display-or-hide-circles-around-invalid-data). When pasting or importing is an intended edit, test that path in the verification copy as well as direct typing. Check the resulting cell values and any overwritten validation or formulas, not only whether a warning appeared.
+
+Use explicit validity checks near dependent outputs when invalid inputs could otherwise produce a plausible answer. Keep the offending value visible with a useful correction message; do not silently clamp it, coerce an unknown to zero, or hide every error behind a zero result. After correction, confirm the valid result returns and no stale invalid-status message or previous total remains. A dropdown check does not replace these calculation checks.
+
+Fictional acceptance illustration, not an executed workbook test: a workload model accepts a nonnegative whole item count and a positive number of minutes per item. Its output is total minutes.
+
+| Verification input | Expected saved-model behavior |
+| --- | --- |
+| 12 items, 5 minutes each | 60 minutes, independently checked as twelve groups of five |
+| 0 items, 5 minutes each | 0 minutes; zero is a valid count |
+| Blank item count, 5 minutes each | Visible missing-input status, not a zero workload |
+| Paste -1 into the count input | Rejection or a visible invalid-input status; do not present -5 minutes as usable |
+| Correct the count to 12 | 60 minutes returns and the error status clears |
+
+Restore the delivery inputs, recalculate, save and reopen before checking both the final input cells and dependent outputs. Record a pasted-input probe as untested if the available consumer could not exercise it; inspecting the validation definition alone is narrower evidence.
+
 ## Hand over a maintainable model
 
 Deliver the actual workbook or verified sheet link, with a short explanation of what the user changes, what recalculates, and the material assumptions or limits. Put essential usage notes in the workbook when the file needs to make sense on its own. Avoid a long separate manual for an uncomplicated model.
