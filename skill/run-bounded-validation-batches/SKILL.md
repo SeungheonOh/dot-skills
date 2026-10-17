@@ -29,6 +29,16 @@ Inspect resource use. Give parallel checks separate temporary directories and di
 
 Record relevant runtime, OS, dependency lock, flags and source identities. Use an allowlist for environment metadata; never dump credentials or the entire environment.
 
+#### Keep one source version throughout the run
+
+Matching fingerprints before and after execution are a drift check, not proof that every check read the same bytes. An edit followed by a restoration can disappear from both observations. A recorded commit identifies committed content; it does not freeze a writable checkout. In particular, `git worktree lock` protects worktree administration from pruning, moving or deletion, not source-file edits; see the [official worktree command descriptions](https://git-scm.com/docs/git-worktree#_commands).
+
+When other writers are possible or the batch gates an artifact, use a per-run source snapshot isolated from those writers, with an ownership or supported no-write boundary that covers the entire execution. A copied directory or detached worktree still needs that boundary. Include dependency files and resolved symlink targets actually consumed by the checks; copying source alone does not pin external inputs. Prepare generated inputs before freezing them, and keep test scratch files and mutable build outputs separate from the source identity being claimed. Tests that deliberately mutate fixtures should use their own disposable copies.
+
+Retain the endpoint fingerprints as an additional check. If source stability cannot be established, report the individual observed outcomes and the actual endpoint comparison. Even when the endpoints match, do not promote that evidence alone to a verified single-revision release gate.
+
+Fictional, unexecuted illustration: the opening fingerprint describes version R. Check A reads R; another writer changes a helper to S; check B reads S; the helper is restored to R before the closing fingerprint. Both endpoint fingerprints match even if A and B pass. Those observations do not establish that both checks passed on R. No validation program or source mutation was run for this illustration.
+
 ### 2. Make a started run visibly incomplete
 
 Before launching any check, write a new run identity with `passed: false`, a running state, start time, source fingerprint and expected inventory. If the runner crashes, a previous green result must not remain current.
