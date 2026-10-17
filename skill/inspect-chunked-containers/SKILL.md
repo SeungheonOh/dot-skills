@@ -50,6 +50,16 @@ When output size is derivable, use that exact expectation as an expansion bound 
 
 For PNG row filters, use bytes per pixel rather than image width for the left-neighbor distance. Reconstruct row order, preserve the previous row, apply the specified tie-breaking predictor and wrap additions modulo 256. Keep sample reconstruction separate from gamma/color-profile rendering.
 
+### Require stream completion as well as the expected size
+
+For PNG, retain one zlib decoder across all IDAT payloads, including when the final checksum is split between chunks. Reaching the expected filtered-byte count is insufficient: require a completed zlib stream and its header/checksum checks. An IDAT CRC match does not replace the zlib Adler-32 check; [RFC 1950 section 2.3](https://www.rfc-editor.org/rfc/rfc1950.html#section-2.3) specifies the latter's validation. Keep a failed or truncated decode unavailable as a completed preview while retaining the structural ledger.
+
+Distinguish compressed input still awaiting processing from bytes after a completed stream. For example, Python's [zlib decompressor state](https://docs.python.org/3.12/library/zlib.html#zlib.Decompress.eof) separates `unconsumed_tail`, `unused_data` and `eof`; an output limit alone establishes none of these completion conditions. Continue only within the existing output/work bounds.
+
+Apply the container's trailing-data rule: [PNG 3's IDAT guidance](https://www.w3.org/TR/png-3/#11IDAT) says decoders should ignore unused trailing bytes in the final IDAT. Report their count/location separately; do not label them a failed stream checksum or confuse them with physical bytes after IEND. A stricter local rejection policy must be identified as such. Never decode them as another image stream merely because an API accepts concatenated streams.
+
+Fictional, unexecuted illustration: a 1×1, 8-bit RGBA image yields its expected five filtered bytes before the zlib trailer arrives. Withhold completion until that trailer validates. A missing or incorrect trailer still fails even if the encompassing chunk has a valid CRC. A valid completed stream followed by two unused final-IDAT bytes instead receives the separate trailing-data finding.
+
 ### 6. Test and export the right evidence
 
 Test truncation at framing boundaries, impossible lengths, bad checksums, duplicate headers, nonconsecutive data records, trailing bytes, unsupported features and compressed output both shorter and longer than expected. Use an independently produced small file with known raw output, plus forward/reverse transform comparisons that cover every supported mode.
