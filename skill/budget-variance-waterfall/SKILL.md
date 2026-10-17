@@ -32,6 +32,18 @@ Use this when household, club or project spending differs from its plan and the 
 
 6. **Return a reviewable package.** Supply the category table, accessible waterfall or text bridge, mapping decisions and a check register with expected and observed results. List unresolved amounts and whether they prevent a complete total. Ask for classification only where it changes the interpretation; otherwise deliver the known subtotal with a clear limitation. Create the requested table, document or workbook and, if a destination is already authorized, save it there and read back the result. Keep financial sources unchanged: an unexplained variance does not authorize broader account access, record changes, blame or financial recommendations.
 
+## Preserve the plan version and comparison meaning
+
+Before attributing a variance, identify whether the requested baseline is the original plan, an approved revision or a forecast. Record its version, effective period and source. A later plan that incorporates known spending must not silently replace the original baseline or make the earlier overrun disappear. If the intended baseline is unclear and the choice changes the conclusion, show the supported alternatives and ask which comparison the reader needs.
+
+When both original and revised plans matter, separate the two movements: original plan to revised plan is a planning change; revised plan to actual is the remaining spending variance. For the same scope and category mapping, reconcile these as original-to-actual variance = plan revision + actual-minus-revised variance. Do not label a higher budget as additional spending or a favorable variance as a measured saving.
+
+If category definitions changed, retain a source-linked crosswalk and put both sides on a comparable basis before calling a movement a category increase or reduction. A rename alone changes no spending. Splits or merges need supplied allocations, with each source amount represented exactly once; an unsupported split remains unresolved rather than being allocated to make the chart reconcile. Show a classification-only movement separately when needed, and keep the original category views available.
+
+A reporting cutoff also changes the comparison: actual spending through part of a period is not a completed-period result. Use a supplied time-phased plan for a like-for-like variance, or label the full-period budget and partial actual explicitly. Do not prorate uneven spending by elapsed days or infer an eventual saving without supporting assumptions.
+
+**Fictional, unexecuted illustration:** An original club budget is USD 1,000, an approved revised budget is USD 1,200 and final actual spending is USD 1,300 on the same scope. The expected bridge separates a USD 200 plan increase from a USD 100 variance against the revised plan, retaining the USD 300 variance against the original plan. A category renamed from Supplies to Materials maps to itself in economic meaning; it does not create an offsetting pair of spending changes. No account, workbook or chart was opened or executed for this illustration.
+
 ## Deliverables
 
 - A category-level variance table
