@@ -29,6 +29,14 @@ If the input is a collection, compressed webfont or unsupported mapping, report 
 7. **Cross-check with an independent parser.** On permitted, known fonts, compare the selected mapping with a mature implementation such as FontTools. Confirm the same subtable-selection policy before interpreting disagreements. Use hand-built fixtures for boundary cases that ordinary fonts may never exercise.
 8. **Export reproducible evidence.** Include source identity, selected mapping, exact code-point values, glyph IDs, invalid/unmapped status and omitted checks. Invalidate the export after text or file changes. An obsolete asynchronous file read must not replace a newer selection.
 
+### Keep variation sequences separate from scalar coverage
+
+When text contains a base character followed by a variation selector, retain the pair and its position alongside the code-point rows. An absent standalone selector glyph is insufficient evidence of a missing requested variant.
+
+If sequence mapping is in scope, [OpenType format 14](https://learn.microsoft.com/en-us/typography/opentype/spec/cmap#format-14-unicode-variation-sequences) supplements the selected ordinary Unicode cmap; it does not replace it or permit merging unrelated scalar maps. A default sequence uses the ordinary base mapping; a non-default entry supplies its own glyph ID. Check either result against the glyph inventory and missing-glyph convention. Distinguish an examined unlisted pair from one left unexamined because format 14 is unsupported. Mapping success still does not establish shaping or appearance.
+
+Fictional, unexecuted illustration: a font maps U+4E00 to glyph 5 and declares U+4E00 U+E0100 as a non-default sequence mapping to glyph 9. The pair's mapping evidence is 9, while scalar-only coverage sees 5. Report sequence coverage as unexamined if the reader cannot interpret format 14; do not silently claim the requested variant is covered or substitute the base.
+
 ## Worked example
 
 A synthetic mapping contains A→1, B→2 and U+1F600→3. The text is AAB😀C.
