@@ -65,6 +65,14 @@ Record every evidenced correction: affected criterion, original value or omissio
 
 Report first-submission passes and final accepted tasks with explicit denominators covering all eligible attempted tasks. Keep rejected, unfinished and unverified counts alongside them. When a quality result is unavailable, label the numerator as confirmed passes and state how many outcomes remain unverified; do not treat unknown outcomes as known failures or imply an exact pass rate. Do not calculate “time to accepted result” for a task with no accepted result. Its time and effort through the cutoff still belong in the attempt ledger and batch resource accounting.
 
+### If quality is assessed after acceptance
+
+Separate the initial acceptance event from later discovered defects, reopened work and subsequent repair. Link later evidence to the exact accepted version and task; preserve the earlier as-of result instead of overwriting its history. Count post-acceptance effort only in a comparison whose declared resource window includes it, and distinguish a correction to the original deliverable from a new requirement or later source change. An acceptance-only question does not require inventing a longer follow-up study.
+
+For a requested post-acceptance quality comparison, record each output's time since acceptance, observation coverage and defect-detection opportunity. A shared calendar cutoff does not give an older baseline and a newly accepted assisted output equal follow-up. Use the agreed comparable horizon when the existing records support it; otherwise show the unequal windows and leave the affected comparison unresolved. Retain shorter-followed tasks in the accounting rather than silently selecting only mature successes. No recorded defect before a cutoff is not proof of defect-free completion over an unobserved interval, and a missing review log is not observed defect-free time. [NIST's discussion of censoring](https://www.itl.nist.gov/div898/handbook/apr/section1/apr131.htm) explains the underlying distinction between an observed event and observation ending without that event; it does not supply a workflow-specific quality model.
+
+Fictional, unexecuted illustration: the question is whether corrections were needed within seven days of acceptance. A baseline artifact has seven days of complete review records and a correction on day four; its assisted counterpart has only one day of records and no reported correction. Report the baseline event and the counterpart's incomplete seven-day outcome separately. Neither a zero for the missing six days nor a claim of lower assisted correction frequency is supported. This illustration adds no observations to the bundled example and starts no monitoring.
+
 ## 4. Reconcile what each clock measures
 
 Keep these quantities separate and use the same definitions on both sides:
