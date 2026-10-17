@@ -13,6 +13,14 @@ Identify source, sink, directed arcs, capacities and numeric bounds. Reject inva
 
 A residual reverse edge is bookkeeping for canceling earlier flow, not a newly supplied arc. Store the original arc identity and traversal direction on both residual halves. An opposite input arc needs its own residual pair. A single matrix cell cannot faithfully explain separate parallel-arc allocations without additional identity mapping.
 
+### Make the arithmetic part of the certificate
+
+Declare whether capacities, residuals and certificate sums use exact integer/rational arithmetic or an approximate numeric model. Bound aggregate flow, cut capacities and vertex sums, including intermediate values, rather than checking only each arc. If converting decimal capacities to integer units, preserve the specified precision exactly or disclose a changed model; silent rounding can change the feasible set.
+
+For floating-point work, declare the feasibility, residual-reachability and flow/cut comparison tolerances. Report the observed conservation/capacity discrepancies and flow-cut difference from the original values. Ignoring small positive residuals is a numerical stopping rule, not an exact proof that the sink is unreachable. Obtain an exact recheck when an exact certificate is required, or leave that claim unresolved. The [NetworkX maximum-flow documentation](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.flow.maximum_flow.html) explains how round-off can affect flows and cut partitions; a second calculation with the same rounded values does not remove that limitation.
+
+Fictional, unexecuted illustration: two parallel source-to-sink arcs have integer capacities 4,503,599,627,370,496 and 4,503,599,627,370,497. Both fit JavaScript's safe-integer range, but their exact total, 9,007,199,254,740,993, cannot be represented by Number. The [ECMAScript safe-integer contract](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-number.max_safe_integer) makes a per-arc check insufficient here. Retain exact arithmetic for the totals or reject this input under a narrower arithmetic bound; two identically rounded totals are not the requested exact certificate.
+
 ## Verify feasibility at every recorded state
 
 For every original arc, require flow between zero and capacity. Compute net outgoing flow independently at every vertex: it equals the reported value at the source, its negative at the sink, and zero everywhere else. Handle signed zero in strict numerical test frameworks without weakening nonzero comparisons.
