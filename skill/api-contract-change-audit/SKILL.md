@@ -37,6 +37,14 @@ Record each field as:
 
 Include nested required fields, array element contracts, error responses and relevant union alternatives. Preserve absent, explicit null, empty string, empty array and empty object as distinct cases. Normalize cosmetic object-key ordering; do not normalize ordered enums, lists or examples when the documented behavior makes order meaningful. Keep documented defaults separately from validation defaults: a schema default annotation alone does not prove the server applies it.
 
+#### Compare the wire representation before the parsed value
+
+Preserve the serialization contract alongside each relevant parameter: location, media type where applicable, effective `style`/`explode`, and documented repeated-key, empty-value or encoding behavior. Resolve omitted serialization fields according to that exact specification version rather than treating omission as “unchanged.” For example, [OpenAPI 3.1.1's Parameter Object](https://spec.openapis.org/oas/v3.1.1.html#parameter-object) defaults query style to `form` and defaults `explode` to true for that style. An unchanged array schema therefore does not establish an unchanged request format.
+
+Keep a distinguishing fixture's serialized query or headers as well as its intended typed value. Do not collapse repeated query keys into a single-value map before comparison; that can erase the incompatibility being audited. Trace the actual caller's serializer and provider's documented decoding separately. If the decoder is unavailable or permissive handling is unspecified, leave that runtime outcome unresolved. Validation of an already parsed object does not exercise this boundary, including in this guide's existing schema-and-consumer supplement.
+
+**Fictional illustration, not executed:** Both versions of a new `GET /labels` example declare `tag` as an array of strings with `style: form`. V1 omits `explode`; v2 explicitly sets it to false. For the value `["oak", "elm"]`, the documented forms are `?tag=oak&tag=elm` and `?tag=oak,elm`. Retain both wire strings and their source rules. The required serialization changed despite equal schemas; whether v2 also accepts the old form needs decoder evidence. This example does not change either existing fictional consumer or claim an HTTP check ran.
+
 ### 3. Evaluate compatibility in the correct direction
 
 Build one ledger row per material change, with old and new source locations. Apply these questions separately:
