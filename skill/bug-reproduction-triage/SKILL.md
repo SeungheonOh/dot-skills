@@ -43,6 +43,14 @@ Write numbered setup steps: restore the fixture, establish the initial saved sta
 
 Define a reset that restores all state relevant to the hypothesis, including saved data, draft state, caches, pending work and counters where applicable. A visual refresh alone may not reset persisted state. If a reset would affect real records, replace it with a disposable fixture or stop for a safe scope decision.
 
+### Preserve the failure before resetting
+
+Before a reset, retry or minimization can overwrite evidence, retain the already-authorized original report and relevant failing artifact under a stable case reference. Keep the original input separate from reduced/sanitized copies; record what changed and whether the copy still preserves the suspected trigger. Preserve useful transient evidence before refreshing or restarting, but do not capture unrelated records or secrets. If the original state is already gone, say which facts now rely on the report rather than reconstructing them as observations.
+
+Define a small baseline check alongside the reset procedure: the relevant saved value, fixture identity/version and pending-work completion signal must match the intended starting conditions. Perform that check before each comparison. A reset command returning successfully is not proof that those conditions hold. If the check fails or remains unknown, label the candidate invalid or unrun as appropriate, retain the reset evidence, and stop that comparison. Do not treat the next result as a clean non-reproduction. Resume only after an authorized reset or replacement disposable fixture establishes the baseline; identify any changed fixture conditions.
+
+**Fictional, unexecuted illustration:** a draft-export case needs saved title `Cedar` with no pending save. The proposed reset returns, but the baseline read still shows `Harbor` and save completion is unknown. Preserve the earlier failing export and reset readback separately; leave the next export attempt unrun. A refreshed screen alone cannot establish that Cancel now works. No application or reset was executed for this illustration.
+
 ### 4. Specify and reduce the triggering sequence
 
 For each action, record the exact input, observable completion condition and evidence to capture. Keep expected and actual values in separate fields. Verify the expected result from the contract or independent calculation rather than copying the possibly incorrect screen.
