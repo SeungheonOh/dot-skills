@@ -42,6 +42,14 @@ Use this branch when the input is an ordered patch supplied by a person, service
 7. Bound the resulting size and depth after operations as well as before them: repeated copies can amplify a small input. For interactive work, cancel or invalidate results when any input changes, and reject late results from earlier runs.
 8. Export the successful result and a minimal operation journal tied to the frozen source. Represent removal of the entire document distinctly from a JSON null value. If the source changes later, rehearse again; a previous preview does not establish that the patch is safe against a newer version.
 
+### Resolve append targets by destination type
+
+In step 4, “for add” includes the addition phase of `move` and `copy`: their destination uses add semantics, so a final `-` can append to an existing array. For `move`, resolve that insertion after removing the source. This follows [RFC 6902 sections 4.1, 4.4 and 4.5](https://www.rfc-editor.org/rfc/rfc6902.html#section-4.4); restricting append to the literal operation name `add` would reject valid patches. The append rule does not create a missing parent container.
+
+Evaluate each token against the actual parent type. A `from` ending in `-` cannot identify an existing array element, and neither can an array-targeted `remove`, `replace` or `test`. In an object, however, `-` and `01` are ordinary member names; array-index restrictions do not invalidate them. See [JSON Pointer evaluation](https://www.rfc-editor.org/rfc/rfc6901.html#section-4).
+
+Fictional, unexecuted illustration: start separately for each case from `{"queue":["cedar","elm"],"labels":{"-":"reserved"}}`. Copying `/queue/0` to `/queue/-` yields `["cedar","elm","cedar"]`; moving it there yields `["elm","cedar"]`. Using `/queue/-` as the source fails. Removing `/labels/-` succeeds and leaves `labels` as an empty object. These are local rehearsal expectations, not executed patch results.
+
 ### Additional worked example: move and atomic failure
 
 Start with {"items":["A","B","C"],"version":7}. Apply a test that /version equals 7, then move from /items/0 to /items/2. Removal first produces ["B","C"], then insertion at index 2 gives ["B","C","A"].
