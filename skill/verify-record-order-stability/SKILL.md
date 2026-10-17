@@ -32,6 +32,12 @@ For stability, compare the output identity sequence within each equal-key group 
 
 Inspect comparison and movement rules. Adjacent-swap insertion that moves only strictly inverted neighbors preserves equal keys; changing the comparison to include equality loses that property. A distant minimum swap can reorder equal records even when the minimum search picks the first matching value.
 
+### Check the comparator before testing stability
+
+Define ties by the comparison policy's zero result, including its declared collation, case handling and missing-value rules. Distinct raw keys can belong to one tie class. Before attributing a failure to the sorting algorithm, check repeated-pair consistency, zero self-comparisons, opposite signs on pair reversal, and transitivity of both strict order and ties on bounded triples. Keep comparison inputs and policy fixed during the sort. Retain an inconsistent pair or triple as a comparator defect; adding an unrequested secondary key does not repair that contract. The [ECMAScript consistent-comparator and stability requirements](https://tc39.es/ecma262/multipage/indexed-collections.html#sec-sortindexedproperties) make this dependency explicit for JavaScript sorting.
+
+**Fictional, unexecuted illustration:** Records arrive as A=`oak`, B=`OAK`, C=`pine`, under an explicitly ASCII-case-insensitive ascending comparison. A and B compare equal. Output B, A, C is sorted and preserves every record, but fails stability. Grouping by raw spelling would put A and B in separate singleton groups and miss the failure. Check their shared comparison class against the original A, B order.
+
 ### Use an independent expected result
 
 For bounded fixtures, compare with an independently implemented reference or explicit expected permutations. An oracle can order by primary key and original index to express expected stability. Keep that test oracle separate from the production comparison routine.
