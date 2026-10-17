@@ -55,6 +55,14 @@ Capture the command, exit status and actual output path. Reopen the file and che
 
 If export fails, retain the logs and diagnose the named error. Retry with a new candidate path when justified. Missing software or permissions are blockers, not permission to install, upload or loosen security settings.
 
+### Check information carried outside the visible pages
+
+Apply the agreed disposition of editable source and review material to export options as well as visible layout. LibreOffice's [PDF export options](https://help.libreoffice.org/latest/en-US/text/shared/01/ref_pdf_export_general.html) include a hybrid PDF containing an editable ODF document and a separate option exporting Writer comments as PDF annotations. A normal-looking PDF can therefore carry more than its visible final wording. Do not enable source embedding for convenience or infer that hiding comments in the authoring view excludes them from the output.
+
+Inspect the saved candidate's embedded-file/source payloads, comment annotations and relevant document properties against the delivery contract. Record an unsupported inspection as unverified rather than absent. If an unwanted payload is introduced by an export setting, correct that setting within the existing authorization, create a fresh candidate and repeat the content/layout checks. Preserve the editable original; do not delete its review history to make an export look clean. When the task requires broader audience-specific removal or hidden-data assurance, use the [privacy-checked copy workflow](../privacy-checked-document-copy/SKILL.md) rather than treating this export check as sanitization. Do not indiscriminately strip useful tags, links or attachments that the contract requires.
+
+**Fictional illustration, not executed:** A handout's export contract excludes editable source and reviewer comments. Its pages match the approved wording, but inspection finds an embedded ODF copy. Hold that candidate, disable the source-embedding option for a new export and verify the resulting payload inventory as well as the pages. No export, payload inspection or application interaction was performed for this illustration.
+
 ## 3. Check meaning, structure and links
 
 Reopen the exact PDF that would be delivered and compare it to the acceptance map:
