@@ -73,6 +73,14 @@ Distinguish the user's acceptance of wording from a factual assertion being inde
 
 For compare-only requests, stop with the anchored ledger and proposed resolution choices. Do not create a destination document or accept tracked changes in a source simply because a merge is technically possible.
 
+### Preserve native references across document boundaries
+
+Scope native locators to the source document, revision and owning part; confirm correspondence from lineage and surrounding content before treating equal IDs in two files as the same object. In DOCX packages, [relationships connect a particular source to a target](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/opc/relationships-overview), and the same relationship ID can refer to different targets in different source parts. A paragraph's [numbering ID selects a numbering definition instance](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.wordprocessing.numberingid?view=openxml-3.0.1); retaining the number alone does not import that definition.
+
+When an accepted group imports native content, use a supported importer or an explicit dependency-aware remapping route. Carry required image/link relationships and numbering/style definitions with their references, without overwriting unrelated baseline definitions or activating external content. Reopen the candidate and resolve imported references to the intended targets; inspect list continuation/restarts, figures and their captions in context. A successful XML parse or unchanged extracted wording cannot establish this preservation. If the route loses or misbinds a dependency, stop using that damaged candidate and rebuild from the preserved baseline through a supported route. Keep a blocked group visible instead of substituting plain text or silently changing its structure.
+
+**Fictional illustration, not executed:** The baseline's `rId7` points to a logo, while an accepted branch figure uses `rId7` for a diagram. Copying only the branch drawing markup can bind it to the wrong image. The required check is the imported figure's resolved image and its caption in the saved candidate, with a correctly remapped relationship, not equality of the ID string. No native document was imported, saved or rendered for this illustration.
+
 ## 5. Save, read back and handle concurrent edits
 
 Before an authorized write, re-read the destination's revision token. If it differs from the token used to prepare the merge, compare the new changes and rebase the affected groups; ask only if new conflicts exceed the existing authority. Use a conditional write when supported. Without one, re-read immediately before writing and disclose that concurrent modification protection is limited.
