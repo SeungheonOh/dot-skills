@@ -48,6 +48,14 @@ For a generator that owns complete independent note pairs per track, a per-track
 
 Compare the count and, when available, the actual pitch/start/duration/channel ledger with the score data. An equal total count can conceal changed pitches or timing, so state precisely which content comparison was performed.
 
+### Preserve consequential order at equal ticks
+
+Keep each event's source track and ordinal when accumulating absolute ticks. Zero delta time does not make events interchangeable. Compare the saved order with the generator's intended contract before any sorting, grouping or deduplication for presentation. A balanced note count can survive an unintended reordering of a release and a new onset. Do not silently repair the file by moving every note-off before every note-on: [Mike Kent's MIDI Association forum explanation](https://midi.org/community/midi-specifications/reordering-simultaneous-events) describes receiver behavior, including legato transitions, for which that order matters.
+
+If same-tick events on separate tracks share a channel, record the reader's merge policy and keep target playback order unresolved unless checked. One parser's merged sequence is not evidence that every player orders those events identically. Preserve the per-track evidence alongside any merged diagnostic, and check consequential controller/program changes in relation to note events when the score contract includes them.
+
+**Fictional, unexecuted illustration:** a generator requires a release followed by a repeated onset on channel 1, pitch 60, at tick 480. Its exported track instead stores the onset first and the release second, both at tick 480. The number of starts and releases can still balance, but the declared order fails. Report that mismatch without claiming which voice a particular device would release. A different contract may intentionally request overlap; do not overwrite it with this example's ordering. No MIDI file, reader or playback device was executed for this illustration.
+
 ### 5. Report the narrow verified result
 
 Keep these statuses separate:
