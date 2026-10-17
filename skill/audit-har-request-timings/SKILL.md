@@ -29,6 +29,16 @@ Create a timing-only projection before analysis, retaining an occurrence identif
 
 For a request from 0 to 120 ms with connect 40 ms including SSL 20 ms, do not sum connect and SSL as independent durations. When phase totals still disagree with reported duration, preserve both and mark the mismatch. Avoid deriving a server bottleneck solely from a client waiting phase without corroboration.
 
+### Bind the result to the capture and observation window
+
+Record the source digest, creator/version, selected page or navigation references when present, capture/filter evidence and analysis window. Chrome's [Network reference](https://developer.chrome.com/docs/devtools/network/reference) documents both logs preserved across page loads and HAR export with filters applied. Therefore one file need not mean one navigation or complete traffic. An unknown capture start, cleared log or filtered export limits coverage; do not interpret an absent request as proof that none occurred. Keep original occurrence locators when sorting a derived timeline, and hold ambiguous page membership instead of assigning it by URL resemblance.
+
+Declare the window's start, end, time origin and units before reporting gaps. Include selected requests that begin before the window but overlap it; clip intervals only for windowed union, idle and concurrency calculations, retaining their original endpoints and phase evidence. Do not sum gaps across separate navigations unless that session-wide question was actually requested. If the window is merely the first selected start through the last valid end, label it that way; it says nothing about time before or after those requests. Invalid or unknown endpoints must remain visible: report valid-subset measures and withhold exact all-selected idle/concurrency claims when unresolved intervals could change them.
+
+After saving, reopen the minimized timing table and report. Check occurrence counts, page selection, window boundaries, units and interval totals together; a well-formed table under the wrong window is still a wrong result. If parsing or output is interrupted, keep that result partial and rebuild from the same immutable input rather than joining it to a fresh capture. Do not replay stored requests to resolve a timing gap. Review the actual exported fields even when the input was called sanitized.
+
+**Fictional, unexecuted example:** An archive contains page A's request at [0,100) ms and page B's at [10000,10100) ms. For page A with a declared [50,150) ms window, the recorded interval contributes 50 ms of busy time and 50 ms with no selected recorded request. Excluding it because it started before 50 ms is wrong; reporting the 9900 ms between navigations as page A's idle time is also wrong. Neither calculation establishes unrecorded network inactivity.
+
 ## Output
 
 A source-scoped timing summary, request/phase table, concurrency/idle measures and discrepancies, with source content and sensitive fields excluded as specified.
