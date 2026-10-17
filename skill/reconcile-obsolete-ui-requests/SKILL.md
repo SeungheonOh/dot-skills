@@ -30,6 +30,14 @@ If a live operation can charge, publish or create a record, separate display can
 7. **Bound work and preserve context.** Apply a deadline and response or computation size limits appropriate to the task. Show the current resource identity, observation time and a concrete error. Differentiate an explicit cancel from a timeout if the interface promises that distinction. Do not retain a successful-looking previous result behind a failed current request.
 8. **Prove race behavior deterministically.** Use deferred promises rather than sleeping and hoping for a race. Start request A, supersede it with B, then resolve B before A. Repeat with A rejecting, with Cancel, and with an input edit that starts no replacement request. Assert both displayed state and dependent controls after each completion. Finally test the normal success/error paths and recovery from an invalid input.
 
+## Keep ownership valid across the whole operation
+
+A counter is unique only within its owner's lifetime. If callbacks can write to a store reused after reset, document/account replacement or remount, bind the token to an owner instance or incarnation as well as its generation. Do not reset a shared counter while old completions can still pass its guard. Returning to identical inputs does not make an earlier request current. React's [Effect cleanup example](https://react.dev/reference/react/useEffect#fetching-data-with-effects) illustrates per-Effect invalidation; a shared result store still needs an ownership boundary matching its lifetime.
+
+Capture the input values and resource/version identity used by the operation, not just its token. Later decoding or validation must use that snapshot rather than rereading mutable controls. Recheck ownership after those asynchronous stages and at the actual result commit. If a framework queues the state change, protect its eventual application to the shared store too; a guard before scheduling alone may be stale. Publish data, identity and actionable status consistently under the current owner.
+
+**Fictional illustration, not executed:** Request A starts for Cedar in owner session 1. Reset reuses the shared store and starts request B for Cedar with a counter reset to the same number. A then finishes decoding. Equal query text and generation cannot authorize A to replace B's state; the old owner must fail the guard. Repeat with A rejecting or running cleanup. No UI or transport was exercised for this illustration.
+
 ## Worked example
 
 A release comparison view needs manifests for old and new exact versions. Generation 7 starts requests A1 and A2. The user loads a synthetic example, advancing to generation 8 and enabling export for that example.
