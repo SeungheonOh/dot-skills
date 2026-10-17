@@ -35,6 +35,14 @@ Keep the output private to the operation until the stream has completed successf
 
 Do not allocate the complete declared output size from an untrusted header. When an in-memory result is appropriate, retain bounded chunks and assemble them after success. For larger authorized workflows, use a controlled temporary output and finalize only after verification, with cleanup limited to resources the operation owns.
 
+### Keep backpressure separate from output limits
+
+Keep a transform's readable side draining while its writable side is fed. Prefer a connected pipe chain; awaiting all writes or `pipeTo(transform.writable)` before starting the output reader can stall under backpressure. For a manual pump, honor writer readiness, bound outstanding writes, and handle both sides' failures. A high-water mark signals pressure; it does not enforce the cumulative output cap. Check whether queue sizes count bytes or chunks. See the [Streams Standard's pipe and queue model](https://streams.spec.whatwg.org/#pipe-chains).
+
+Avoid adding an unconstrained `tee()` solely for progress, hashing or a second consumer. One fast branch can keep pulling while the slower branch accumulates unread chunks. Prefer observations in the bounded consuming path, or explicitly bound and coordinate both consumers. Output limits checked on one branch do not establish the other's retained-memory bound. See [stream teeing](https://streams.spec.whatwg.org/#rs-tee).
+
+**Fictional illustration, not executed:** A restore wrapper waits for its input pipe to finish before reading decoded output. The proposed correction would start the bounded output consumer concurrently and propagate its overflow failure upstream. A later authorized check would use a slow sink and an overflow case; no transform, fixture or runtime was executed for this illustration.
+
 ### 3. Wire cancellation through the whole operation
 
 Associate each operation with an identity or generation. On user cancellation, input replacement or a new operation, cancel the owned reader/transform where supported and invalidate the old result. A late callback must not re-enable a download for obsolete input.
