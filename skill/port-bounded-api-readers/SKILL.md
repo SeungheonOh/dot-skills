@@ -39,6 +39,14 @@ Check declared content length when present, but also count actual streamed bytes
 
 Translate cancellation carefully. A client abort may cancel its individual lookup, but should not necessarily abort a shared in-flight feed request serving other clients. Document the chosen behavior. Cancellation cannot undo an identifier already received by a provider.
 
+### Preserve the byte boundary while changing runtimes
+
+Identify whether the runtime exposes encoded transfer bytes or a body after HTTP content decoding. Under the [Fetch Standard's HTTP network processing](https://fetch.spec.whatwg.org/#http-network-fetch), content decoding occurs before bytes enter the exposed body, so a compressed `Content-Length` is not the decoded byte count. Keep the limit on the bytes actually passed toward parsing; if the target exposes compressed bytes and the adapter decodes them itself, bound both sides. Do not decompress a body twice merely because a header still mentions compression. Verify the target runtime's behavior rather than assuming browser parity, and avoid an unbounded `text()` or `json()` read before enforcing the cap.
+
+Transport chunks are not character boundaries. Either collect bytes under the cap and decode once, or retain one fatal UTF-8 decoder across chunks using streaming mode, followed by a final non-streaming flush. Reject an incomplete sequence at end of input; decoding each chunk independently can reject valid split characters or insert replacements. The [Encoding Standard's TextDecoder contract](https://encoding.spec.whatwg.org/#interface-textdecoder) defines streaming and fatal-error behavior. Keep the declared BOM policy and schema validation consistent with the original reader; stream completion alone does not make an incomplete JSON document valid.
+
+**Fictional illustration, not executed:** A metadata response splits the three bytes of `€` after its first byte. Both chunk layouts of the same complete payload would need the same value, while ending after that first byte would fail strict decoding. Separately, a small compressed response expanding beyond the parser-input cap would be rejected without caching a prefix. These are proposed distinguishing cases; no fetch, decoder, deployment or compatibility check was executed.
+
 ### 4. Reassess state lifetime and public exposure
 
 An in-memory cache or cooldown in one local process is not a global edge rate limit. State may be per isolate, evicted, duplicated across regions or absent on a cold start. Name the scope accurately and use a separately authorized durable/global mechanism if the task requires stronger guarantees.
