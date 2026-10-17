@@ -29,6 +29,16 @@ Use an existing authorized authentication path; synthetic fixtures can test vali
 
 Treat authentication, deduplication, persistence and processing as separate checkpoints. A receiver 200 response may establish acceptance under that endpoint’s contract, but it does not prove a downstream job committed its business action. Inspect the actual durable receipt and processing result only within the granted scope.
 
+### Check duplicate claims and acknowledgement at their durable boundary
+
+Inspect how concurrent deliveries claim the same retained identity. A read-then-insert sequence or process-local set does not establish one winner across workers. Look for a storage-enforced unique key or equivalent atomic conditional claim in the receiver's defined provider/account/endpoint namespace, with conflicting metadata preserved. Distinguish a receipt that is pending, completed or failed; an existing ID must not automatically mean its work finished. The general [idempotent-operation design](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) ties duplicate identity to atomic effects and retains the meaning of a repeated request.
+
+If the endpoint promises durable acceptance before returning success, inspect that ordering. Acknowledging an in-memory task leaves a crash window. Where receipt persistence and queue publication are separate writes, identify how accepted work remains recoverable, such as an existing transactional outbox or a durable receipt scanner. If no such mechanism is established, report the gap rather than treating a stored receipt as a queued job. Do not impose a queue on a receiver whose authorized work completes synchronously.
+
+Check provider-specific recovery assumptions. [GitHub recommends responding within ten seconds](https://docs.github.com/en/webhooks/using-webhooks/best-practices-for-using-webhooks#respond-within-10-seconds), and requested redelivery retains the original delivery ID; [failed deliveries are not automatically redelivered](https://docs.github.com/en/webhooks/testing-and-troubleshooting-webhooks/redelivering-webhooks#about-redelivering-webhooks). A failed retained receipt therefore needs an explicit, authorized retry/recovery policy. A downstream effect committed before its completion marker can still be uncertain; require that effect's own idempotency or reconciliation evidence before claiming exactly-once processing.
+
+**Fictional illustration, not executed:** Two workers receive D1/H1 together. An atomic claim would leave one pending receipt. If its worker stops before dispatch, the review would look for durable recovery of that same work, without inventing D2 or declaring D1 completed. Proposed checks include a concurrent duplicate and interruption on either side of acknowledgement; no receiver, queue, delivery or failure injection was run.
+
 ### Keep a filtered review in one scope
 
 When reviewing retained receipts, record the exact event/repository filters, case sensitivity, ordering and cursor semantics. Keep those filters fixed while paging; a cursor from another filter does not establish complete coverage. Distinguish a global retained count from the number of matching records actually reviewed.
