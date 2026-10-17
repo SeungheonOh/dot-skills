@@ -45,6 +45,14 @@ An ambiguous word such as “average,” “safe,” “available” or “doubl
 
 8. **Write the strongest defensible conclusion.** Mark each component supported, contradicted or unresolved and explain its scope. “Contradicted” requires incompatible evidence about the same proposition; a narrower study alone usually means the broader claim is unestablished. Separate a source misquotation from the question of whether the underlying proposition might independently be true. Offer a revised sentence that the inspected evidence supports and list the consequential qualifiers restored or removed.
 
+### Preserve the meaning of displayed numbers
+
+Before calculating from a table, inspect its legend and method notes for rounding, suppression, provisional values and missing-data codes. Distinguish a measured zero from missing, suppressed and not-applicable values; a blank or dash takes its meaning from the source's legend. Even a displayed zero can represent a small value rounded to the reporting precision. Retain the actual meaning rather than substituting zero, discarding the row or guessing an exact hidden value. If the legend is unavailable and the distinction changes the verdict, leave that component unresolved.
+
+Use inspected unrounded inputs when available. Otherwise label the arithmetic as an approximation from displayed values and check whether the conclusion survives the source's stated precision. Do not declare a contradiction solely because separately rounded totals or percentages fail to reconcile exactly. Where the rounding rule establishes a useful range, distinguish what holds throughout that range from what remains possible; a compatible value does not prove the claim. Do not invent a rounding rule or reconstruct confidential suppressed cells to force an exact answer. [ONS rounding guidance](https://service-manual.ons.gov.uk/content/numbers/rounding) explains the tradeoff between readability and retained precision; the inspected source's own conventions determine this check.
+
+**Fictional, unexecuted illustration:** A mock report displays a cancellation rate of 0% and states that nonnegative rates are rounded to the nearest whole percentage point, with halves rounded upward. That display permits an underlying rate from 0% up to, but not including, 0.5%; it does not establish the claim “no bookings were canceled.” Another district's dash means “not collected,” so it also cannot be counted as zero. The expected assessment leaves the no-cancellations claim unresolved and reports the displayed rate with its precision limit. No real report, dataset or claim was checked in this illustration.
+
 ## Make the assessment auditable
 
 Use these record shapes in the returned appendix. Keep the front-page conclusion short enough to be understood without reading the entire chain.
