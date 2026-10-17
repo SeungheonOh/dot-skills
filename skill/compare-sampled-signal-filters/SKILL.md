@@ -29,6 +29,14 @@ Record the original sample count, sampling rate, filter parameters and initial s
 
 When reporting delay, state the estimator and whether the input is sufficiently informative for it. Cross-correlation on a periodic signal may have several equivalent peaks. Frequency-bin spacing is fs/N; it does not by itself establish the uncertainty of a peak estimate.
 
+### Distinguish causal and forward–backward operators
+
+Record whether each candidate is a causal single pass, a delayed/block method or an offline forward–backward pass. Forward–backward processing uses later samples; its zero-phase behavior does not establish zero-latency online availability. For a stable real-coefficient linear filter, its ideal magnitude response is `|H(f)|²`, rather than `|H(f)|`; compare the composed response against the requested attenuation and distortion limits. The [MathWorks forward–backward reference](https://www.mathworks.com/help/signal/ref/filtfilt.html) describes this squared-magnitude response. Equal coefficients alone do not make the two operators equivalent.
+
+Record the edge method, padding length and initial conditions, and check the implementation's supported record length. A record too short for the chosen method is a scoped failure; switching to another supported method needs a disclosed comparison change. Do not silently fall back to a causal pass or shorten padding and retain the original claim. Inspect edge behavior separately from an interior steady-state comparison; [SciPy's forward–backward documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html) explains the boundary choices and remaining transients.
+
+**Fictional, unexecuted illustration:** at one frequency, a single pass has amplitude gain 0.5. The ideal forward–backward gain is 0.25, corresponding to about -12.04 dB rather than -6.02 dB for one pass. This interior sinusoidal-response prediction does not describe every finite-record endpoint or demonstrate a runnable real-time replacement. No signal, filter implementation or simulation was executed for this illustration.
+
 ## Output
 
 A source-qualified comparison with filter parameters, initialization, sampling assumptions, time/frequency results and a recommendation limited to the stated objective.
