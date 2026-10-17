@@ -29,6 +29,14 @@ Record initial residents, capacity, object identity and tie-breaking. If the inp
 
 When comparing capacities, run each policy from the declared initial state for the entire trace. Do not compare a partial playback count at one capacity with a full-run count at another. Missing request intervals limit workload conclusions even when the model is internally correct.
 
+### Include ordering in a warm initial state
+
+A nonempty resident set does not fully initialize FIFO or LRU. Record FIFO residents from oldest to newest insertion and LRU residents from least to most recent access; these can be different orders for the same items. The [cachetools policy reference](https://cachetools.readthedocs.io/en/stable/#cachetools.FIFOCache) distinguishes insertion-based FIFO eviction from access-based LRU eviction. Use the declared read-request model here, without importing a library's separate update semantics.
+
+If that history is unavailable, show results conditional on explicitly assumed orders or leave the affected verdict unresolved. Alphabetical sorting or container iteration is not recovered history. A supplied warm-up trace can establish each policy's state; keep warm-up requests outside the measured hit/miss counts unless the reporting window includes them. Declare initialization separately for each capacity, and reject an initial state that exceeds it instead of silently dropping residents.
+
+**Fictional, unexecuted illustration:** two slots initially contain A and B, followed by measured requests C,A. FIFO starting oldest-to-newest A,B evicts A for C and then misses A: two measured misses. Starting B,A instead evicts B for C and then hits A: one miss. The resident set and measured trace are identical; only hidden initial order changed. No cache implementation or trace replay was executed for this illustration.
+
 ## Output
 
 Per-policy trace results, capacity comparison, assumptions and a recommendation limited to the supplied workload.
