@@ -41,6 +41,16 @@ For cuts or speed changes, use the supplied per-span edit map. Split a cue at a 
 
 If a supplied segment straddles the selected clip's beginning or end, a known time offset does not establish which words remain in the clip. Do not clamp the interval to zero or the clip end while keeping all its text. Retain the original segment and mapped extent in the review sheet, mark that boundary portion unresolved, and use finer source timing or authorized media review before emitting the affected words.
 
+#### Decode frame labels before calculating offsets
+
+If the source uses frame timecode or frame numbers, establish that representation before treating its values as elapsed timestamps. Preserve the original labels, the source/sequence they identify, nominal frame-counting rate, exact playback rate, drop-frame convention, origin corresponding to the delivered file's zero, and whether an out-point includes its labeled frame. A fourth field in `HH:MM:SS:FF` is frames, not decimal milliseconds; punctuation alone does not establish all of these settings. Adobe documents both [frame-based timecode and inclusive In/Out points](https://helpx.adobe.com/premiere/desktop/organize-media/apply-labeling/enter-timecode.html).
+
+Use the source format's documented conversion. For continuous SMPTE-style timing, first decode the labels into frame counts under the declared counting convention, subtract the corresponding origin count, then convert that difference using the exact playback rate. Do not substitute a rounded display rate such as `29.97` for an evidenced `30000/1001`, or treat a nonzero source timecode as elapsed clip time. Drop-frame numbering requires its own count adjustment; it is not permission to discard media frames. The [W3C timing semantics](https://www.w3.org/TR/ttml2/) distinguish counted frames, dropped labels, effective frame rate and discontinuous markers. A discontinuous or otherwise unsupported source map leaves the affected timing unresolved rather than justifying a guessed offset or drift correction.
+
+Resolve endpoint semantics before serialization. When an out-point includes its final frame, the caption's end boundary must lie after that frame; when the source already supplies an exclusive boundary, do not add another frame. Retain exact intermediate times and round once to the output's millisecond precision using a stated rule. Recheck collapsed intervals, overlaps and the clip boundary after rounding. The review sheet should retain the source label, decoded count, origin, exact mapped interval and serialized interval so a frame-sized discrepancy is explainable.
+
+**Fictional, unexecuted illustration:** A supplied continuous 25 fps non-drop clip starts at source timecode `01:00:00:00`. A cue runs from `01:00:10:12` through the inclusive out-frame `01:00:10:24`. Its clip-relative interval would be `10.480` to `11.000` seconds, not `10.012` to `10.024`. Those inputs are invented; no timecode conversion tool, recording or player was exercised for this illustration. Without the supplied rate, origin and endpoint convention, keep the cue pending instead of choosing those numbers.
+
 ### 2. Establish which boundaries are supported
 
 Use supplied start/end times, supplied word-level boundaries or boundaries established by actual media review. Keep a map from each output cue to its source segment or exact word span.
