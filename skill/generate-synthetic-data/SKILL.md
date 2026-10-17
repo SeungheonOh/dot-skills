@@ -29,6 +29,14 @@ Mark the delivered dataset as synthetic in a filename, accompanying description,
 
 Explain material simplifications and any use of real-data summaries. Synthetic status alone does not establish anonymity, statistical representativeness, or a privacy guarantee. If the request depends on such a guarantee, identify the evidence or additional work needed instead of claiming it from the generation method's name.
 
+## Keep actionable fields within a fictional destination boundary
+
+When records will reach a consumer that can send messages, fetch links or act on account IDs, identify which fields select those destinations. Fictional names do not make arbitrary addresses or identifiers safe. Use a documented reserved namespace appropriate to the field: [RFC 2606](https://www.rfc-editor.org/rfc/rfc2606.html#section-2) reserves `.invalid` for deliberately invalid domain names. Choose it only when a non-resolving domain meets the contract; do not silently replace a required reachable test endpoint with one. For phone numbers or service-native IDs, use that provider's documented test values or an agreed isolated namespace rather than assuming a plausible invented value is unassigned.
+
+Separate data validity from permission and effect containment. A synthetic label or reserved domain does not disable an importer's notification queue, account matching or downstream jobs. If a consumer exercise is requested, use its already-authorized isolated target and established side-effect controls; do not change a live integration merely to make a sample safe. When those controls or a required test identity are unavailable, deliver the data with the specific consumer check unresolved. Keep fictional records out of real-account merges, and do not claim delivery or endpoint reachability from a syntax check. [IANA's example-domain guidance](https://www.iana.org/help/example-domains) also cautions against depending on its documentation hosts as operational HTTP services.
+
+Fictional, unexecuted illustration: a reminder-import demonstration uses `reader@workshop.invalid` as literal sample text. That value can meet an agreed format-only contract, but it cannot satisfy a requirement for a reachable mailbox. A consumer that enqueues reminders still needs its documented isolated delivery route before an authorized exercise; changing the address to a plausible real domain is not a repair. No import, lookup or message was performed for this illustration.
+
 ## Build coherent records and deliberate variation
 
 Generate related entities and events together. Establish parent identities before references, preserve relationship cardinalities, and let meaningful state or time sequences constrain later values. Sampling every column independently can produce individually plausible values that contradict one another. Derive dependent values from their defining quantities and rules; do not independently randomize a total and its components.
