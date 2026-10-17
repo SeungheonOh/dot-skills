@@ -29,6 +29,16 @@ Record actions and promise resolutions with session/generation identifiers, audi
 
 If a code change is authorized, first freeze the failing sequence as a test. Ensure cleanup belongs to the session being cleaned up. A global error handler that stops whichever session is current can reproduce the same race in another form.
 
+### Distinguish a stalled scheduler from a suspended audio clock
+
+For a timing failure, pair each relevant callback with `performance.now()` in milliseconds, `AudioContext.currentTime` in seconds, context identity/state, visibility and the event's intended audio time. Compare elapsed values within each clock; do not subtract their absolute readings or carry an origin across a replaced context. Record scheduling-call time separately from intended onset. These are scheduling observations, not measurements of when sound reached the listener.
+
+An explicitly suspended context pauses progression of its audio clock; a delayed JavaScript callback while that clock advances is a different condition. Do not infer suspension merely from a hidden tab or a quiet speaker. Preserve the state transitions and both clock samples before changing timing parameters. The [Web Audio specification](https://www.w3.org/TR/2021/REC-webaudio-20210617/#dom-audiocontext-suspend) defines suspension; its [scheduled-source start rules](https://www.w3.org/TR/2021/REC-webaudio-20210617/#dom-audioscheduledsourcenode-start) also explain why submitting already-past start times can play overdue events immediately.
+
+Recover according to the existing playback contract: skip missed events while preserving phase, pause musical position, or restart from a defined origin only when that behavior is intended. If the contract is silent, make that decision explicit before an authorized fix. Account separately for events already handed to the audio graph and those still queued in JavaScript, so recovery cannot reschedule the same event twice. Stop still invalidates stale work. Check the chosen policy with the same delayed-callback sequence; larger lookahead alone does not establish recovery correctness.
+
+**Fictional, unexecuted illustration:** one context advances from audio time 4.0 to 5.2 seconds while callback samples advance from 1000 to 2200 milliseconds. Events due at 4.5 and 5.0 were not scheduled before the gap. Under a supplied skip-missed contract, both are recorded as missed and the next event keeps its original phase; submitting both past starts is not a faithful recovery. A separate explicitly suspended case requires different expectations. No browser, audible playback or timing test was run for this illustration.
+
 ## Output
 
 A short diagnosis with the reproducible sequence, responsible code path, authorized fix if requested, passed checks and remaining audible/device limits.
