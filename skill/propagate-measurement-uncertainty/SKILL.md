@@ -38,6 +38,14 @@ For a scalar output `y = f(x)`, first-order propagation can be written as `u_y²
 
 Make the budget interpretable: input/component, estimate, unit, standard uncertainty, sensitivity or propagation role, dependence and output contribution. Correlated contributions cannot always be allocated uniquely to independent positive rows. State the convention used, or show the relevant covariance terms directly. A plausible total does not establish correct component identity.
 
+### Validate covariance as a joint model
+
+Check finite entries, symmetry, nonnegative diagonal variances and positive semidefiniteness with scale-aware numerical tolerances. A zero-variance input must have zero covariances with other inputs. Pairwise correlations within [-1, 1] do not establish validity of the whole matrix. A valid matrix may be singular because inputs share an exact relation; failure of a strictly positive-definite factorization alone does not establish invalidity. The [SciPy multivariate-normal reference](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.multivariate_normal.html) distinguishes these cases and warns that its array interface does not check symmetry, so inspect both triangles independently.
+
+Do not repair an invalid model silently by taking an absolute variance, clipping eigenvalues or adding diagonal noise. For a borderline numerical result, check units, scaling and source precision against a justified tolerance; record any accepted adjustment and its effect. A materially negative variance requires corrected dependence information before an uncertainty claim, even if a nominal calculation remains possible.
+
+**Fictional, unexecuted illustration:** three inputs each have standard uncertainty 1 mm, with correlations AB = 0.9, AC = 0.9 and BC = -0.9. Every pair is individually within bounds, but the variance of A - B - C would be `3 - 1.8 - 1.8 - 1.8 = -2.4 mm²`. This contradicts nonnegative variance and rejects the joint specification; it is not zero uncertainty or a sampling failure. No measurement or numerical procedure was run for this illustration.
+
 ## Choose and check a proportionate propagation method
 
 Use an exact expression where available or first-order propagation where the equation is sufficiently smooth over the relevant uncertainty scale. Inspect denominators, discontinuities, thresholds and physical domains. Choose a useful check: analytic sensitivities, a finite-difference comparison, a local curvature bound, a known limiting case or a direct alternative calculation. A local numerical check establishes its stated neighborhood, not behavior in unexamined tails.
