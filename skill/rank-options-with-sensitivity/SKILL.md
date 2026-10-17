@@ -29,6 +29,14 @@ Assign each criterion a source or an explicit user judgment. When a cost is conv
 
 For sensitivity, state what stays fixed. Varying one weight while preserving all scores answers a preference question. Varying uncertain scores answers an evidence question. Keep those analyses separate, and record ties at crossing points rather than choosing a winner by list order.
 
+### Separate feasibility from scoring assumptions
+
+Apply the user's actual hard requirements before ranking feasible options. A failed mandatory requirement is not a low score that other benefits may offset; an unknown requirement remains unverified. Keep excluded and unresolved options with their reasons, and report no confirmed feasible option when appropriate. Do not invent thresholds or relax them during a weight sweep. This is distinct from ordinary preferences that the user permits to trade off.
+
+Pin each score conversion and its reference anchors for the comparison. If a conversion uses the current options' minimum and maximum, adding or removing an option can change existing scores without new evidence about those options. Either retain agreed fixed anchors or label the rescaled matrix as a new scenario and reconsider the weights against the changed score ranges. Do not attribute that change solely to the varied priority. The [UK multi-criteria analysis manual](https://assets.publishing.service.gov.uk/media/5a790545e5274a2acd18b975/1132618.pdf), sections 5.4.4.4, 5.6 and 6.2.10, explains minimum-performance hurdles, local/global scaling and the relationship between score ranges and weights.
+
+**Fictional illustration — unexecuted:** A user requires offline export from a shortlist of writing tools. The highest weighted score belongs to an option whose offline export is unverified; it is not the confirmed feasible leader. Adding a cheaper fourth tool also must not silently rescale the existing cost-fit scores under a fixed-anchor comparison. Record the missing evidence and any separately agreed rescaling before presenting a revised ranking. No product was inspected and no ranking program was run for this illustration.
+
 ## Output
 
 The input matrix and provenance, baseline ranking, ties, sensitivity range and decision-relevant caveats. Leave the final subjective choice with the user.
