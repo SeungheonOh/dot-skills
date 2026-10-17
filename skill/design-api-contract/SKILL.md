@@ -44,6 +44,14 @@ Specify the distinctions that change an implementation or a caller's next step, 
 
 Do not fill these categories mechanically. A pure local function may need no persistent identity or lifecycle, while an asynchronous effect cannot be specified adequately by input and output shapes alone. Avoid unsupported timing, throughput, durability, or exactly-once guarantees. If a requirement calls for one, define its observable scope and identify any feasibility assumption before presenting it as settled.
 
+## Make concurrent edits distinguishable
+
+When consumers update a resource from an earlier read, decide whether stale writes are rejected, merged by a defined rule, or allowed to overwrite. For rejection, define the resource/revision identity, how the caller obtains it, and an atomic compare-and-update obligation: a successful comparison followed by an unprotected write still permits lost updates. State the mismatch outcome and whether any effect occurred. A retry identity prevents repetition of one operation under its contract; it does not arbitrate different consumers' edits.
+
+Use the selected interface's existing conditional-write mechanism when suitable. For HTTP, [RFC 9110's If-Match rules](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1) use strong entity-tag comparison; `If-Match: *` checks existence, not that a particular revision is unchanged. Define how a caller retrieves current state after a conflict and decides whether to merge or abandon its change. Do not silently substitute the fresh revision and resend an overwrite, since that bypasses the protection. Keep conflict recovery separate from reconciling a timeout whose commit outcome is unknown.
+
+**Fictional illustration, not executed:** Two editors read board Cedar at revision 4. This proposed contract requires each replacement to name its observed revision and rejects mismatches without mutation. Editor A changes the title and commits revision 5. Editor B's different replacement still names revision 4 and must fail without erasing A's title. B reads revision 5 and reassesses its intended change; a new attempt needs that decision. Walk both commit orders and an unchanged-revision success. This illustrates a design obligation, not verified server behavior.
+
 ## Check the design from both sides
 
 Build a small, coherent set of examples around the decisions most likely to produce different implementations. Show concrete inputs, relevant starting state, the expected result or allowed outcomes, effects, and the consumer's next step. Reuse identifiers and state consistently across a sequence. Include a failure or boundary case when it changes how a consumer must use the interface; do not generate a fixed matrix of fixtures for every operation.
