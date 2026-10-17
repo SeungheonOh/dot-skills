@@ -19,6 +19,8 @@ Establish the evidence needed for each population claim. Is this a complete snap
 
 Identify the selected input and rules well enough to reproduce the result. File hashes, a snapshot/version reference or a stable query and retrieval boundary may be appropriate. Preserve originals and unrelated work. Do not make source changes, load a service or expand collection merely to make the dataset conform.
 
+When checks use reference tables or several live reads, establish the versions that must be compared and whether they describe a coherent boundary. Two individually complete exports need not represent the same moment. For example, PostgreSQL Read Committed permits successive queries in one transaction to see different committed states; see [its transaction-isolation documentation](https://www.postgresql.org/docs/18/transaction-iso.html#XACT-READ-COMMITTED). Use an already authorized stable snapshot or compatible versions when available. Otherwise mark the affected relationship or reconciliation check not evaluable; do not declare a missing reference from a mismatched or incomplete reference population. Restart affected checks after a changed snapshot rather than combining verdicts from incompatible reads.
+
 ## Preserve meaning while reading
 
 Use the format's real parser and inspect its behavior where it affects the contract. Quoted CSV newlines, repeated JSON member names, spreadsheet cell types and nested collections cannot be handled reliably by treating every visible line or dictionary key as an independent record. A parser's accepted syntax or default coercion is not automatically the user's accepted format.
@@ -57,17 +59,23 @@ Keep counting units explicit. Issue occurrences, distinct affected records, dupl
 
 Make coverage part of the verdict. Known violations can establish nonconformance even when other checks remain unavailable. An overall pass requires the applicable required checks and intended input scope to be covered. A ruleset that has not been finalized supports a provisional assessment, not a final acceptance decision. Conformance to declared rules does not prove real-world truth, freshness, representativeness or completeness beyond the evidence supplied.
 
+Distinguish a diagnostic display cap from a scan limit. If all selected records were checked but only the first 100 issues are shown, report the total observed violations when known and label the displayed subset. If processing stopped at the first 100 issues, report the inspected boundary and a lower bound instead of presenting 100 as the dataset's total. A capped report can accompany a complete scan; an interrupted scan cannot establish remaining rules or population coverage.
+
 Keep proposed corrections separate from validation. If the user also requests remediation, preserve the original verdict, apply only supported changes within scope and check the resulting data as its own version. Do not hide an original failure by replacing the source under the same result identity.
 
 ## Exercise a reusable checker when requested
 
 Build the smallest suitable mechanism with the available tools and selected project conventions. Make the contract or rule version, inputs, output and status behavior clear. Validate through the intended entry point, not only a helper function or a success message. Keep an operational failure distinct from a completed nonconforming-data result so downstream callers cannot mistake either for a pass.
 
+For schema-backed checks, verify the selected dialect and enabled validator behavior against the contract. In JSON Schema, defining a field under `properties` does not require its presence, and `format` is annotation-only by default; a documented format can therefore remain unenforced. If the agreed contract requires presence or a valid date, verify those checks explicitly, without adding requirements the contract does not contain. Treat an enforcement gap as a checker limitation, not evidence that the data meets the intended rule. See the official [required-property guidance](https://json-schema.org/understanding-json-schema/reference/object#required) and [format guidance](https://json-schema.org/understanding-json-schema/reference/type#format).
+
 Inspect the code and its effects before execution. Use original or authorized bounded samples and preserve prior useful outputs under the chosen write policy. When reuse is requested, verify another input through the documented interface and check relevant output replacement or refusal behavior. Do not add scheduling, CI, hosted services or account access unless those are part of the task.
 
 Choose a few meaningful checks from the contract: a conforming case, a representative violation and a dependency or parsing boundary likely to cause a false pass. Derive expected outcomes independently of the checker's own logic. Read the actual saved result and reconcile important locators, values and statuses against the source. A test that only repeats the validator's calculation cannot establish that the rule was interpreted correctly.
 
 If a check exposes a defect, preserve the useful failed evidence, repair the implementation within scope and rerun affected checks on the final files. Keep representative exercise results separate from exhaustive guarantees. A schema library, generated validator or inspected rule file still needs evidence that the actual caller uses the intended rules and reports their outcomes correctly.
+
+**Fictional, unexecuted example:** Contract v2 requires `due_date` to be present and to contain a valid calendar date. The proposed schema merely lists the property with a date format. An absent field and `2026-02-30` are separate negative cases: a permissive caller returning success does not satisfy either intended rule. After correcting authorized enforcement, recheck the selected input under the same contract. If a scan then stops after recording 100 violations, the report must say “at least 100; remaining records unchecked,” not claim that the full dataset contains exactly 100 failures.
 
 ## Deliver the conformance result
 
