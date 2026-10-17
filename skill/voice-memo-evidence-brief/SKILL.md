@@ -80,6 +80,14 @@ Link repeated or revised claims using `supports`, `retracts`, `replaces` or `con
 
 Do not adopt a proposed owner or deadline simply because someone agrees to the underlying work. Resolve a relative date only from known recording context and an unambiguous convention; preserve “next Friday” when either is missing. A timestamp is a location in media, not a due date.
 
+### Keep source lineage and revisions attached to claims
+
+When several inputs cover the same material, distinguish the underlying recording and utterance from its clips, transcript exports and edited text versions. Record evidenced or supplied derivation links and overlapping source spans without inferring identity from filenames or matching wording alone. Two transcripts of one utterance are two representations, not two independent statements or renewed commitments. Retain both locators and any disagreements; their agreement does not resolve an inaudible word or establish acoustic verification. A genuinely repeated statement at a different evidenced source interval remains a separate utterance, even if the text is identical.
+
+When an input changes, compare the revised words, speaker labels, source coverage and time mapping before carrying claims forward. A stable segment ID can contain different text in a later revision. Revisit every claim that depends on a changed span, including linked retractions, conditions, ownership and date interpretation; refresh its citations and evidence mode. Preserve the earlier brief as a prior revision rather than mixing old conclusions with new excerpts. Carry an audio-reviewed status forward only where the final wording still matches the reviewed source/version and interval. If the changed excerpt is all that is available, describe the update as supplied-text evidence and leave any acoustic conflict open. An interruption should leave the new brief visibly pending until its dependent claims and links have been reconciled.
+
+Fictional, unexecuted illustration: an automated export and a cleaned transcript both derive from the same supplied 00:20–00:27 utterance. They do not establish two promises. A later supplied revision changes “I will send it” to “I will not send it,” with no audio available. Preserve the earlier wording, attribute the revision and reopen the dependent commitment instead of keeping it current or calling the change an audio-verified retraction. The revision does not establish that the speaker later changed their mind. No recording or transcription service was accessed for this illustration.
+
 ### 6. Deliver the brief in the requested form
 
 Lead with the smallest useful result:
