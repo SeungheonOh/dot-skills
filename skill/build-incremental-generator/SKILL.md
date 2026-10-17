@@ -39,6 +39,14 @@ Remove or make explicit ambient dependencies such as current time, locale, rando
 
 The [Bazel cache documentation](https://bazel.build/remote/caching) distinguishes action-result metadata from stored output bytes and describes action inputs, commands and environment. Those are useful concepts; using a similar local design does not establish Bazel compatibility or require a remote service.
 
+## Include filesystem properties the artifact preserves
+
+For a generator that packages a directory or preserves filesystem objects, content hashes alone may omit output-affecting input. Establish whether the contract preserves executable state, symbolic links and link targets, or only dereferenced file content. Include the relevant properties in action identity and verify them when materializing a hit. Do not add irrelevant ownership or timestamp fields when the generator deliberately normalizes them. Git's [tree representation](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects#_tree_objects) illustrates the distinction: a tree entry carries a mode alongside its blob identity.
+
+If following links, capture the authorized target dependencies actually read; if preserving links, retain their target text and object type. Neither choice authorizes traversal outside the permitted source scope. Apply the same policy during clean generation, reuse and consumer checks.
+
+Fictional, unexecuted illustration: a bundle promises to preserve executable state, and `launch.sh` changes from non-executable to executable without changing its bytes. Reusing an archive keyed only by file-content hashes would retain the old mode. A distinguishing check changes that property, regenerates, and inspects the selected archive member and consumer-facing materialization. No file modes were changed or generator run for this illustration.
+
 ## Decide reuse from metadata and actual outputs
 
 A hit needs both a matching valid action identity and the required usable result. Reopen or otherwise verify the expected output set under the cache's supported integrity contract. A file that exists can be missing content, corrupted, from another action or only one member of a required group. If cached bytes can legitimately be materialized elsewhere, verify their identity and the materialized result.
