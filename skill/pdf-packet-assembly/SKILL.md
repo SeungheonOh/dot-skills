@@ -47,6 +47,14 @@ Build the source-page-to-output-page map before rebuilding navigation. Remap onl
 
 Write an isolated candidate and capture the actual tool versions, options and warnings. Keep source identities stable throughout; if a source changes, reconcile the selection against the new revision before proceeding.
 
+### Check dependencies beyond the selected page list
+
+A page copier may follow references beyond the pages chosen for the packet. For example, pypdf's [advanced-cloning documentation](https://pypdf.readthedocs.io/en/stable/user/merging-pdfs.html#advanced-cloning) explains that a page's article entries (`/B`) can pull in chained articles and the pages they reference, leaving additional objects in the saved PDF. A correct visible page count and page-text comparison do not establish that omitted source material is absent from the file. Check the selected tool's behavior when article threads or other cross-page structures are present; do not assume every imported object is required page content.
+
+Identify the specific reference chain and the intended treatment before copying. Preserve resources needed to render selected pages. Do not blindly remove article entries, tags or attachments to reduce file size; changing required navigation or other retained features needs an authorized disposition. Where omission of an unwanted dependency is authorized and supported, rebuild a fresh candidate from the untouched originals using the documented selective-copy route, then recheck page content, geometry, navigation and the relevant saved object relationships. An unsupported dependency remains a named blocker. If the user needs assurance that excluded information cannot be recovered, use the [privacy-checked copy workflow](../privacy-checked-document-copy/SKILL.md); ordinary packet assembly is not a general sanitization guarantee.
+
+**Fictional illustration, not executed:** A selected handbook page belongs to an article thread continuing onto an omitted internal-planning page. The recipient packet must exclude that planning content. A candidate showing only the selected page is still pending until the copied dependency chain is checked and any authorized correction is verified. No PDF was cloned, sanitized, rendered or inspected for this illustration.
+
 ## Check the saved packet
 
 Reopen the exact output bytes and reconcile every row of the page map:
