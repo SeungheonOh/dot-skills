@@ -45,6 +45,14 @@ Resolve an apparent contradiction when a supported difference explains it. If re
 
 Distinguish evidence of absence from an absence of evidence. “No effect detected” may reflect limited precision, while “not addressed in this packet” describes coverage. Neither automatically means the effect does not exist. Explain uncertainty through concrete limits such as indirect evidence, small samples, missing populations, unstable definitions, or unresolved conflict rather than invented confidence scores.
 
+### Compare effect estimates rather than significance labels
+
+For quantitative findings, retain the effect's direction, size, scale, uncertainty interval when reported, and outcome/time point. Two subgroup estimates are not established as different merely because one passes a significance threshold and the other does not; compare the effects directly or describe the difference as unresolved. Overlapping intervals alone do not establish equivalence. These are interpretation safeguards, not a requirement to perform a new meta-analysis. See [Cochrane Handbook, section 10.11.3](https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-10#section-10-11-3).
+
+Do not select only the most favorable outcome, subgroup or follow-up window from a source that reports several. Keep the selection tied to the original subquestion and explain an unavoidable mismatch. A result measured at one week does not establish durability at six months; report an unavailable follow-up as a gap rather than carrying the earlier result forward.
+
+**Fictional, unexecuted example:** A training report gives novice and experienced groups the same estimated gain of four points, with reported 95% intervals of one to seven and minus two to ten points respectively. The second estimate is less precise; the significance labels alone do not support “training works only for novices.” If the packet has only a one-week outcome, neither estimate establishes a lasting gain. The expected synthesis retains those limits without asserting equal effects or inventing a pooled estimate.
+
 ## Write the answer
 
 Lead with the strongest supported answer and its important conditions. Then explain the findings that establish it, how they fit together, and where they diverge. Use source-by-source discussion only when a source's distinct role or method helps explain the result.
@@ -58,6 +66,8 @@ End with the answer's practical meaning for the stated question and any unresolv
 ## Check and finish
 
 Check that every requested subquestion has an answer or a specific gap. Revisit the decisive citations, scope qualifications, and strongest contrary evidence. Confirm that repeated reporting has not become independent corroboration and that the conclusion does not extend beyond the studied settings. If it depends on one weak or inaccessible source, make that dependence clear.
+
+When a correction, withdrawal or newly inspected passage changes decisive evidence, trace it through the affected findings, calculations, figures and opening answer. Read what the notice actually changes; do not assume an entire source is invalid or still reliable without that context. Repair dependent conclusions and revisit any apparent corroboration that merely repeated the old result. Re-read the saved artifact after updating it so the summary and supporting sections agree; preserve an explicit unresolved status where the corrected evidence cannot be inspected. This check concerns sources encountered in the current task, not unrequested ongoing monitoring.
 
 Stop searching when the central findings have adequate support or explicit gaps, consequential disagreements have been examined within scope, and additional retrieval is unlikely to change the requested answer. Limited access can justify a qualified result; it does not justify claiming that no evidence exists. If a missing input prevents the central answer, identify that input while delivering the useful supported portion.
 
