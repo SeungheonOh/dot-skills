@@ -70,6 +70,16 @@ Localize link labels when appropriate while preserving the authorized destinatio
 
 For length limits, improve phrasing without dropping conditions or warnings. If compliant meaning will not fit, report the specific field and propose an authorized layout or copy change. Never silently truncate.
 
+### Validate locale-specific message branches
+
+For plural resources, derive the grammatical branches from the actual target locale, cardinal/ordinal mode and supported formatter, rather than copying the source category set. Preserve argument names/types, application-defined selectors, exact-number cases and offsets unless a change is explicitly part of the task. Grammatical category additions required by the target language are part of translating a supported resource; they do not authorize changing application behavior or its caller interface. If the consumer cannot represent them, hold that message and report the compatibility gap. [ICU's message guidance](https://unicode-org.github.io/icu/userguide/format_parse/messages/#complex-argument-types) explains target-language branch additions and distinguishes fixed select choices from plural choices.
+
+Apply the placeholder-multiplicity and structure comparisons in this guide to the documented branch contract. A different number of grammatical branches can legitimately change the whole-message token multiset; do not delete a needed branch to force global equality. Map each target branch to the source meaning and required arguments/literals for that path, then check its occurrences there. Do not assume that the same category name selects the same numeric values across locales, or require every argument in a path where the source meaning does not use it. [CLDR's plural rules](https://cldr.unicode.org/index/cldr-spec/plural-rules) describe locale-dependent categories; the existing [resource-consumer companion](resource-consumer/README.md#category-selection-and-counts) demonstrates this distinction.
+
+Compile and exercise representative supported values through the actual target formatter, covering reachable categories, applicable exact-number cases and offsets, plus fractional or ordinal inputs only when the caller allows them. Verify the selected branch and final meaning for the same input values in both languages, not only matching branch names. A parser accepting the resource does not establish that the application selects its intended wording.
+
+**Fictional illustration, not executed:** A resource has two source branches and a supplied target-format contract requiring three grammatical branches. Each applicable branch includes the folder argument once. Two source occurrences versus three target occurrences is expected under this fictional contract; losing the folder argument from one target branch still fails that branch's requirement. No resource was compiled, rendered or linguistically approved for this illustration.
+
 ## 4. Check fidelity and mechanics separately
 
 Review the target directly against the source segment by segment. Do not rely only on back-translation, fluency or a checker passing. Record material review findings and their disposition.
