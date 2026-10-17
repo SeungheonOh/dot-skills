@@ -62,6 +62,17 @@ A new engineer wants to improve writing acceptance criteria but keeps doing larg
 - **Several valid approaches:** Score the observable result against the rubric, not similarity to the sample wording
 - **Unclear or conflicting source rule:** Pause the dependent exercise and ask for the governing rule; do not grade a guess as the only correct answer
 
+## Preserve fair comparisons when feedback changes
+
+When reviewing actual attempts or repairing a workbook, keep the exercise version, rubric version, and relevant attempt conditions together. A brief note beside the response is sufficient. Record hints, answer exposure, permitted aids, and whether the response is an original attempt or a revision; do not silently combine assisted retries with an unassisted baseline.
+
+- If an anchor or worked answer proves wrong or excludes a valid approach, preserve the original response and earlier feedback. Explain the correction, identify every supplied attempt affected by that same defect, and re-review those attempts consistently against the conditions originally given
+- Show corrected feedback as a separate review of the same attempt, not a new learner attempt or evidence of improvement. Do not penalize an omitted requirement introduced only after submission. If a required distinction cannot be judged from the original prompt, mark it not assessable and repair the next exercise
+- If the task, permitted aids, or rubric meaning changes materially, state which comparison is no longer supported. Do not report a score increase across incompatible criteria as a learning gain. A corrected response after seeing the solution remains useful practice, but a claim about independent transfer needs a genuinely new attempt under declared conditions
+- Leave absent attempts and unperformed re-reviews pending. Correcting the blank workbook does not establish that earlier learners received the correction or that their performance was reassessed
+
+**Fictional, unexecuted illustration:** An invented editing drill asks for a clear one-sentence instruction and explicitly permits equivalent wording. Its key mistakenly rejects active-voice wording that meets every stated criterion. Preserve that response and the earlier feedback, correct the key, and check any other supplied responses affected by the same restriction. An improved score on the unchanged response reflects corrected scoring, not new learning. No learner response was collected or graded for this illustration.
+
 ## Worked example
 
 [Quantity-validation practice](EXAMPLE.md) includes fictional inputs, an attempt-first packet, illustrative feedback, and repeatable checks. It demonstrates a narrow artifact-level assessment, not evidence that a learner completed the workbook.
