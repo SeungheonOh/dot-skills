@@ -15,6 +15,16 @@ Read the change description and relevant tests, but do not treat either as proof
 
 Keep the operation within review scope. Reading and permitted local checks do not require editing the patch. Do not change files, post comments, approve, merge, or publish merely because you found something; complete those actions only when the request covers them.
 
+### Identify the comparison, not just its endpoint names
+
+Pin the base and head IDs and record whether the subject is a direct endpoint diff, a merge-base-to-head diff, or the supplied patch. GitHub pull requests use a [three-dot comparison](https://docs.github.com/en/pull-requests/reference/branches#three-dot-and-two-dot-git-diff-comparisons) from the merge base to the topic head; a two-dot comparison uses the two endpoint states directly. These can differ when the target branch advances. Honor an explicitly requested endpoint comparison, but do not silently substitute it for the pull request's proposed change or attribute base-only changes to its author.
+
+Obtain the actual comparison base and full changed-path inventory from the permitted repository evidence. Check whether the diff is paginated, truncated, filtered, or omits a binary/generated file; a missing patch body is not an unchanged file. Read omitted material when available and relevant, otherwise identify the affected review gap. For a supplied patch with unavailable ancestry, retain its stated base as unverified rather than inventing a merge base.
+
+Keep source locations and check results attached to that immutable subject. If the head changes, the target is retargeted, or the comparison base changes, reconcile the new inventory and re-evaluate affected findings before reusing them. If the current subject cannot be resolved, report the last verified IDs and the precise missing portion; do not move old findings onto new line numbers by assumption. Reviewing a topic diff does not establish that the eventual integration with the current target has been tested.
+
+**Fictional, unexecuted illustration:** A topic branches from M and changes only a date formatter. The target later adds a timeout setting at T. A direct T-to-topic comparison can show that setting as absent, although the topic never removed it relative to M. The reviewer would inspect the declared comparison before alleging a deletion, then assess the formatter change against its own contract. No repository comparison or test execution is claimed here.
+
 ## Trace behavior through the change
 
 Read the full diff, then the relevant surrounding functions, callers, state, and tests. Follow the path from a real input or entry point to its observable effect. Focus on contracts the change could disturb, rather than scanning unrelated parts of the repository.
