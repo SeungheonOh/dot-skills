@@ -27,6 +27,8 @@ For each important deliverable or increment, make clear:
 
 Include integration, review, revision, delivery, or transition work when they are necessary for the result to be usable. Do not defer all validation to the end or count a prepared artifact as accepted without the required check. An early partial result must retain essential safety, compatibility, and quality requirements; omitted required scope remains visible as later work.
 
+For an important handoff, identify the exact output or revision the next step consumes and the evidence that makes it usable there. Distinguish preparation, access, review, and acceptance when they are separate conditions. Plan only the conditions the actual recipient or downstream work needs; a file's existence alone does not establish that a required review or handoff occurred.
+
 Break work down until its next action, prerequisite, and completion condition are understandable. Avoid arbitrary task-size limits or equal-sized work packages. A small project should not acquire elaborate phases merely to fill a template.
 
 ## Connect dependencies and responsibilities
@@ -64,3 +66,13 @@ Before delivering, walk the plan from start to acceptance. Check that every requ
 If the user asked only for a plan, finish with the usable plan and consequential open decisions. If they also requested implementation, proceed with authorized ready work; do not create an approval gate merely because planning is complete. Creating external tasks, sending invitations, assigning work, or changing commitments requires scope that actually covers those actions and destinations. Keep proposed changes reviewable when authority is missing.
 
 As execution supplies new evidence, revise affected steps, dependencies, and forecasts. Explain material changes and preserve the distinction between proposed, agreed, completed, and verified work. A completed plan is not evidence that the project has been delivered.
+
+## Revise without losing the delivery basis
+
+When scope, an input, or an accepted artifact changes materially, trace which downstream deliverables and acceptance evidence depend on the changed part. Preserve previous results as evidence for their original revision; do not carry their acceptance forward automatically or discard unrelated valid work. Name the affected rework or recheck and what can continue independently. If impact is unknown, keep dependent readiness conditional until that uncertainty is resolved.
+
+Keep the prior agreed milestone or commitment visible alongside a changed forecast and its reason. A new estimate does not retroactively replace an agreement or make a missed target disappear. Record a proposed scope or date change as pending until the relevant authority accepts it, without introducing an approval round for ordinary replanning already within the request.
+
+### Fictional revision illustration (not executed)
+
+A workshop plan uses an approved agenda v1 and a prepared participant guide. Agenda v2 changes the exercise sequence. The revised plan retains the v1 approval record, identifies the guide sections and rehearsal dependent on that sequence, and makes their readiness conditional on the relevant updates and checks. Unchanged venue directions need not be rewritten. If the additional review threatens the agreed date, the plan shows that date and the new forecast separately. No workshop, review, or replanning action has been executed here.
