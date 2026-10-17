@@ -29,6 +29,14 @@ List the properties being checked and the method for each: physical page size fr
 
 Do not render a supplied active SVG in a context that executes scripts or resolves external resources. Use an appropriate restricted renderer, and preserve the original if a corrected copy is requested. Name any unit conversion and avoid silently fitting the result to a new page.
 
+### Resolve the page mapping before measuring margins
+
+Resolve the effective outer viewport size, including relevant CSS or embedding overrides; percentage-only sizing without a known container does not establish a physical page. Carry the viewBox origin, `preserveAspectRatio` alignment and nested transforms into page coordinates. With `meet`, unequal aspect ratios leave unused space; `slice` can extend content outside the viewport; `none` can scale the axes differently. Do not infer one millimeter per user unit from a matching width alone. The [SVG viewport transformation rules](https://www.w3.org/TR/SVG2/coords.html#ComputingAViewportsTransform) define this mapping. If the page reference remains unresolved, report the supported user-space bounds and hold physical-margin conclusions.
+
+A path-coordinate box expanded by half the stroke width is not a general painted-bound calculation. Include end caps, joins and their miter limit, markers and any applicable vector effect; [SVG stroke and marker rules](https://www.w3.org/TR/SVG2/painting.html) explain why these can extend or change the visible shape. Nonuniform transforms and `non-scaling-stroke` require their actual stroke behavior. Identify whether a reported box includes fill, stroke and markers, and whether it is before or after clipping. A clipped preview may hide an out-of-margin object; if unclipped content is required, clipping is not a correction. Leave unsupported extents unresolved rather than silently dropping the decoration.
+
+Fictional, unexecuted illustration: a standalone 200 mm by 100 mm page has viewBox `10 20 100 100`, default `xMidYMid meet`, no sizing overrides and no other transforms. Uniform scale is 1 mm per user unit, with 50 mm of unused space at each horizontal side. The point (10,20) maps to page position (50,0) mm, not (10,20) mm. A margin check must use the mapped position and painted extent. This is a paper reasoning example; no SVG was generated, rendered or printed.
+
 ## Output
 
 A print-geometry report and preview with exact page units, tested bounds and remaining renderer/printer limitations.
