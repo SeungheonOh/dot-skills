@@ -50,6 +50,8 @@ Compare complete normalized state, not only the visible set. Different retained 
 
 Also compare membership with a separate reference calculation: union all known add records, union all removal tags, discard removed tags, then deduplicate their associated items. Keep the oracle structurally distinct from the production membership helper.
 
+Check local transitions as well as merge. For this retained-record model, each successful add, remove or merge must preserve every previously retained add record and removal tag; a merge must include both inputs' records. A remove changes membership by adding observed tags to the removal set, not by deleting add records. Assert these componentwise inclusion rules after each command. Union can pass all three merge laws while a destructive local remove still permits resurrection, so merge algebra alone is insufficient.
+
 ### 4. Exercise delivery rather than only calling merge
 
 Capture immutable snapshots at send time. Change the source after enqueueing a message and confirm that the queued snapshot does not change. Deliver snapshots in several orders, duplicate them and deliver older messages after newer ones.
@@ -74,6 +76,10 @@ For retained tombstones, do not discard metadata merely because every currently 
 
 Save the initial model/version and the ordered commands with their packet identities. Reconstruct through the same validated commands, rather than trusting arbitrary imported internal state. Bound replay size and reject malformed commands atomically.
 
+Replay must also reproduce tag allocation and packet identity/destination. Retain the necessary allocator inputs or deterministic issuance rules; matching only visible members can conceal a different future. Undo-by-replay in a closed simulator reconstructs replicas, counters and the queue from the chosen prefix, excluding packets created only in the discarded future. If old packets or replicas remain reachable outside that reconstruction, do not rewind identifiers: preserve their allocation high-water mark or establish a distinct incarnation under the restart policy.
+
+**Fictional illustration, not executed:** A simulator enqueues packet P carrying tag A:4 for Cedar, then rewinds before that add. Reusing A:4 for Birch while retaining P creates a tag collision when P arrives. A closed-prefix reconstruction must exclude P; a continuation that can still receive P must not reuse its tag. These are expected checks, not a recorded replay result.
+
 On failure, retain the seed and smallest useful command sequence. State which invariant failed and whether its delivery preconditions held. When an interface is involved, test stale file-read completion, undo-by-replay, text-only item rendering and focus after a packet is removed.
 
 ## Worked example
@@ -85,6 +91,8 @@ After exchanging their snapshots, both know A:1 and B:1, and both have removal t
 After seeing both tags, B removes Mango and synchronizes again. Mango disappears. Delivering the original A:1-only snapshot afterwards must leave it absent: the removal record is still retained.
 
 ## Verification record and limits
+
+The retained verification record below covers only the checks it names. The additional local-transition assertions and allocator/queue rewind guidance above were reviewed as documentation only; no new implementation or test execution is claimed for them.
 
 A three-replica local implementation exercised this workflow with 300 generated histories checking the merge laws and an independent union-minus-removals membership calculation. Another 100 shuffled delivery schedules included duplicated frozen snapshots and converged after complete delivery. Focused cases checked stale-message non-resurrection and tag-collision rejection.
 
