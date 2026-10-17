@@ -57,6 +57,16 @@ Write literal source strings as text using the author's supported API. Formula-l
 
 The workbook is a static review copy. Explain that manually changing a source value does not update its state or lineage. Regeneration from a newly selected source is a separate, explicit operation; do not overwrite a prior review or the original export.
 
+### Recover oversized or unsupported text explicitly
+
+Preflight the encoded representation as well as the decoded value. [Excel's documented limits](https://support.microsoft.com/en-us/excel/excel-specifications-and-limits) include 32,767 characters per cell; the installed writer or intended consumer may impose additional limits. Text storage alone does not make every character legal in worksheet XML: [XML 1.0's character rules](https://www.w3.org/TR/xml/#charsets) exclude a literal U+0000. Inspect object keys and source pointers too, because a problematic key can affect lineage even when every ordinary value fits.
+
+If recovery fits the agreed mapping, use a documented reversible representation, such as a JSON string token that escapes unsupported characters, and verify its saved value. If that token is still too large, keep the source node's type/state and attach bounded, ordered chunks through a unique evidence ID. Declare chunk order, total chunk count and encoding; concatenate the saved chunks before decoding once. Chunk rows are representation fragments, not extra source nodes or business records. Use the same evidence-ID approach for an oversized pointer/key, retaining an exact recoverable pointer rather than truncating it or substituting a non-reversible hash.
+
+Recheck total expansion before authoring. Reconstruct from the actual saved chunks, require every index exactly once with no missing or extra fragments, and compare the complete recovered text and pointer with the selected source. Repeat after the native-consumer round trip. Label any shortened review-cell preview and link it to its complete evidence; it must not be mistaken for the full source value. If no reversible bounded mapping is supported, hold the affected conversion as above rather than stripping characters or silently cutting off a tail.
+
+Fictional, unexecuted illustration: one item has a note containing 40,000 repetitions of `a`, and an object key contains U+0000. A single-cell note and a literal key/pointer are unsuitable for this writer. A proposed mapping keeps the note's encoded token in two numbered fragments under one evidence ID and stores the key/pointer in escaped form. The saved fragments must recover all 40,000 characters, and the decoded pointer must still select the exact source node. This illustrates a recovery design; the existing example adapter does not implement or verify it.
+
 ## Reopen, reconstruct and reconcile
 
 Check the saved XLSX, not just the in-memory plan:
