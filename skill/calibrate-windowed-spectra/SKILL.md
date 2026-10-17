@@ -67,7 +67,7 @@ An off-bin sine will spread energy and show scalloping loss. This is a windowing
 
 ### 4. Keep spectrogram coordinates tied to frames
 
-State whether time labels refer to frame starts, centers or ends. When displaying centers, include the original segment offset and half the transform length. Use the actual hop in sample units; if the hop changes to stay within a frame budget, report that change.
+State whether time labels refer to frame starts, centers or ends. When displaying centers, include the original segment offset and compute each center from the actual frame/window support using the declared center convention; FFT zero-padding must not shift the time labels. Use the actual hop in sample units; if the hop changes to stay within a frame budget, report that change.
 
 Use only complete windows when that is the chosen policy, and report omitted tail samples. Zero padding may refine the display grid but does not create additional independent frequency resolution. Do not equate FFT bin spacing with guaranteed separation of nearby tones.
 
