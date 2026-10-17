@@ -45,6 +45,16 @@ Turn vague requirements into observable ones. “Works offline” might mean ope
 
 8. **Complete the requested deliverable.** Write the matrix and brief in the requested format, retaining evidence links and the retrieval cutoff. Save to the authorized destination and perform any explicitly requested routine delivery to the specified audience. Inspect the saved content and verify the resulting reference or delivery result. Do not ask again for unchanged, already-authorized routine handoffs. If the user requested actual evaluation as well, execute only tests within the authorized environment and scope, or identify the exact missing access; never claim source research completed a functional test.
 
+### Check that must-haves fit together
+
+When the user's requirements must work together, assess one usable configuration or an explicitly permitted sequence of configurations. Individually supported features do not establish joint fit. Compare their release/build, platform, plan, account role, operating mode and relevant feature prerequisites; retain only dimensions that affect this use case. A feature restricted to one mode cannot be combined on paper with another that requires a conflicting mode. Keep an explicit documented conflict separate from an unknown interaction that the sources do not address.
+
+Record the candidate configuration or sequence, affected requirement IDs, decisive source conditions and joint result in the brief. If the user allows separate stages, check the documented handoff that connects them: whether the required output can reach the next stage with the needed data, permissions and format intact. Do not invent a conversion, plan switch, invitation or account migration to make the sequence work. An optional workaround stays conditional until its prerequisites and fit are established; this source assessment does not claim the workflow was executed.
+
+Before calling all must-haves a documented match, recheck their combined conditions. An empty overlap caused by an explicit exclusion is a documented mismatch for the combined request even if each individual row is supported elsewhere. Incomplete evidence leaves the joint result unresolved. Ask only for a consequential choice the request has not settled, such as whether switching modes or using a staged export is acceptable; do not reopen that decision when the user already specified it.
+
+**Fictional, unexecuted illustration:** An invented release's supplied guide supports offline editing only in a local-only workspace and live co-editing only in a connected shared workspace. A request to edit offline while colleagues simultaneously co-edit that same workspace has no documented matching mode. A different request to work offline and share changes later needs evidence for the local-to-shared handoff; the two standalone feature descriptions do not establish that route. No real product, account, documentation retrieval or functional test is represented by this illustration.
+
 ## Return a usable evidence record
 
 ```text
