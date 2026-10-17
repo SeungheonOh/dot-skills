@@ -41,6 +41,14 @@ For concurrent or asynchronous work, preserve parent and causal relationships de
 
 End each timed scope at the correct boundary and record its actual terminal outcome. Keep a child's failure distinct from the enclosing operation's eventual result. A detached task or a batch assembled from several causes may need an explicit link rather than an invented single parent. Do not keep a span open solely to make unrelated later work look nested.
 
+## Bound propagated context at trust boundaries
+
+When instrumentation crosses a process or service boundary, define inbound and outbound propagation separately from the event-field allowlist. Use the selected propagator's validation and limits; a well-formed incoming trace or baggage value is correlation data, not authenticated identity or permission. Keep the application's established sampling/resource policy rather than letting an arbitrary caller force unbounded recording. [W3C Trace Context's security considerations](https://www.w3.org/TR/trace-context/#security-considerations) describe malicious-header and caller-controlled sampling risks.
+
+Inspect automatic instrumentation as well as explicit header injection. Declare which baggage fields and destinations may receive them, and prevent disallowed propagation before the outgoing request is sent. Removing a field from exported spans or logs does not remove it from a request header. [OpenTelemetry's baggage guidance](https://opentelemetry.io/docs/concepts/signals/baggage/#baggage-security-considerations) warns that automatic propagation can expose baggage to third-party APIs and does not provide built-in integrity assurance. Apply the existing trust-boundary policy without treating tracing as permission to disclose data or inventing a new authentication mechanism.
+
+**Fictional illustration, not executed:** A request carries `tenant=cedar` in baggage and makes one internal call plus one call to a third-party map service. The fictional policy permits that field only on the internal call. A local transport capture should show the allowed internal value and its absence from the map request; a spoofed inbound tenant value must not change the authenticated tenant. Inspect the actual outgoing headers even if exported telemetry is already redacted. No request, capture or service call was executed.
+
 ## Contain observation costs and failures
 
 Establish whether the records are optional diagnostics or a mandatory part of the business transaction. Their failure policies can differ. For optional diagnostics, observation or exporter failures should not replace the application's result, swallow its original error, cause business retries or leave unrelated work running. Keep observation-error handling narrow enough that it does not catch and misclassify business exceptions or cancellation.
