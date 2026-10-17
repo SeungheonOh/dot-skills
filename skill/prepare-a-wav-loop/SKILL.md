@@ -29,6 +29,14 @@ Record the exact selected half-open frame interval and channel count. Convert se
 
 Document the overlap weights and ordering of the stitched segment. Apply identical frame positions to every channel. Check peaks before quantization; do not let out-of-range float values become clipped PCM silently. Preserve the source and save to a new destination with no-overwrite handling where available.
 
+### Reconcile source-relative metadata
+
+Inspect non-audio chunks before deciding what the new loop retains. Cue positions, playlists and associated labels can refer to the old sample layout. The [original IBM/Microsoft WAVE specification](https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Docs/riffmci.pdf#page=61) defines cue offsets, playlist segments and label-to-cue references; valid RIFF sizes alone do not establish that these still describe trimmed audio.
+
+For retained metadata, derive positions and lengths from the actual output construction and keep references consistent. A plain trim can subtract its starting frame from retained positions, but a crossfade may blend or relocate source regions, so that subtraction is not a universal mapping. Do not clamp an excluded marker into the new audio. If meaningful metadata cannot be represented, disclose that limit and resolve its omission or keep export pending; do not blindly copy unknown chunks or silently discard required markers. Reopen the saved result and inspect retained positions and references separately from sample-rate/frame-count checks.
+
+**Fictional, unexecuted illustration:** With a plain trim of frames [1000, 3000), a retained cue at source frame 1500 would move to output frame 500; one at 3500 is outside the selection. No WAV was generated or played for this illustration.
+
 ## Output
 
 The new loop file, source interval, overlap, gain/encoding changes and numeric/listening verification status.
