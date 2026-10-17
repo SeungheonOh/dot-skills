@@ -33,6 +33,16 @@ List supported source-to-target publication types. Use a disclosed generic fallb
 
 Map only supplied fields. Missing volume, issue, pages, publisher or title should remain missing rather than being inferred from an identifier or fabricated for a complete-looking citation. Keep the source review available for provenance and fields outside the mapping.
 
+### Preserve contributor roles and the cited part
+
+Keep each contributor's supplied role and order, not just their display name. Map authors, editors, translators and container authors separately when the target supports them; do not combine them into an author list, alphabetize them, or remove a repeated name across roles. A missing author is not evidence that the editor wrote the work. If the source has only a shortened display list ending in “et al.”, preserve that limitation rather than treating the phrase as a person or claiming a complete contributor list. For CSL, consult the distinct [name variables](https://docs.citationstyles.org/en/stable/specification.html#name-variables); unsupported roles need a disclosed loss or a held record when the user requires their preservation.
+
+For a chapter, proceedings paper or other contained work, retain the cited item's title and publication type separately from its container title, container contributors, edition and page span. Do not replace the chapter title with the book title or promote the book's author into the chapter's author merely to fill a field. CSL distinguishes [title, container-title and related variables](https://docs.citationstyles.org/en/stable/specification.html#standard-variables). Keep a citation-specific pinpoint page in its occurrence context; it is not the item's full publication page range. When source fields do not establish which level a value describes, leave that mapping unresolved rather than flattening both levels into one plausible record.
+
+During an authorized import check, read back the stored contributor roles and their order as well as the item/container fields. A formatted style may omit editors, translators or container details even when stored correctly; a short bibliography rendering alone cannot distinguish omission by the style from loss during import. Retain the source-to-target mapping and report storage and display checks separately.
+
+Fictional, unexecuted illustration: a supplied chapter, “Tidal Markers,” lists authors Vale then Chen, editor Imani for the containing book “Harbor Methods,” and chapter pages 41–58. A note cites page 47. The proposed export preserves the two authors in that order, keeps Imani in the supported editor role, separates the chapter and book titles, and records 41–58 as the chapter span. It does not turn Imani into a third author or replace the span with 47. No citation file, processor rendering or manager import was executed for this illustration.
+
 ### 3. Preserve names and date precision
 
 Use structured family/given name fields only when the source actually supplies and retains that structure. Do not split a display string on its last space: particles, institutional authors, mononyms and multi-part names break that shortcut. If only a display string survives, use the target's literal-name representation and disclose sorting/abbreviation limitations.
