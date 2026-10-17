@@ -21,6 +21,10 @@ Inspect the available supported interfaces and relevant local instructions. Gath
 
 Preserve source exports and dated read results. Make a small manifest with source/revision, query/filter, pagination completion, time basis, capture time, retention and any missing intervals or shards. Separate a complete exact lookup from a partial list. An empty result establishes absence only within the source's evidenced scope. A log gap or permission-hidden object is not a zero.
 
+Distinguish capture time from the latest source position or interval actually covered by each export. A source-event snapshot and a target/effect snapshot taken at different times do not automatically describe one consistent point in the integration. Record provider-supported snapshot positions, ingestion completeness markers or visibility bounds where available, and state which in-scope events each layer can establish. A timestamp filter alone cannot manufacture a cross-system snapshot. Preserve later observations separately from the original evidence so that newly visible records do not silently rewrite an earlier finding's as-of basis.
+
+Before using an empty target lookup or effect search as evidence of nonapplication, check that route's consistency and indexing delay. For example, [DynamoDB documents](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html) that an eventually consistent read can omit a recent write and that global secondary indexes do not support strongly consistent reads. Use the actual integration's authoritative lookup or completion evidence, not an assumed universal waiting period. Keep known processing state separate from readback freshness: a committed effect awaiting visibility is not a terminal nonapplication. Recheck within a documented or agreed observation bound when useful; expiry without an authoritative discriminator leaves the effect unresolved, not safe to replay. Even a fresh read does not replace the atomic mutation guards below.
+
 Use the identifiers the system actually propagates:
 
 | Layer | Identity and useful evidence |
@@ -105,6 +109,10 @@ Return the source manifest, event-to-effect ledger, boundary findings, completed
 python3 scripts/check_recovery.py --output outputs
 python3 scripts/test_recovery.py
 ```
+
+## Additional static illustration: evidence not yet visible
+
+This original fictional illustration is unexecuted. A source export captured at 10:02 includes event E42 from 10:01, while the destination's search export is explicitly complete only through 10:00. E42's missing search row cannot establish nonapplication. A separate committed-effect record links E42 to target T42; an authorized exact lookup using the fictional provider's documented current-read route then shows T42 at the expected revision with the intended fields. The ledger retains the lagging search observation, adds the later readback and records the matching application without proposing replay. If that authoritative read were unavailable, the readback would remain unresolved. No service lookup, recovery action or bundled example execution was performed for this illustration.
 
 ## Example request
 
