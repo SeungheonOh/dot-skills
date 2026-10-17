@@ -35,6 +35,8 @@ For an edit, retain the original and work on a separate version unless replaceme
 
 Compare the result to the source, including regions meant to remain unchanged. Generative resemblance does not establish exact preservation. Where exact pixels, coordinates, dimensions, or wording matter, check those properties directly when possible. If a method keeps introducing drift, change to a supported method that can meet the constraint or report the remaining limitation; do not relax the user's requirement to finish.
 
+For a tightly bounded edit, make preservation testable before changing the asset: name the editable objects or region and the protected content, using layer IDs, coordinates or a marked reference where useful. Distinguish exact pixel preservation from unchanged wording, geometry or visual appearance. For a pixel-exact requirement, compare decoded samples in protected regions on the same pixel grid with the relevant channels and sample depth preserved; do not resize the comparison or add an arbitrary tolerance to conceal drift. For vector edits, check protected paths, transforms and text as well as their rendering. A whole-image resemblance score cannot establish that a small protected label survived.
+
 ## Check the saved result
 
 Save the actual deliverable, then reopen or render that saved file. Inspect it at its intended viewing size and at a useful detail scale. Check the parts that matter for this request:
@@ -48,8 +50,18 @@ For transparency, inspect both the alpha data when available and the appearance 
 
 Correct observed problems and check the revised output. Distinguish checks actually performed from properties that remain unverified. If visual inspection or a required export is unavailable, say exactly what is missing; do not describe the asset as fully checked.
 
+When an export fails preservation, return to the untouched source or last verified version and isolate the failing edit/export step. Keep the failed candidate distinct; do not repeatedly repair its drifted regions from memory. Recheck the protected content after the repair, not only the area just changed.
+
+Check required source dependencies from the delivered copy, not only the working document. For example, an SVG [image element can reference another file](https://www.w3.org/TR/SVG2/embedded.html#ImageElement); the SVG filename alone does not establish that the artwork is self-contained. Package or embed authorized dependencies when the requested format permits, and reopen the packaged result. Keep a missing dependency unresolved if inclusion or substitution is not authorized. Outlining text or flattening effects is a delivery choice when it changes requested editability, not an automatic repair.
+
 ## Deliver the usable asset
 
 Return the saved file through the available private delivery route, with a viewable preview when useful. Include genuine editable source when requested, along with dependencies needed to use it. Keep source and exported versions consistent. Do not add hosting, public links, uploads to unrelated services, or publication merely to deliver the work.
 
 Keep the handoff proportional: identify the final file, relevant dimensions or format, what changed for an edit, and any material limitation. A single requested image usually needs one finished asset and a brief reply. Do not burden it with extra variants, process logs, or unsupported claims of production readiness.
+
+## Fictional bounded edit, not executed
+
+A fictional 800 × 800 PNG badge needs only its small orange star recolored teal. The user requires every decoded pixel outside the supplied star mask, including the words “NORTH PIER,” to remain identical. A candidate with a shifted letter fails even if the star looks right and the canvas size is unchanged. The expected recovery is to return to the original, apply the recolor within the mask using a supported precise method, and compare protected samples again in the saved PNG.
+
+The transparent background must also survive: inspect transparency data and the edge appearance on contrasting backgrounds. PNG supports multiple [transparency representations](https://www.w3.org/TR/png-3/#6AlphaRepresentation), so checking only for a channel named “alpha” is insufficient. These are expected checks for invented assets; no image was edited, rendered or inspected.
