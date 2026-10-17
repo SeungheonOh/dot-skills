@@ -29,6 +29,14 @@ Use a structured event record before serialization: title, UTC interval, source 
 
 Unfold the serialized content after writing and compare recovered Unicode text and instants. A calendar parser check confirms syntax and values it exposes, not that a recipient’s calendar accepted or displayed the file. Report actual import separately.
 
+### Check the narrow UTC output profile
+
+For this single timed-event workflow, require one `VCALENDAR` with one `VERSION:2.0` and one `PRODID`, containing one `VEVENT` with exactly one each of `UID`, `DTSTAMP`, `DTSTART` and `DTEND`. Use basic UTC date-time values such as `20261112T090000Z`, without a `TZID` parameter or numeric-offset suffix. Do not also write an event `DURATION`. RFC 5545's [calendar component](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6), [event](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6.1) and [date-time](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.3.5) rules supply the property and time-form constraints; restricting output to one timed event with both endpoints is this workflow's narrower profile.
+
+An all-day `DATE` span is outside this timed profile: preserve its dates and exclusive end instead of converting it to midnight UTC. Fractional-second input also needs an explicit precision decision, since [iCalendar time values do not support fractional seconds](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.3.12). Do not silently truncate the agreed interval. Inspect component counts, property multiplicity and parser warnings before relying on a convenience getter or dictionary that may hide duplicate fields. Recovered values alone are insufficient acceptance evidence.
+
+**Fictional, unexecuted illustration:** a generated draft contains two identical `DTSTART` properties. A tolerant reader could expose the expected start, but the draft still fails the single-property check. Regenerate it from the approved structured record and recheck the saved copy; do not treat that getter's value as proof of a conforming file. No file was generated, parser run or calendar opened for this illustration.
+
 ## Output
 
 The .ics file and a short human-readable UTC/local interval summary, with validation and real calendar-import checks clearly distinguished.
