@@ -63,6 +63,10 @@ Use one clear top-level folder when appropriate for the recipient's extraction w
 
 Reopen the archive and inspect member names, count, stored sizes and content digests. Inspect format metadata as well as visible files: names, comments and extra fields can reveal source details. An ordinary ZIP does not automatically preserve ACLs, extended attributes, cloud document identity, application metadata or all timestamps. Record what is preserved and test any property the request actually needs; do not claim preservation merely because the file opens.
 
+Reconcile ZIP member occurrences before building a name-keyed index: such an index can hide duplicate entries. Require one reviewed output identity per file member, and account separately for any declared directory entries. Hold repeated file names even when their bytes match, target-equivalent names, and file-versus-directory conflicts, including a file occupying an implicit parent directory. Reject absolute or escaping member paths and links/special types outside the plain-file contract instead of relying on an extractor to sanitize them. Python's [ZIP member API](https://docs.python.org/3.12/library/zipfile.html#zipfile.ZipFile.open) explicitly supports distinguishing duplicate-name members; a name lookup alone is insufficient evidence of membership.
+
+Budget compressed archive size and expanded output separately. Derive expected expanded bytes from the reviewed files and support files, then set member-count, per-file and total expanded-byte ceilings. Compare member metadata before extraction and bound the actual decompressed reads used for digest verification; a declared size is not a runtime limit. Reserve space for preparation, archive and extracted copies together. Python documents [decompression resource limits and overwrite pitfalls](https://docs.python.org/3.12/library/zipfile.html#decompression-pitfalls). Stop on a limit or membership mismatch before handing the archive to a native extractor.
+
 Create a manifest that identifies selected, excluded and generated files separately. For changed files, retain both source and package digests plus the approved edits. Keep the archive's byte count and SHA-256 outside the archive to avoid a circular self-hash. A digest verifies the received bytes against the supplied baseline; it is not a signature or proof of who authored the package.
 
 ## 5. Extract independently and read back
@@ -87,6 +91,10 @@ If extraction fails or readback disagrees, keep the failed result separate and i
 Return the actual archive reference, exact byte count/SHA-256, recipient/platform scope, selected/excluded/generated counts, changes made, extraction evidence and unresolved limitations. The user should be able to identify the entry point and understand whether target-platform application use was actually checked.
 
 If sending was authorized, verify the specific destination and audience, transmit only the reviewed package, and read back the uploaded identity/access or delivery receipt when available. An upload receipt alone is not proof the recipient extracted or used it. If the request ends at preparation, stop after the concrete local deliverables; do not contact the recipient.
+
+## Additional static illustration: a hidden path conflict
+
+This original fictional illustration is unexecuted. A reviewed map accidentally assigns one selected note to the regular-file path `Harbor/notes` and another to `Harbor/notes/agenda.txt`. The complete path strings differ, but the first file occupies the directory needed by the second. A second error adds two member records named `Harbor/start.md`; turning the member list into a dictionary would hide one. Hold both conflicts before extraction, repair the copy map within the approved rename scope, and rebuild into a new archive. A repaired listing still needs the byte, reference and extraction checks above; this illustration supplies no archive or runtime result.
 
 ## Worked handoff
 
