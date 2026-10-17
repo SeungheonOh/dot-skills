@@ -26,6 +26,10 @@ Select a small source-grounded set: a current distinctive term, a retired term a
 
 Record the exact search request and returned IDs, revisions if genuinely stored in index metadata, and errors. Fetch the matching source by stable ID separately when needed. Keep orphan index IDs visible; an inner join to the current source can conceal deleted-document postings. Current text returned beside a match does not necessarily mean those current words produced the match.
 
+Record the response's evidence boundary: page or top-k limit, sort/tie rule, continuation state, timeout or partial-failure indicators, and whether any reported total is exact or only a lower bound. “Not in this page” is not “absent from the index.” When supported and authorized, repeat the same term/filter request with an additional exact target-ID restriction to check match eligibility; retain it as a separate diagnostic query, since it does not prove the target's ordinary rank or consumer visibility. A partial/error response cannot establish a clean negative result.
+
+If more pages are needed, hold the original query, access context and ordering fixed and use the engine's supported stable pagination/snapshot mechanism. Record the observation boundary and deduplicate by index/document identity. Do not combine pages across an expired cursor or changed index state and call the union complete; restart a bounded observation or retain explicitly partial evidence. [Elasticsearch's pagination reference](https://www.elastic.co/docs/reference/elasticsearch/rest-apis/paginate-search-results) illustrates why refreshes and nonunique sort ties can skip or duplicate hits. These are engine-specific mechanisms, not authority to enumerate unrelated documents or increase resource limits.
+
 Compare four independent questions:
 
 | Question | Useful evidence | What it does not establish |
@@ -60,6 +64,10 @@ Check all source rows, IDs, revisions and required metadata against the preserve
 Deliver the candidate or portable regeneration, exact input identity, before/after query results, covered and unresolved IDs, checks actually run, and the remaining operational step. Local engine tests do not prove behavior in an untested app UI, access rules, upstream completeness, crash durability or production readiness. An isolated candidate is not an installed repair. Complete any explicitly authorized save or application handoff and verify it; obtain any missing authority before promotion or new external effects.
 
 Identify how future additions, edits and deletions are meant to update this index. Repairing the present snapshot does not repair a missing maintenance path. Report an observed gap and its owner or supported remedy without expanding a snapshot reconciliation into unrequested application changes.
+
+## Fictional cutoff illustration — unexecuted
+
+A fictional search consumer displays ten hits for a term. A supplied same-context diagnostic restricted to document `D-42` matches that term, while the ordinary response has further pages. This supports match eligibility and an unresolved ranking/display question, not a stale-index diagnosis or proof that the document occupies rank eleven. Preserve the original query and inspect the bounded result path before proposing a rebuild. No index or query was executed for this illustration.
 
 ## Original worked example
 
