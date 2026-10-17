@@ -15,6 +15,14 @@ A task requires a valid toggle sequence or a reproducible solvable test instance
 - Board or graph dimensions and stable element ordering
 - Whether minimum press count is required and a practical search bound
 
+## Confirm the fixed-toggle model
+
+Before building a matrix, establish that each allowed press applies one fixed XOR mask to the state, independent of the current lamp values and earlier presses. Under this model a press changes `s` to `s XOR mask`; masks compose by XOR, presses commute, and pressing twice cancels. The [linear-algebra setup in Lights Out on graphs](https://arxiv.org/abs/1903.06942) derives these properties from fixed influence columns. They are premises to check against the supplied rule, not properties implied merely by having binary lamps.
+
+Inspect the rule, not just its effect on the starting board. A changing neighborhood, one-shot switch, conditional availability or required press order needs the corresponding state or constraints. A permanently forbidden press can be excluded from the allowed columns, but other restrictions must not disappear into an unconstrained matrix. A matrix solution may violate those restrictions. If restrictions only remove permitted sequences while the fixed masks remain correct, matrix inconsistency still rules out the target; if the actual press effects differ from the columns, that conclusion does not transfer. Use a suitable bounded state search or report the unsupported part. Double-press and commutativity examples can expose a mismatch, but a few passing examples do not establish fixed masks for every state.
+
+Fictional, unexecuted illustration: one button flips the first lamp if that lamp is off; otherwise it flips the second lamp. Starting at `[0,0]`, two presses give `[1,0]` and then `[1,1]`. A column inferred only from the first press would be `[1,0]` and would incorrectly declare `[1,1]` unreachable from `[0,0]`. The effect is state-dependent, so repeated presses cannot be reduced to parity here. This is a hand-derived counterexample, not an executed solver test.
+
 ## Workflow
 
 1. Construct one influence matrix whose columns represent presses. Set the right-hand side to current XOR target. Check boundary neighborhoods against the supplied rule.
