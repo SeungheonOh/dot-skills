@@ -67,6 +67,16 @@ Use three evidence levels without treating them as additive quantities:
 
 Direct verification is a property of a specific current observation, not an extra pile to add to the reported quantity. Do not add two observers' counts, two overlapping photos or repeated “still packed” reports. After an evidenced transfer, removal or possible change since inspection, retain the old verification in history and qualify or replace the affected current state. A report that a box was sealed or received can be recorded without upgrading its contents to verified.
 
+### Follow nested containers without multiplying locations
+
+When the evidence explicitly places a container inside another container, record immediate containment separately from the derived outer location. A pouch may be directly in an inner carton, which is directly in a moving box; those are one containment path, not three independent locations for the pouch. Keep each evidenced physical unit or container under at most one current immediate parent. Reject self-containment and cycles, and hold conflicting parent links rather than choosing whichever path makes totals agree. Do not infer that every item sharing a box label belongs inside a named inner container.
+
+An evidenced move of an intact inner container changes its parent/location once. Carry the known descendant path forward only within the move's stated scope, retaining the original contents evidence and its age; the move does not establish new contents or fresh direct verification. A derived outer location must remain labeled as derived from that chain. If opening, partial removal or repacking leaves the chain uncertain, hold the affected descendant locations until a scoped count or movement report resolves them. Preserve the last supported state and the conflicting change instead of silently detaching children or counting them in both places.
+
+At readback, check that each active containment path terminates at a known box or outside location, that no unit appears under two immediate parents, and that leaf-item quantities reconcile independently from container counts. Inspect affected inventory and handoff rows together after a container move; a stale row for its old outer box can otherwise make a correct local update look like two sets of contents. Container labels and reported closure still do not prove the hidden contents.
+
+Fictional, unexecuted illustration: a report places three adapters in carton C1 and C1 in B01. A later report explicitly moves C1 intact from B01 to B02 with contents unchanged. The current record has three adapters directly in C1, derived outer location B02, and one carton; it does not gain three more adapters or a new verification. A competing report that C1 is also still inside B01 is held for order/scope review. A proposed link putting B02 inside C1 would form a cycle and cannot be accepted as the current containment record.
+
 ## 3. Allocate quantities and reconcile partial packing
 
 Reuse the user's existing box IDs. For new boxes, propose neutral unique IDs such as B01 and make clear that their physical labels still need to be applied by a person. Do not claim a proposed box exists. Use the user's room vocabulary; two rooms both called “bedroom” need distinct supplied names/codes before routing labels are final.
