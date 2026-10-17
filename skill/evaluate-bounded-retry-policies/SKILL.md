@@ -34,6 +34,12 @@ For a read-only operation, confirm the same bounded read can be repeated. For a 
 
 Check the result of an uncertain prior attempt when the service offers an authorized status lookup. Do not infer “nothing happened” from a disconnected client. [AWS's guidance on idempotent APIs](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) explains this distinction between repeated requests and repeated effects.
 
+### Bind idempotency to intent, scope and retention
+
+For a mutating retry, retain the original operation identity with its request parameters, provider scope and first-attempt time. Check the service's retention rule before resuming after a pause or restart; a key alone does not establish protection forever or across another account, endpoint or region. A changed payload is a different intent, not a retry to force through with the old key. Do not replace a rejected or expired key merely to get past an uncertain original outcome. Reconcile that outcome first or report it unresolved. [AWS's idempotency discussion](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/) covers caller identity, late requests and parameter mismatch; apply the actual target service's contract rather than borrowing a retention period from another API.
+
+**Fictional, unexecuted illustration:** a synthetic service remembers a create-operation key for five minutes. The service accepts the first attempt at 09:00, but its response is lost; a restart at 09:06 is outside that protection even if an overall ten-minute budget remains. The next step is an authorized outcome lookup or an unresolved result, not a fresh key and another create. No request was sent in this illustration.
+
 ### 3. Set one overall budget
 
 State whether the configured number means total attempts or retries after the first attempt. Count all attempted calls consistently, including rate-limited responses when that is the chosen contract. Do not let an outer loop multiply a hidden SDK retry budget without accounting for it.
