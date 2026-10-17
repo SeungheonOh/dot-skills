@@ -45,6 +45,16 @@ Bound response bytes while reading, not only through Content-Length. Decode stri
 
 Stop or pause according to the provider's refusal. Do not convert a rate limit into “not found,” change network identity, or silently switch registries. A later authorized retry should retain earlier outcomes and avoid repeating successful requests unnecessarily.
 
+### 3a. Reuse observations without mixing their identities
+
+When caching is permitted, scope a reusable observation to its provider, endpoint/identifier namespace, normalized identifier and representation choices. Check that it contains the fields needed now: a cached title-only projection cannot establish that an unrequested publisher field is absent. Keep access-dependent results within their authorized context without recording credentials. Follow the provider's cache directives and freshness rules; [HTTP caching rules](https://www.rfc-editor.org/rfc/rfc9111.html#section-4) require compatible request identity and representation, not merely equal identifier text.
+
+Keep a prior observation separate from a requested refresh. A new miss or service error must not leave old fields presented as a current success. A successful refresh must not silently fill its missing fields from an older response; if a multi-observation view is specifically needed, retain field-level provenance and label that composition. Preserve the earlier timestamp and outcome as history rather than rewriting them.
+
+Treat duplicate as an input-row role alongside the referenced lookup outcome. If the canonical lookup failed, was cancelled or remains unattempted, its duplicate rows are unresolved too. A scoped retry can update their shared current observation while retaining the earlier attempt. Count input rows, unique lookup identities, network attempts and resolved rows separately; retries and cache hits make these counts different.
+
+Fictional, unexecuted illustration: rows 1 and 2 contain registry ID `Q17`; row 3 contains `Q18`. An earlier `Q17` cache entry retained only a title. Today's review also needs publisher, so that entry alone is insufficient. The `Q17` request returns a service error and `Q18` succeeds. Export all three rows: row 1 failed, row 2 duplicates row 1 with the same unresolved outcome, and row 3 succeeded. Do not report two successful rows because row 2 was deduplicated, or a confirmed missing publisher from the title-only cache.
+
 ### 4. Keep cancellation and editing coherent
 
 Associate the batch with a generation or equivalent ownership token. When the user stops, replaces the input or clears the review, cancel the active request where supported and invalidate older completions. Completed results may remain, but queued and active rows need an explicit incomplete status.
