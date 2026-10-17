@@ -45,6 +45,16 @@ For keyboard or other accessibility-related observations, state exactly what was
 
 Respect unavailable capabilities and denied routes. Do not change security settings, bypass browser warnings, or recreate a blocked operation through another route merely to obtain a result. Continue useful permitted checks and label the specific untested journey; do not count source inspection as a UI pass.
 
+### Check the result after the user changes direction
+
+For an asynchronous journey, choose a relevant superseding action: change the selection, start a newer search, edit an input, dismiss an overlay, or navigate away. Record which input or record now owns the visible result and any dependent action such as Download. Where the authorized interface or existing test controls permit it, observe the older operation completing after that transition. Check late success, failure and loading-state cleanup where relevant; a stale error or spinner can break the current journey even when the displayed data remains correct.
+
+After Close or Back, inspect the destination and whether an old result reopens the dismissed view or steals focus. Follow the product's contract for retained drafts; dismissal need not erase every draft. Keep UI dismissal separate from cancellation of an external action. For an uncertain save or submission, inspect its identified record through an authorized read before repeating it; a closed dialog or canceled browser request is not evidence that the effect was undone.
+
+Capture the action order and completion evidence. If the available controls cannot establish that the older result completed last, report that race order as untested rather than counting fast repeated clicks as proof. A controlled mock can support a separately labeled check; it does not replace the real-interface result. Use [reconcile-obsolete-ui-requests](../reconcile-obsolete-ui-requests/SKILL.md) for an authorized implementation investigation.
+
+**Fictional, unexecuted illustration:** In an event finder, search A requests Harbor events and search B requests Orchard events. The intended check would let B finish before A, then verify that the Orchard selection, event IDs and downloaded result still agree. An old A failure must not replace B's success. If the completion order cannot be observed, the ordinary search can pass while this race case remains untested. No browser journey is claimed here.
+
 ## Investigate a failure proportionally
 
 Separate a reproducible product defect from a setup, access, environment, or unclear-requirement problem. Capture the smallest sequence that demonstrates the observed difference from the expected behavior. Include the relevant starting state, input, version, expected outcome, and actual outcome.
