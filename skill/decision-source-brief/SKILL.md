@@ -34,6 +34,8 @@ Preserve the evidence's meaning:
 
 Compare each option against the criteria as supported, contradicted, conditional, or unresolved. An option that fails a real must-have cannot be rescued by an invented score. Unknown is not the same as failure unless the criterion requires positive verification before proceeding. A proposed or unimplemented feature does not meet a requirement for behavior available now.
 
+Keep each option internally consistent. Features, limits, price, eligibility and availability must describe a configuration that can actually be chosen together. Do not combine one tier's price with another tier's capability, a venue's seated capacity with an incompatible workshop layout, or an expired offer with current conditions. When an add-on or changed configuration is needed, treat the resulting bundle as a distinct supported scenario and carry its dependencies and cost into the comparison. If compatibility is unverified, make the bundle conditional rather than presenting an invented composite option.
+
 ## Make the reasoning useful
 
 For a recommendation, explain why the preferred option fits the stated priorities and the strongest reason to choose an alternative. For a neutral comparison, show the consequential tradeoff without choosing priorities for the user. Do not manufacture a winner when all options miss a must-have or decisive evidence is unavailable.
@@ -41,6 +43,8 @@ For a recommendation, explain why the preferred option fits the stated prioritie
 Use calculations or a comparison table when they make the choice clearer. Recalculate totals from the inspected inputs and label assumptions. A weighted score is appropriate only when the criteria, scores and weights have a defensible meaning for this decision; precision must not conceal judgment or missing evidence.
 
 Check the uncertainty that could change the answer. This might mean testing a plausible assumption, comparing a different supported interpretation, or examining the weak claim on which the recommendation depends. Keep this proportional: do not run a fixed sensitivity ritual when the constraints settle the choice. Say what new fact or changed requirement would reverse the recommendation and what evidence would establish it.
+
+If weighted scoring is genuinely useful, hold criterion definitions, scale direction and weights constant across options. An unavailable rating must remain unavailable; silently scoring it as zero or redistributing its weight only for that option makes the totals answer different questions. Use justified bounds to show whether the missing value could change the ordering, or leave the ranking incomplete. Check whether overlapping criteria reward the same advantage twice and explain any deliberate overlap. A ranking based on preferences still cannot override an unmet must-have.
 
 When the full decision remains unresolved, give the useful bounded conclusion and the smallest next question or check. For example, an option may fit the supplied functional requirements while its untested import behavior remains a launch condition. Do not convert that conditional fit into a completed implementation, approval, or performance result.
 
@@ -60,6 +64,10 @@ Before handing over the result:
 Stop gathering evidence when the decision-critical questions have usable answers or specific gaps and more background would not change the choice. Do not promise exhaustive research or a numerical confidence level without a basis.
 
 Save or deliver the brief to the destination already authorized. Complete an explicitly requested routine handoff when supported, verifying the saved or delivered result; do not add a new approval round for the same action. New audiences, sensitive disclosure, commitments, payments, or future monitoring require their own applicable authority. A failed save or send leaves a concrete delivery blocker, not an unfinished analysis or permission to try a different recipient.
+
+## Fictional configuration illustration (not executed)
+
+A mock room brief requires 30 participants seated at individual worktables. Room Cedar holds 50 in rows but only 20 at worktables; Room Elm holds 32 at worktables. Cedar's larger row-layout figure cannot establish that it meets the workshop requirement. Elm meets the documented capacity requirement, but its unreported noise rating remains unknown rather than receiving zero or disappearing from its weighted total. The expected brief distinguishes verified capacity from the unresolved preference, without booking either room or inventing a complete ranking. All rooms, numbers and evidence are fictional; no inspection or action occurred.
 
 ## Worked example
 
