@@ -63,6 +63,14 @@ Record exact output identity and the checks actually performed. Test representat
 
 A mismatched value, ambiguous field, broken control or clipped required answer blocks “ready” status. Repair recoverable problems within scope; do not retry a failing submission blindly. A submission timeout is an unknown outcome: inspect confirmation/history before retrying any consequential action.
 
+### Distinguish visible answers from web-form data
+
+For a web draft, record whether each required answer is merely displayed, retained in a supported saved draft, or present in the service's review/readback evidence. These are different checks. Under the [HTML entry-list rules](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-entry-list), disabled controls and unchecked checkboxes/radios are omitted; ordinary named text controls differ from unnamed ones, and repeated names can produce multiple entries. A visible answer or unchecked box therefore does not by itself establish a transmitted value or an explicit false. Preserve repeated choices instead of reducing the evidence to one value per name.
+
+Use the service's supported review or saved-draft view within the existing disclosure boundary. Compare field presence, option values and repeated-item identities with the source-to-field map after branch changes or returning to an earlier step. Native HTML rules do not prove what a custom JavaScript form sends; keep that behavior unverified without appropriate service evidence. Do not enable disabled controls, add hidden inputs, change field names or trigger a submission just to make the data match. Where an answer is visibly correct but its saved meaning is unsupported, retain the private draft and identify the specific affected field.
+
+**Fictional, unexecuted example:** A room enquiry displays code `0007` in a disabled text control and has two selected equipment choices under one field name. A screenshot supports the displayed code and selections, but native entry-list inspection would omit the disabled code and retain both choices. Check whether the actual service deliberately supplies the code through another supported mechanism; without that evidence, mark its submission presence unresolved. Do not invent a hidden value, collapse the choices or submit a test enquiry.
+
 ## Deliver and stop at the right boundary
 
 Return the actual filled editable draft, source-to-field map, unresolved questions and concise verification result. Distinguish “draft created and checked” from “complete enough to submit.” Ask only the required unanswered questions and decisions; mention optional blanks without forcing a response.
