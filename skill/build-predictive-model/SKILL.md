@@ -53,6 +53,14 @@ Keep label meanings and output orientation explicit. For classification, a score
 
 Handle convergence warnings, failed fits and invalid configurations visibly. Correct a supported implementation error, but retain the comparison history when results affected a choice. Do not hide failed candidates or substitute a different metric after an unfavorable result.
 
+## Check target-derived training features when used
+
+When constructing features from target statistics, define a second boundary inside each training partition. Trace which labels produced the features supplied to the estimator, including smoothing priors and fallback values. Use cross-fitted, ordered or another justified leakage-controlled training representation; fitting a category-to-target mapping and reapplying it to the same rows can encode their own answers. Keep inner partitions consistent with the required group/time independence, and keep outer development/test outcomes out of both mappings and priors.
+
+For [scikit-learn 1.8's TargetEncoder](https://scikit-learn.org/1.8/modules/generated/sklearn.preprocessing.TargetEncoder.html), training `fit_transform` uses internal cross-fitting, whereas `fit(...).transform(...)` does not. Its documented KFold/StratifiedKFold choices do not automatically implement a grouped or forward-time encoding plan. Verify the actual pipeline path and choose a compatible approach rather than assuming the outer splitter fixes the inner one. Preserve the final training-derived mapping for label-free inference; training cross-fitted values need not equal that mapping's transformation of the same rows.
+
+**Fictional illustration, not executed:** Lot code Luma occurs once with a failed inspection. Its unsmoothed in-sample category mean reproduces that row's outcome. In a proposed cross-fitted path, withhold that category from its inner fit and check that its training value uses the declared fallback from eligible inner-training labels. An unseen later lot must use the saved fallback without a target. No model was fitted or scores measured.
+
 ## Evaluate the candidate that will be delivered
 
 Freeze the chosen feature contract, preprocessing, estimator settings and decision rule before final evaluation. Run the held-out comparison within the declared scope. Preserve predictions paired with target and record identity where appropriate, plus the data/model versions needed to recompute the reported metrics.
