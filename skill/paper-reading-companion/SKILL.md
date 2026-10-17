@@ -32,6 +32,16 @@ An engineer wants to understand a technical paper before proposing its method at
 
 6. **Deliver and verify the companion.** Return the staged route, glossary, evidence map, conceptual exercise, separate answer guide, and uncertainty list. Recheck all central locators against the inspected version and label inaccessible visuals. If the learner answers, tie feedback to their reasoning and request one revised interpretation where useful. Stop before replication, deployment endorsement, or uploading restricted material to another service.
 
+## Trace study units and analysis populations
+
+For an empirical claim that drives the reading question, inspect what one observation represents and what was independently assigned or sampled. Keep participants, clusters, repeated measurements, tasks and model runs distinct. The worked example already distinguishes people from judgments; extend that check to the paper's actual unit structure. A large number of rows does not establish that the uncertainty calculation accounts for dependence. Record the reported analysis method and any missing information rather than manufacturing a corrected interval or declaring the whole study invalid.
+
+Trace the population used for each decisive outcome and time point: eligible or recruited, assigned when applicable, measured, and retained in that analysis. Preserve group-specific counts and reported exclusion or attrition reasons. A later follow-up or analysis of completers may concern a different subset from the headline sample. Missing counts leave coverage unresolved; do not treat absent outcomes as zero, success or failure. Explain the affected claim without silently replacing the authors' analysis with a new one.
+
+Check the weighting behind a summary. A pooled rate weights units by their number of observations; a mean of unit-level rates can give each unit equal weight. They answer different questions when contributions differ. Preserve the paper's actual calculation and label; do not substitute one for the other or describe a task-level rate as the fraction of people who benefited. If only aggregates are available, say which unit-level interpretation cannot be checked.
+
+**Fictional, unexecuted illustration:** A mock study assigns three users a task but supplies outcome rows for only two: P1 has 9 correct judgments out of 10, P2 has 0 out of 1, and P3's outcomes are unavailable. The pooled observed rate is 9/11, approximately 81.8%, while the equally weighted mean of the two observed users' rates is 45%. The expected companion distinguishes those summaries, records available outcomes for two of three assigned users, and leaves P3's result unknown. Neither number establishes the fraction of users who improved. These are invented inputs and expected reasoning, not a study analysis or an executed statistical check.
+
 ## Deliverables
 
 - A staged reading route appropriate to the supplied background
