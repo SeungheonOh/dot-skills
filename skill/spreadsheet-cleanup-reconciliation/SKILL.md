@@ -48,6 +48,16 @@ Treat blank, zero, not applicable, unknown and parse failure as distinct states 
 
 Apply only justified normalizations. An explicit status dictionary can map aliases; superficial similarity cannot. Trim whitespace only in fields where it is insignificant, not inside free-text notes or identifiers that may contain meaningful spaces. Preserve unknown categories and report them rather than forcing the nearest match. Standardize headers without discarding duplicate column names: resolve collisions visibly or retain source-position identifiers.
 
+#### Preserve the meaning of numeric dates across workbooks
+
+When a date field contains numeric serials, record each source workbook's actual date system and the destination's system before interpreting or transferring the values. Read the workbook setting rather than inferring it from the operating system, filename or a plausible displayed year. Keep raw serial, cell type, number format and decoded date/time together in the change record. Establish whether the field is a calendar date, clock time, elapsed duration or ordinary number; a date-like format alone is insufficient evidence for converting every numeric cell.
+
+[Excel's 1900 and 1904 systems](https://support.microsoft.com/en-us/excel/date-systems-in-excel) use different serials for the same date, with a 1,462-day difference for modern dates. Preserve the destination's established system and write supported logical date/time values through the chosen adapter. Do not toggle the whole workbook's system to make one imported column look correct, blindly copy date serials between systems, or apply an offset to time-only and duration fields. A reader may already have decoded a serial; adding the offset again would corrupt a correct value. The [openpyxl date documentation](https://openpyxl.readthedocs.io/en/stable/datetime.html) describes its epoch inspection, automatic date translation and distinct duration handling; use equivalent documented behavior for another adapter.
+
+In readback, compare decoded calendar values and any fractional-day time with the supported source meaning, not raw serial equality alone. Check an independently evidenced date as an anchor. Keep a bare serial from a CSV unresolved when its originating date system and field meaning are unknown. Hold unsupported historical dates rather than accepting a library's silent normalization; the 1900 system's fictitious leap day is specifically documented in the same adapter reference.
+
+**Fictional, unexecuted illustration:** An archival workbook using the 1904 system supplies date serial `39267`; its source record identifies July 5, 2011. A cleaned workbook using the 1900 system would represent that same date as `40729`. The numeric difference is an encoding change, not a corrected purchase date. If `39267` instead arrives in a CSV with no epoch evidence, the date remains unresolved. No workbook was opened, converted or recalculated for this illustration.
+
 ### 3. Build a profiled, reversible candidate
 
 Profile the selected population before and after transformation: record counts, null/zero/parse-failure counts, distinct business keys, category values and typed-value ranges. Calculate source control totals separately by currency/unit and exclude subtotal rows from detail totals.
