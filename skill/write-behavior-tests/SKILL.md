@@ -42,6 +42,18 @@ Make time, randomness, environment, and external dependencies controllable where
 
 For errors, assert the relevant type, status, or documented message and verify the remaining state. Do not catch every exception and call the test successful. A timeout, skipped test, or failed setup is not a passing assertion.
 
+### Make asynchronous completion part of the assertion
+
+When the operation or assertion is asynchronous, bind its completion to the runner's supported test lifetime. Await or return the full assertion chain, or use the framework's callback-completion mechanism and propagate its errors. Starting work, registering a callback, or awaiting only setup does not show that the behavioral assertion ran. In Jest, [promise assertions must be returned or awaited](https://jestjs.io/docs/asynchronous); use the project's equivalent mechanism rather than mixing incompatible completion styles.
+
+Make the wrong outcome fail explicitly. An expected-rejection case that asserts only inside a catch branch may pass if no rejection occurs. Use a rejection assertion that rejects success, or a supported assertion-count/explicit-failure guard as appropriate. For callbacks, ensure the expected callback and assertion occurred before completion. Do not replace behavioral checks with an assertion count alone.
+
+Keep setup and cleanup in that same ownership model. Wait for asynchronous fixture setup before the action and for owned cleanup before declaring the case finished; Jest's [setup and teardown hooks](https://jestjs.io/docs/setup-teardown) support asynchronous completion. After a timeout or canceled case, do not assume spawned work has stopped. Use the fixture's supported stop-and-join path where available, retain cleanup errors, and report unresolved background activity instead of reusing a possibly contaminated fixture. Restore replaced clocks or mocks only after work that relies on them has settled.
+
+For a negative side-effect claim, observe the state at a defined completion barrier. An empty write log immediately after starting an operation cannot prove it will never write later. If an authorized isolated wrong variant is used to check detection, make it return the opposite completion outcome or perform the forbidden effect, and confirm the runner reports failure before removing that variant.
+
+**Fictional, unexecuted illustration:** A test for a rejected save starts the request and checks the error only in a rejection callback, without returning its promise. The intended repair would make the runner await a rejection assertion, verify the stored record after the operation and its owned background work settle, and await fixture cleanup. A deliberately fulfilled response must fail the rejection expectation; a late write must fail the state check. No save or test run is claimed here.
+
 ## Check that the tests can detect a mistake
 
 Run the focused tests using the actual project command and prerequisites. Inspect the result rather than assuming discovery included the new file. Confirm the intended cases executed and that assertions reached the real behavior.
