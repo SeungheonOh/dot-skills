@@ -49,6 +49,16 @@ A matching trustworthy byte checksum can establish identical bytes for ordinary 
 
 Preview uncertain classifications, conflicting dates, ambiguous versions, unresolved collisions and access-changing moves with the smallest decision needed. Continue independent clear files while those rows remain held. Do not make a confident-looking filename the substitute for missing evidence.
 
+### Establish access equivalence before a move
+
+“Same owner” or “the same names appear” is not sufficient evidence that a move preserves access. For each affected file, compare its current effective audience and capabilities with the supported result under the destination's ancestry. Include direct, group, link and inherited routes; role/capability differences, expiry and relevant restrictions; and whether an existing route would disappear. Both gaining access and losing an editor's existing capability violate an unchanged-access plan. Use the [shared-link workflow](../shared-link-access-verification/SKILL.md) for route evidence when needed, without adding permission changes to this filing task.
+
+A changed originating folder or permission ID is not itself an access change: record the new origin and establish equivalent effective rights rather than requiring identical permission-list bytes. Conversely, identical display names can conceal different group identities or roles. Reuse current authoritative group evidence when sufficient; do not enumerate an entire membership directory unnecessarily. If an inaccessible ancestor, unknown membership difference or undocumented move behavior prevents the comparison, hold that move rather than treating two unknown audiences as equal.
+
+Check the actual provider's rules. [Google Drive documents that a move re-evaluates the new parent's permissions for the item and its children](https://developers.google.com/workspace/drive/api/guides/manage-sharing#how_permissions_propagate). An owner's successful open, unchanged file ID or matching content checksum cannot establish that other people's access survived. Capture the access comparison before mutation and repeat it after the move; do not repair a mismatch by creating direct grants, disabling inheritance or changing the destination folder's permissions under ordinary filing authority.
+
+**Fictional illustration, not executed:** File `record-F24` inherits editor access for group `team-7` from its inbox. The proposed archive grants that same group viewer access, and the fictional service specifies that the old inherited route disappears on moving. The membership and file bytes would be unchanged, but editing would be lost. Hold the move and show that precise capability difference; do not add an editor grant as a workaround. No file was moved and no permission check was run for this illustration.
+
 ### 4. Freeze a reversible plan
 
 Before the first change, save a private manifest containing:
