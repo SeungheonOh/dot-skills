@@ -59,6 +59,16 @@ Keep matching separate from canonical-value selection. Establishing that two rec
 
 Keep the handoff proportional. A small requested comparison can be a direct answer with supported and unresolved pairs. A reusable catalogue crosswalk should be an actual saved artifact. A complete all-pairs ledger, custom matcher, database and statistical benchmark are not mandatory deliverables.
 
+## Revalidate correspondence when a catalogue changes
+
+Bind reusable decisions to the inspected source revisions or snapshots and the identity definition, candidate rules and decisive fields used. Keep an occurrence's stable source ID while separately identifying its revision. The same ID in a later export is not proof that its edition, model, language or pack identity is unchanged. Compare changed fields with the evidence that supported the old judgment; retain an old accepted pair as historical if its supporting identity facts no longer hold, rather than silently treating it as current or declaring a new match from the reused ID.
+
+Reopen the affected candidate comparisons as well as the chosen pair. A changed field can bring a formerly filtered-out record into consideration; an added row can invalidate an earlier no-counterpart conclusion for the new population. Under a one-to-one constraint, revisit competing records whose alternatives depended on the old assignment. Carry unaffected decisions forward only when their evidence and relevant candidate scope are unchanged. If the dependency scope cannot be bounded, repeat the bounded comparison pass rather than claim that an incremental patch preserves coverage. A change to the entity level or identity rule needs review across all decisions that used it.
+
+Keep the previously delivered crosswalk intact and save a new candidate revision with changed, retained and unresolved decisions distinguished. Before release, check that every current accepted pair refers to the reviewed source versions and still satisfies the agreed cardinality; no stale accepted link may survive merely because its source IDs remain present. If saving or review is interrupted, resume from that candidate and its unresolved comparisons, not a mixture of old accepted pairs and new source fields. A source correction may explain the change, but only within its evidenced scope.
+
+Fictional, unexecuted illustration: under a pack-level definition, revision 1 supports A7–B4 because both describe a particular 10-pack; A8's 12-pack has no qualifying counterpart in that searched snapshot. Revision 2 changes B4's pack count to 12 without an explanation. Keep the revision-1 decision in history, hold A7–B4 for renewed evidence, and reconsider A8–B4 even if the old 10-pack filter excluded it. The new pack count alone does not establish A8's identity match or explain whether B4 was corrected or reused. Do not label A8's old no-counterpart result current for revision 2.
+
 ## Verify decisions and saved coverage
 
 Reopen the actual saved result and compare important links and exclusions with the source fields and identity definition. Check plausible false matches and ambiguous cases as well as easy positive links. Inspect candidate coverage separately from the correctness of a selected pair, including a relevant case that could have fallen outside the search rule.
