@@ -41,6 +41,16 @@ Keep original records unchanged and derive a separate ledger. Do not copy secret
 
 Check boundary loss: event-clock filtering can exclude actual-window events when clocks are skewed; ingestion-clock filtering can exclude late arrivals. Use already-authorized source buffers where available and retain interval-overlap candidates. Otherwise mark the affected boundary incomplete instead of expanding the query without authority. The example's supplied log export includes its explicitly stated clock buffer.
 
+### Preserve a coherent capture when sources change
+
+For paginated or live sources, record whether the service guarantees one snapshot across pages and retain its non-secret version identity when available. Otherwise keep per-page capture times and boundary identities, and label cross-page consistency unproven. Deduplicating repeated events does not recover events skipped by a moving page boundary. Reconcile a later authorized read as a new capture; do not silently combine it with older pages and call the mixture one complete snapshot.
+
+Distinguish the bounded event window from the source's evidenced finalization or late-arrival cutoff. Reading after the window ends does not by itself establish that all events or revised metric bins have arrived. If the source exposes no such guarantee, keep completeness provisional. Preserve each capture and its derived claims separately so a late event or corrected bin can change ordering or impact without erasing the earlier basis. Stop any completeness-dependent conclusion when that basis is missing; unaffected observations remain usable.
+
+If a saved capture or link expires, mark that exact evidence unavailable. A fresh dashboard view cannot recreate the earlier bytes or filters. Use an already-authorized retained copy if available and identify its provenance; do not restore systems, change retention or expand access to recover it under this reconstruction task.
+
+**Fictional, unexecuted illustration:** within one bounded event-time query, descending offset pagination returns E10/E09 on page one. E11 then arrives late, and page two returns E09/E08. Collapsing E09 leaves E11 unseen; completed pagination alone cannot justify a complete snapshot. Keep the page observations and that coverage gap. No source was queried for this illustration.
+
 ### 2. Normalize time without inventing order
 
 Preserve the original event timestamp and its explicit offset alongside normalized UTC. Store ingestion/receipt and capture times separately. A late-arriving event stays at its event-time interval; receipt order is not event order. If an ingestion timestamp is missing or its clock is uncertain, say so.
