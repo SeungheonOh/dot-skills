@@ -13,6 +13,12 @@ Obtain the exact leaf bytes, index, tree size, sibling path, hash algorithm, tre
 
 Determine whether the input is raw bytes, a prehashed leaf, or a structured record with a specified serialization. Do not add a leaf prefix twice, hash a hex string as text instead of decoding it, trim whitespace or normalize Unicode without the protocol requiring it. Preserve duplicates and ordering. If accepting text records, state the encoding and treatment of malformed Unicode; rejecting unpaired surrogates prevents silent replacement from merging different inputs.
 
+### Keep the index and tree size exact
+
+Validate both as integers before any comparison or traversal: require a positive tree size and an index from zero through size minus one. Preserve the exact transport value through parsing, calculation and export. [RFC 9162's inclusion-proof structure](https://www.rfc-editor.org/rfc/rfc9162.html#section-4.12) uses unsigned 64-bit size and index fields, so a verifier may need to handle a large tree from a short proof without materializing its leaves. Declare a smaller supported range if necessary; report an out-of-range implementation limit instead of rounding, wrapping or calling the proof cryptographically invalid.
+
+For JavaScript, ordinary [Number right shifts](https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-numeric-types-number-signedRightShift) first reduce their operand to 32 bits, even when the original Number is an exact integer. Use exact integer traversal, such as BigInt with compatible operands, or a verified arithmetic alternative within an explicitly safe range. A later conversion to BigInt cannot recover digits already lost to Number parsing; [Number.MAX_SAFE_INTEGER](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-number.max_safe_integer) describes that separate precision boundary. Keep large metadata as exact typed fields or a documented decimal-string representation when the transport cannot preserve it numerically.
+
 ## Follow the selected tree scheme
 
 For the binary history-tree convention in [RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1), use the declared hash with separate leaf and parent prefixes. Uneven trees split at the largest power of two below their size; they do not duplicate the final leaf. The single-record path is empty, while an empty tree has no record inclusion proof.
@@ -28,6 +34,10 @@ A successful membership check does not show that the record is true, that it occ
 ## Verify an implementation
 
 Use fixed hash vectors and an independently structured reference computation. For a recursive tree builder, a full-record streaming stack reduction gives a useful independent root oracle. Exercise all indices around uneven and power-of-two boundaries, not only the leftmost leaf. Mutate leaves, sibling order, sibling bytes, indices, expected sizes and anchors. Check empty and singleton cases, repeated records, byte-distinct Unicode and explicit resource limits.
+
+Add arithmetic/traversal boundary checks around 2^31, 2^32 and the chosen exact-integer limit, including adjacent values and a rejected value just outside the supported range. Small full-tree checks do not exercise these boundaries. Use bounded synthetic metadata/path fixtures or an independent wide-integer reference; distinguish traversal checks from authentication of a real log.
+
+Fictional, unexecuted illustration: for index 0 and tree size 4,294,967,298, the RFC procedure starts its size tracker at 4,294,967,297. After the first sibling, the correct one-bit right shift leaves 2,147,483,648, not zero. JavaScript Number's 32-bit right shift instead produces zero, so a literal translation can wrongly reject the next sibling as excess. This is a reasoning example of lost traversal state, not a generated or verified proof.
 
 When verification is asynchronous, bind its output to the exact submitted proof and anchor snapshot. Editing either must invalidate the old verdict. Cancellation may discard output without stopping a hash operation already running; describe that accurately.
 
