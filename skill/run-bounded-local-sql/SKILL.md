@@ -53,6 +53,14 @@ Return ordered columns and row arrays so duplicate output labels cannot overwrit
 
 Reject unsupported non-finite numbers and oversized cells explicitly. If returning only the first N rows, read enough to know whether another row exists and mark truncation. Do not label N as the total result count unless independently computed. Include the query plan as diagnostic evidence, not a promise of production performance.
 
+### Preserve arithmetic before serialization
+
+Exact input and output encodings do not guarantee exact calculations between them. For a consequential sum, product or ratio, establish the expression's types, permitted range and rounding rule, including intermediate values. A final result within range can still hide intermediate overflow. In SQLite, ordinary integer arithmetic can switch to floating point on overflow, while integer division truncates toward zero. Check the [operator rules](https://www.sqlite.org/lang_expr.html#operators_and_parse_affecting_attributes) before treating a numeric result as exact.
+
+All-integer SQLite `SUM` can instead raise an overflow error; `TOTAL` returns floating point. Do not silently replace a failed sum with `TOTAL`, add a floating operand, or serialize an already-rounded value as a decimal string to make an exactness failure disappear. See [aggregate behavior](https://www.sqlite.org/lang_aggfunc.html#sumunc). Use a verified exact path supported by the already authorized runtime and bounds, or report that the affected calculation is unsupported. Preserve the request and failure separately from any valid partial result; do not substitute stale output or load an extension to bypass this workflow's limits.
+
+**Fictional, unexecuted illustration:** Two exact integer inputs, `9223372036854775807` and `2`, require the mathematical sum `9223372036854775809`. Both inputs fit signed 64-bit integers; their sum does not. An overflow-promoted floating result cannot establish that exact answer. Separately, a requested proportion of one out of two is `0.5`; integer division would produce zero. These are reasoning checks for the calculation contract, not newly executed SQL results.
+
 ### 6. Verify failure containment and interrupted UI flows
 
 Test a valid aggregate and join, nulls, exact large integers, duplicate column labels and an intentionally over-limit result. Confirm write/attachment/schema/extension/recursive attempts fail before affecting anything outside the supplied dataset.
