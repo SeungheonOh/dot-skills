@@ -41,6 +41,14 @@ Define dBFS relative to the file's nominal sample amplitude. Under this amplitud
 
 Keep zero and infinity handling explicit. A silent frame has zero amplitude, whose mathematical logarithm is negative infinity. A finite display floor can render it, while a summary may use a documented null/silence representation. Do not turn the display floor into an asserted physical noise level.
 
+#### Check density scaling against integrated power
+
+If the requested output is a periodogram PSD, specify its normalization separately from coherent-gain amplitude. For real samples and a real window, let `x_d` be the samples after the declared detrending, `L` their count, `M >= L` the transform length, `Y = FFT_M(w*x_d)` an unnormalized transform, and `U = sum(w[n]^2) > 0`. The two-sided density is `P2[k] = |Y[k]|^2 / (sampleRate * U)`. For the one-sided density `P1`, add the negative-frequency contribution to its positive partner: double interior bins, leaving DC and an even-length transform's Nyquist bin unchanged. An odd-length transform has no Nyquist endpoint; its last positive bin is doubled. Label the result in sample-unit squared per Hz. Squaring an already doubled amplitude spectrum does not implement this density normalization. [SciPy's periodogram reference](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.periodogram.html) distinguishes density from squared-magnitude spectrum scaling.
+
+Check the full-band linear-density sum with `deltaF = sampleRate/M`: `sum(P1[k]) * deltaF` should agree, within a justified numerical tolerance, with `sum((w[n]*x_d[n])^2) / U`. This is a Parseval-based check of the stated transform and scaling, not a claim that every windowed estimate equals the raw recording's mean square. A nonconstant window weights samples differently, and detrending changes the measured signal. Use the actual detrended samples, retain endpoint bins at their full bin weight, and compare before display floors, clipping or dB conversion. [SciPy's spectral-analysis guide](https://docs.scipy.org/doc/scipy/tutorial/signal.html#spectral-analysis) gives the separate amplitude/window-energy constants and density integration convention.
+
+**Fictional, unexecuted illustration:** four samples `[1, -1, 1, -1]` at 4 Hz, with a rectangular window and no detrending, have `U = 4`. For a four-point transform, the only nonzero one-sided PSD bin is the 2 Hz Nyquist bin, with value 1 sample-unit squared/Hz. Its 1 Hz bin width gives integrated power 1. Doubling this endpoint would incorrectly give 2. Padding the same windowed samples to eight points changes the grid but should retain integrated power 1. These are theoretical expectations; no transform, audio file or application was executed for this illustration.
+
 ### 3. Calibrate before using complex recordings
 
 Exercise original known signals:
