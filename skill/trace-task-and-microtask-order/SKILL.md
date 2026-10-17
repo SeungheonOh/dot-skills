@@ -29,6 +29,12 @@ Distinguish callback creation, enqueueing, dispatch and completion in the trace.
 
 Keep execution read-only and bounded. If a supplied snippet performs network, filesystem or account actions, extract an authorized minimal reproduction or explain why it cannot be executed as-is. Reading code for an ordering explanation does not grant its side effects.
 
+### Include Node's entry context
+
+For Node traces involving `process.nextTick()`, record the invocation, module mode and scheduling origin, not just the runtime version. A direct CommonJS entry, ES-module evaluation, a timer callback and an already-running microtask need not begin at the same checkpoint. Keep the next-tick queue separate from the Promise/`queueMicrotask()` queue; do not apply a universal rule that next ticks precede all microtasks. Node's [documented CommonJS/ES-module distinction](https://nodejs.org/download/release/v22.17.0/docs/api/process.html#when-to-use-queuemicrotask-vs-processnexttick) shows why top-level ES-module evaluation changes the order. Use the corresponding documentation for the requested runtime.
+
+**Fictional illustration, not executed:** An otherwise empty top-level entry schedules next-tick callback N and then `queueMicrotask` callback M; neither schedules more work. Under the documented direct CommonJS entry behavior, the callback order is N, M. Under ES-module evaluation, it is M, N because evaluation is already running through microtask processing. This difference alone is not a race or runtime regression. If a reproduction moves the snippet into a promise callback or test runner, preserve or explicitly reassess that context before treating its output as a cross-check.
+
 ## Output
 
 An ordered trace with queue/checkpoint explanations, observed output if executed, and the exact runtime assumptions or unresolved orderings.
