@@ -37,6 +37,16 @@ Select a boundary that could expose the structural change: a second caller with 
 
 Inspect the effects of commands before running them, and use the project's existing permitted test path. Source inspection can support a limited conclusion when execution is unavailable; it cannot establish that the refactored application ran successfully.
 
+### Compare identity and lifetime when structure changes them
+
+For an extraction, copy, cache, or moved resource scope, identify the caller-visible relationship that must survive, not just equal returned values:
+
+- **Shared versus independent state:** If two caller references are supposed to observe the same mutation, preserve that alias relationship. If each call must own independent mutable state, check that changing one result leaves the other intact. Construct each old/new comparison independently while preserving the required alias relationships within it; serializing and recreating each argument separately can erase the very case being checked. Python's [object model](https://docs.python.org/3/reference/datamodel.html#objects-values-and-types) distinguishes object identity from value.
+- **Evaluation boundary:** Moving an expression into a helper can change when, how often, or whether it executes. Where callers depend on it, compare an observable dependency trace as well as the final value: deferred work, short-circuiting, an exception before a write, or repeated reads of changing state. Preserve meaningful order without freezing incidental helper calls.
+- **Resource lifetime:** Name who acquires and releases each affected stream, lock, or connection. Check that consumers finish before owned resources close and that failure paths release what this operation owns while leaving caller-owned resources alone. Consult the runtime's actual cleanup semantics; Python's [context-manager rules](https://docs.python.org/3/reference/compound_stmts.html#the-with-statement), for example, tie exit handling to leaving the managed block and allow a manager to suppress an exception.
+
+**Fictional, unexecuted illustration:** A reader originally consumes a file inside its managed scope. An extraction instead opens the file in a helper, returns a lazy iterator, and leaves that scope before the caller consumes it. A check that only obtains the iterator misses the premature close. The proposed comparison must consume it through the real caller and include a relevant read failure. Keep consumption within the owning lifetime or explicitly preserve the required deferred behavior; eagerly copying all data is not automatically equivalent if memory use or timing is part of the contract.
+
 ## Refactor and verify the real paths
 
 Make the structural change using the repository's conventions. Keep behavior changes out of the same edit unless they are separately requested and clearly identified. Avoid opportunistic dependency upgrades, broad formatting churn, or new configuration switches.
@@ -44,6 +54,8 @@ Make the structural change using the repository's conventions. Keep behavior cha
 Run checks that exercise each affected caller, not only the new helper. Verify that the old implementation is no longer used where replacement was intended, while compatibility wrappers or public exports remain where required. Remove unused code only after checking its actual references and supported loading paths.
 
 Some tests may encode an internal structure that the refactor intentionally changes. Update those tests to assert the relevant contract when appropriate; do not weaken a behavior assertion to accommodate a regression. If a comparison fails, explain the difference before deciding it is harmless.
+
+If a preservation check fails, locate the first changed observable and the refactor step that introduced it before continuing the restructuring. Correct or undo only that owned step, keeping unrelated and concurrent edits intact. Retain the distinguishing case and rerun it; a cleaner final structure does not justify an unresolved behavioral difference.
 
 After the final edit, run the justified project checks and inspect the complete diff. Look for accidentally changed constants, defaults, evaluation order, mutation timing, exception behavior, or resource ownership. Check that any claimed performance improvement was actually measured under a stated workload; clearer code alone does not establish faster execution.
 
