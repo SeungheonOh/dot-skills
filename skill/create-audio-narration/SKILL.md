@@ -31,7 +31,13 @@ For long material or tool limits, split at sentences, paragraphs or section boun
 
 Check a pronunciation-sensitive or stylistically representative passage early when that would prevent expensive rework. A satisfactory preview does not verify the rest of the narration. Track chunk order and script coverage simply enough to catch missing, repeated or truncated passages.
 
+For a chunked render, tie each selected audio candidate to the script revision and its exact paragraph/sentence span, with short opening/closing word anchors when useful. Mark neighboring context as spoken or context-only. Before assembly, account for every intended span once, in order; a list of successful requests does not establish coverage. When a script or pronunciation choice changes, replace the affected candidate and reopen its joins and any downstream timing checks. Do not assemble a stale take merely because its filename sorts correctly.
+
+If a render request times out or its save result is unclear, inspect any returned job identifier and output location before resubmitting. Retrieve or resume an existing result through supported controls when possible; do not create duplicate generation while the original outcome is still unknown. Keep an incomplete chunk separate from the selected assembly and report the unresolved status if the service cannot establish it.
+
 Assemble chunks without cutting words or doubling boundary text. Preserve intentional pauses and inspect joins for gaps, clicks and abrupt changes in tone or level. Do not apply a crossfade over speech that erases syllables. Fix affected passages and transitions rather than repeatedly regenerating satisfactory sections without a reason.
+
+Use the assembly method's actual input requirements. For example, FFmpeg's [concat demuxer](https://ffmpeg.org/ffmpeg-formats.html#concat) requires matching stream properties and uses file durations to place subsequent chunks; separately playable files alone do not establish a correct join. Diagnose an assembly gap or timing artifact before adding silence or trimming speech to hide it.
 
 Export a new file in the requested format. If none was specified, choose a supported format appropriate to ordinary playback and the intended destination. Preserve the source and avoid overwriting unrelated files. Check that conversion has not changed speed, pitch, channel behavior or intelligibility unexpectedly.
 
@@ -44,6 +50,12 @@ Check the final export, including any assembly or conversion, rather than relyin
 - **Listening checks:** Actually inspect the audible final output with an available audio-listening capability. Assess pronunciation, intelligibility, pacing, voice consistency, joins, clipping and the opening and ending. Match review coverage to the length and stakes; review the full narration when exact completeness is required. A waveform, transcript, metadata read or playback command without audio perception is not listening
 
 After correcting a passage, verify that correction and its joins in the resulting export. If only part was heard, identify the reviewed portions and the remainder. If listening is unavailable, deliver the file with its actual file/content checks and explicitly state that audible pronunciation, pacing, artifacts and any unverified script coverage remain unchecked. Do not label such a result fully verified. If generation itself is unavailable or fails, report the blocker and any prepared script as partial work, never as a completed narration.
+
+## Fictional repair example, not executed
+
+An approved fictional three-paragraph museum script ends paragraph 1 with “Leave the blue dial unchanged.” Paragraph 2 begins “Turn the copper dial once.” A revised paragraph-2 take accidentally speaks the last sentence of paragraph 1 as its contextual lead-in. The expected check flags that duplicated sentence, selects a corrected paragraph-2 take, and rechecks both adjacent joins in a new full export. The script's wording remains unchanged.
+
+If the corrected take is longer, the old measured runtime and later cue positions are no longer final evidence. Remeasure the assembled export and review the affected timing before handoff. This example describes expected decisions only; no audio was generated, assembled or heard.
 
 ## Hand off the narration
 
