@@ -44,6 +44,14 @@ Run only the relevant analysis, with its assumptions explicit. Avoid an unreques
 
 Choose deterministic tie rules where reproducible output matters, without calling one arbitrary valid ordering uniquely correct. For approximate, sampled or limited calculations, state what was searched and what remains unresolved. A resource limit or failed run is not proof of disconnection or absence.
 
+## Preserve time-respecting paths when links are temporary
+
+For reachability through timed contacts or transfers, distinguish a snapshot, the union of observed links, and a journey in time order. Define start/deadline, event versus availability-interval semantics, traversal duration, waiting limits, and whether arrival exactly at departure permits onward transfer. Clock precision or synchronization may leave order unresolved; do not invent it from display order. [Pan and Saramäki's temporal-path study](https://arxiv.org/abs/1101.5913) explains why static paths may be unavailable in timed networks.
+
+Use event-aware traversal or a justified time-expanded model. Each departure must follow the preceding arrival under those rules; merely filtering all edges to the overall window is insufficient. Preserve repeated contacts and return a witness with source IDs, departure/arrival times and waits. Replay it against original records. Minimum hops, earliest arrival from a fixed start and shortest elapsed journey can differ. Scope an absent-path finding to the observation window and supplied rules.
+
+**Fictional illustration, not executed:** A package is available at A at time 0. The only transfers are A to B departing at 5 and arriving at 6, and B to C departing at 3 and arriving at 4. Their union contains A to B to C, but it supplies no journey from A to C: the onward transfer has already left. Changing the second transfer to departure 7 and arrival 8 would permit that journey if waiting at B is allowed. A proposed check should distinguish these two inputs and replay the actual times; no traversal or transfer was run.
+
 ## Compare states without changing the source facts
 
 Keep the baseline and any proposed, filtered or time-specific graph separate. State exactly which nodes or edges changed, whether the node population remains fixed, and whether counts refer to each view or their difference. Preserve excluded relationships in the reusable source representation when appropriate.
