@@ -29,6 +29,14 @@ Record the selected geocoding result with country/region, coordinates and provid
 
 Build a timestamp-keyed join and preserve per-city gaps. If one city refreshes and another fails, keep separate retrieval dates and status. When a user changes the city selection during a request, discard the obsolete response instead of attaching it to the new city’s label.
 
+### Preserve each variable's time support
+
+Record whether each variable represents an instant or an interval sum, mean, maximum or probability, retaining provider-defined bounds and label conventions. [Open-Meteo's hourly definitions](https://open-meteo.com/en/docs) distinguish instantaneous temperature from precipitation summed over the preceding hour. Do not infer time support from row spacing or shift every variable together.
+
+Before slicing, distinguish requested timestamp rows from a requested physical interval. Retrieve the boundary-labelled records needed for that interval, preserve original labels, and check coverage per variable. If a boundary cuts through a reported total, leave the partial amount unresolved unless a justified disaggregation method is available; proportional splitting assumes uniform precipitation.
+
+**Fictional, unexecuted illustration:** a precipitation value of 2 mm labelled 09:00 UTC covers the preceding 08:00–09:00 hour; the temperature at 09:00 is instantaneous. A request for precipitation during 09:00–10:00 needs the total labelled 10:00, not the 09:00 total. If that record is missing, report the interval as unavailable. Check this boundary case when validating window selection. No forecast request or normalization run was executed for this illustration.
+
 ## Output
 
 An aligned table or structured snapshot with location identity, UTC timestamps, units, gaps, fetch provenance and source attribution.
