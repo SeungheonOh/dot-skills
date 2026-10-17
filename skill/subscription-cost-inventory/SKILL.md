@@ -32,6 +32,16 @@ Use this when recurring charges, memberships and trials are scattered across rec
 
 6. **Return an actionable inventory.** Provide the normalized register, run-rate table, dated charge calendar, unresolved-price list and duplicate candidates with check outcomes. Identify which totals are incomplete and which supplied terms need review first. Describe hypothetical reductions as modeled differences only. Create the requested inventory, including a usable worksheet if appropriate, and verify any save to the already authorized destination. Keep source services unchanged: do not cancel, renew, contact providers, expand account access, claim achieved savings or recommend investments. Any subsequent service change needs its own instruction.
 
+### Apply price changes to the right billing events
+
+Keep price terms separate from recurrence dates. When supplied evidence contains an introductory period, scheduled price change or seat-count change, retain each term's effective boundary, currency, tax basis and applicability rule. Establish whether the change applies by renewal, service period or another explicitly supplied trigger; a notice date alone does not answer that question. Assign each projected event the supported applicable terms. Overlapping conflicting terms, an uncovered later period or unknown usage-based additions leave the affected amount unresolved, even when the date and base fee are known. Do not carry an expiring introductory price forward indefinitely or invent proration.
+
+Label run-rates by the terms they describe: the current price's annualized rate, a known future price's rate and actual charges inside the review window are distinct views. A mid-window change does not turn either constant-rate view into a cash forecast. Preserve the original next-charge evidence if it conflicts with an amendment instead of silently applying whichever amount makes the annual total simpler.
+
+Fictional, unexecuted illustration: a supplied monthly rule charges on the 15th, with twelve events from October 2026 through September 2027. The terms explicitly charge USD 8 for October–December and USD 12 from the January renewal onward, inclusive of all charges. The window total is 3 × USD 8 + 9 × USD 12 = USD 132. The initial annualized rate is USD 96 and the later rate is USD 144; neither equals the window's charges. If the January transition amount is unspecified, preserve that event as unresolved rather than selecting either price.
+
+For a later clarification, bind the amended terms to the same subscription and affected billing events, retaining the prior source/version. Rebuild the affected calendar, run-rates, completeness labels and saved summary together. A second export or revised price record is not automatically another subscription or another charge. Do not leave an earlier total presented as current after its supporting terms change.
+
 ### Keep arithmetic exact until presentation
 
 Parse supplied decimal prices without first converting them to binary floating point. Use the currency's defined minor-unit scale or an appropriate decimal representation; do not assume every currency has two decimal places. Reject excess precision or apply only the rounding rule the task explicitly permits.
