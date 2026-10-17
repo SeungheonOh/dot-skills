@@ -33,6 +33,16 @@ Follow the intended reading sequence through columns, positioned objects, side n
 
 Use native lists for genuine sequences or parallel items where supported. Preserve grouping, order, continuation and intentional restarts. A visible digit or bullet character does not by itself encode a list, and a newly numbered list must not imply an order the source never established.
 
+### Repeated page content and artifacts
+
+Review running titles, page numbers, borders and recurring notices separately from body content. Repetition alone does not make an element decorative: repeated table headers identify values, and a repeated warning may still govern each procedure. For tagged PDF, [W3C's running-header technique](https://www.w3.org/WAI/WCAG22/Techniques/pdf/PDF14) describes pagination artifacts, while its [artifact technique](https://www.w3.org/WAI/WCAG22/Techniques/pdf/PDF4) distinguishes non-content markings from authored content. Use the target format's supported treatment rather than importing a PDF-specific operation into another format.
+
+Before excluding a header, footer or marginal object from the reading sequence, check whether it is the only accessible occurrence of a meaningful qualification, date, section identity or instruction. Preserve that information in the appropriate content location within the authorized repair. Keep useful visible location cues; removing an object from ordinary reading is not permission to erase it from the page. Do not solve duplicated running text by dropping genuine section headings or table header associations.
+
+Inspect the saved treatment across affected page types and section transitions, including exceptions that only resemble the repeated furniture. Confirm both sides of the repair: the unwanted interruption is excluded by the supported representation, and necessary meaning remains in sequence. Keep structural evidence separate from an observed screen-reader result. If logical page navigation also needs repair, use the [PDF navigation workflow](../add-pdf-navigation/SKILL.md); an artifact decision does not establish correct page labels.
+
+**Fictional, unexecuted illustration:** An invented workshop PDF repeats its short title and page number on each page, but page 5 has a margin note, “Complete step 2 before step 3,” with no equivalent in the procedure. The proposed repair treats the ordinary running furniture appropriately while preserving the note beside its dependent step in the reading sequence. Applying one artifact rule to all margin objects would lose an instruction. No document was edited, rendered or read with assistive technology for this illustration.
+
 ### Tables and comparisons
 
 Preserve the identity and relationship of each value, label, unit and note. Identify which rows or columns actually supply headers and express those relationships through the target format. A repeating row, a bold first row and a complete header association are not interchangeable properties. Inspect what the specific format supports instead of declaring a table accessible because one flag is present.
