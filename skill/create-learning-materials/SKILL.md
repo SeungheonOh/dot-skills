@@ -43,6 +43,17 @@ For independent use, make prerequisites, instructions, examples, practice, and f
 
 Use vocabulary, notation, and layout consistently. Check that a task does not accidentally reveal its answer in the neighboring example or depend on content omitted from the learner version. Keep optional extension material distinguishable from what is needed to achieve the stated goal.
 
+### Recover from a changed or defective activity
+
+When an activity or its governing source changes after learner and answer versions exist, reconcile the affected parts before reusing the packet. A short correction note is enough for a small lesson; use task labels or revision markers when several copies would otherwise be confused.
+
+- Trace the change to its instructions, supplied inputs, explanation, worked answer, feedback, and any later activity that depends on it. Correct the affected learner and facilitator versions together, preserve unrelated annotations, and make the superseded version distinguishable
+- Separate a wrong answer key from an under-specified task. A valid prompt may need only a corrected solution; missing information or conflicting rules may require a revised prompt or a source decision. Hold the affected activity when no fair answer can be established instead of inventing a hidden requirement
+- If actual attempts are supplied for review, retain their original wording and the version and permitted resources learners received. Recheck against those conditions. An answer-key defect is not a learner error; an activity that cannot support a fair judgment is not assessable as written. Added conditions require a fresh attempt, which remains unattempted until supplied
+- Recheck dependent examples and answer-reveal boundaries after the repair. State the correction and its scope without claiming that revised materials were delivered, used, or understood unless that happened
+
+**Fictional, unexecuted illustration:** An invented notice-writing activity requires choosing exactly one notice per item and supplies two rules: ready items receive a blue notice and delayed items receive an amber notice. Its case says an item is both ready and delayed, but supplies no priority rule; the key accepts only blue. Hold that case as under-specified rather than marking amber wrong. Resolve the rule or revise the case, then align the prompt, key, and facilitator note. No learner attempt, lesson delivery, or assessment was executed for this illustration.
+
 ## Check the teaching content and deliver it
 
 Solve the tasks using only the information and permitted resources the learner receives. Check worked examples and answers independently enough to catch arithmetic, logical, factual, or execution errors. When a task admits several valid approaches, verify that the feedback accepts them. Repair contradictory or impossible instructions rather than blaming an imagined learner.
