@@ -32,6 +32,16 @@ Keep missing, zero, not applicable, and invalid values distinct. Do not silently
 
 Resolve ordinary preparation within the requested analysis. Preserve ambiguous records and bound their effect when possible; ask for a definition only when needed. Avoid turning every analysis into a full cleanup or reconciliation project.
 
+### Make a missing-outcome comparison calculable
+
+For an unweighted binary outcome, keep a compact count reconciliation for each compared population: eligible units `n`, observed successes `s`, observed failures `f`, and eligible units with unknown outcomes `u`. After resolving the unit of analysis, each eligible unit belongs to exactly one category, so `n = s + f + u`. Keep exclusions and their reasons outside this partition; do not infer eligibility from records that survived an outcome filter. A duplicate or disputed identity can prevent this reconciliation even when every row has an outcome.
+
+Report the observed-outcome rate `s / (s + f)` with its coverage `(s + f) / n`. If the question concerns all eligible units, and the only unresolved information is which of the `u` binary outcomes succeeded, the all-eligible rate is bounded by `s / n` and `(s + u) / n`. These are logical missing-outcome bounds, not a confidence interval or an estimate that missingness is random. They do not cover an unknown eligible population, disputed outcome definitions, measurement errors or unequal weights. If `n = 0`, the rate is undefined; if `s + f = 0`, the observed-outcome rate is undefined.
+
+Use the same outcome definition and observation horizon in both periods. An outcome that is not yet due may call for a mature cohort or a time-to-outcome analysis, rather than treating every unfinished case as missing or failed. For a small descriptive comparison, this count reconciliation and a short sensitivity result can be enough; it need not become a new workbook or validator.
+
+The success-count denominator follows [NIST's definition of a binomial proportion](https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/binoprop.htm). The bounds above follow by assigning none or all of the known unknown outcomes to success; applying them does not imply that binomial inference assumptions hold.
+
 ## Calculate, then explore what explains the result
 
 Start with the calculation most directly responsive to the question. Show its magnitude in useful units, with enough supporting counts to interpret it. Distinguish a percentage-point difference from a relative percent change, and avoid precision the data cannot support.
@@ -62,3 +72,15 @@ Use a chart only when it makes a comparison, distribution, or pattern easier to 
 Keep transformations reproducible with tools actually available: retain the source reference and the filters, derived fields, exclusions, weighting, and aggregation used. Save a rerunnable calculation when the work warrants it; a small calculation can have a compact explanation instead. Check headline values against the executed results and inspect any delivered chart or file for misleading labels or stale values. Report what was actually calculated, not an unexecuted method as a finding.
 
 Deliver in the requested format with the relevant source links or artifact. Ordinary requested analysis does not need a new approval round; changing source records, sharing data, or building an app is separate work unless requested.
+
+## Fictional, unexecuted example: an apparent improvement
+
+The following counts and source description are invented. They illustrate the reasoning and expected write-up; no dataset, calculation tool or analysis workflow was executed.
+
+**Question:** Did the share of requests completed within seven days increase? The supplied fictional export is a complete list of eligible requests, with one row per request, the same seven-day definition in each cohort, and enough elapsed time for every request to reach that horizon. The current cohort has 100 requests: 72 known successes, 18 known failures and 10 unknown outcomes. The earlier cohort has 100 requests: 76 successes, 24 failures and no unknown outcomes.
+
+**Expected arithmetic:** Current observed-outcome rate is `72 / 90 = 80%`, with `90 / 100 = 90%` coverage. Earlier rate is `76 / 100 = 76%`, with complete outcome coverage. The current all-eligible rate is between `72 / 100 = 72%` and `82 / 100 = 82%`. Its difference from the earlier rate is therefore between -4 and +6 percentage points.
+
+**Useful answer:** “Among requests with known outcomes, the rate is 80%, compared with 76% earlier. Ten of the current 100 outcomes are unknown, so the all-request rate could be 72–82%; these records do not yet establish an overall increase.” The next useful evidence is the ten missing outcomes or a supported reason to redefine the population, not an arbitrary imputation.
+
+A response that simply reports “up 4%” fails twice: it confuses percentage points with relative change and hides the different coverage. Do not change the claim to a causal improvement even if the missing outcomes are later recovered.
