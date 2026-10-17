@@ -44,6 +44,14 @@ Explain the decisions that alter the route. For example, distinguish an omitted 
 
 For reference material, give exact names and types, required versus optional values, defaults that actually apply, and the conditions for errors. A schema default is not evidence that a consumer fills an omitted value. For troubleshooting, begin with an observable symptom and a discriminating check; do not recommend reinstalling or broad configuration changes before identifying the failing layer.
 
+### Bind copyable commands to their execution context
+
+For a command-based path, name the supported shell/runtime, starting directory, input location and output destination before the first invocation. State whether each path is absolute or relative to that starting directory. Keep a shell prompt, illustrative output and prose outside the copyable command. Avoid unexplained continuation characters, typographic quotes and placeholders such as `<file>` that a reader might paste literally into a shell.
+
+Quote each substituted argument according to the actual shell and the value's allowed characters. For example, Bash and PowerShell have their own quoting and interpolation rules; do not relabel a snippet for another shell after changing only path separators. Consult the [Bash quoting reference](https://www.gnu.org/s/bash/manual/html_node/Quoting.html) or [PowerShell quoting reference](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.5) when those are the supported environments. Prefer one complete supported route over several unchecked platform variants.
+
+Make the completion check depend on the new result: identify the saved artifact or supported state query, expected content or identities, and any documented completion status. A file left by an earlier run, a progress message or an accepted background job is not evidence that this invocation finished. Explain the consequential failure branch beside the step: what may already have changed, what evidence to inspect, and whether the documented operation can be retried safely. Do not invent overwrite, rollback, retry or cleanup behavior to finish the tutorial.
+
 ## Verify as a reader
 
 Walk through the guide in order, using only the context it provides. Check that every named file, link, field, flag, and prerequisite exists at the documented revision. Check copied examples for syntax, consistent identifiers, and expected results.
@@ -61,3 +69,23 @@ Write or update the requested document, including relevant examples and the comp
 Read back the saved result. Check local links and anchors, rendered code formatting when relevant, and whether the main path remains understandable without unpublished notes. Mention the supported version, checks actually performed, and material limitations in proportion to the task.
 
 If the guide exposes a product defect or unresolved contract, make that distinction explicit and finish the unaffected documentation. Do not present a proposed workaround as a supported fix or a draft as a published page. Publish or share only to the destination and audience already authorized by the user.
+
+## Fictional, unexecuted example: a file-export guide
+
+All names, paths, commands and product behavior in this example are invented. The command is illustrative, not an installed utility or a verified product instruction. No command or reader trial was run.
+
+**Supplied fictional contract:** `demo-pack 1.4` is already available in Bash. Its `export` subcommand reads a CSV input and creates the named JSON output; it does not modify the input or contact a service. The CSV has the header `item_id,title` and rows `D-01,Setup` and `D-02,Review`. A successful run returns status 0 after writing a JSON array of two objects, preserving those field names and string values. An existing destination causes status 3 before any write. No contract is supplied for an interrupted write.
+
+**Expected guide excerpt:**
+
+1. Start in the extracted example folder `/work/demo-guide`. Confirm that `samples/weekly notes.csv` is the intended input and that the `out` folder exists. The paths below are relative to this starting folder. Choose an unused output filename; the example uses `out/review-01.json`.
+2. Run the following illustrative Bash command only in an environment that actually implements the fictional contract:
+
+   ```sh
+   demo-pack export --input 'samples/weekly notes.csv' --output 'out/review-01.json'
+   ```
+
+3. On status 0, reopen `out/review-01.json` and confirm the array contains exactly two objects: `{"item_id":"D-01","title":"Setup"}` and `{"item_id":"D-02","title":"Review"}`, without assuming an order the contract does not promise. The header is not a record. Finding an older file at that path does not satisfy this check.
+4. On status 3, preserve the existing output and choose another unused destination. If execution was interrupted, inspect the destination as an uncertain candidate; the supplied contract does not establish that a partial file can be overwritten or that rerunning is safe. Do not append an unsupported `--force` flag.
+
+The guide's verification note should say “authored from the supplied fictional contract; execution and recipient use untested.” If a real guide is source-reviewed but unrun, give its actual source revision and specific unrun check instead of copying this example's invented version or claiming the steps passed.
