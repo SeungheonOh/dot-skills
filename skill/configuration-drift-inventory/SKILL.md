@@ -25,6 +25,14 @@ A service behaves differently across environments and the team needs a field-lev
 
 Create one snapshot record per environment: environment label, capture time with timezone, format, covered paths, completeness and source. Require sanitized inputs before comparing values. Define a redaction allowlist for safe secret metadata, such as presence and an owner-supplied version label; never compute or display secret-derived fingerprints. If a raw credential is discovered, stop processing that input, omit its value from diagnostics and request a sanitized replacement. Record baseline authority by field or namespace rather than assuming one file governs everything.
 
+### Reject ambiguous parsing before comparing values
+
+Check for duplicate member names within each JSON object before converting it into a map or normalizing key order. This is different from a documented override in a separate configuration layer. Duplicate names can be discarded by a permissive parser, making two snapshots look equivalent even when their input is ambiguous. [RFC 8259 section 4](https://www.rfc-editor.org/rfc/rfc8259.html#section-4) describes differing receiver behavior; Python's [JSON decoder documentation](https://docs.python.org/3/library/json.html#repeated-names-within-an-object) explicitly describes its default last-value behavior.
+
+Use an existing permitted duplicate-aware reader when available. Otherwise request a unique-key sanitized export or evidence of the actual consumer's parsing rule; do not silently choose first-value or last-value semantics. Retain the ambiguity and safe source locations, and mark affected effective values and any dependent inheritance unknown until resolved. Do not rewrite the source to remove duplicates. For other formats, establish the format/version and parser options that affect interpretation rather than assuming a generic parser matches the application's consumer.
+
+**Fictional, unexecuted illustration:** a Pine snapshot contains `{"timeout_ms": 800, "timeout_ms": 1600}` while its baseline contains only `{"timeout_ms": 1600}`. A last-value reader would report equality, but this inventory keeps the snapshot's effective timeout unknown pending a corrected export or an evidenced consumer rule. An unrelated, unambiguous field can still be compared.
+
 ### Compute meaningful differences
 
 1. Parse available formats using an existing permitted local parser, or manually extract the bounded fields. Preserve provenance for each layer: default, template, environment override and explicit local value. Apply precedence only when the supplied rules determine it. For unresolved interpolation or missing includes, label the effective value unknown.
