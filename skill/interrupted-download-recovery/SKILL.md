@@ -59,6 +59,10 @@ Apply these branches:
 
 These branches follow [RFC 9110 §§14.4, 15.3.7 and 15.5.17](https://www.rfc-editor.org/rfc/rfc9110.html#section-14.4). The conservative single-suffix example below additionally requires a known total, the suffix through the final byte, a repeated matching strong ETag on resumed responses, and ordinary Content-Length framing. These are its acceptance constraints, not claims that other RFC-valid responses are invalid. A shorter valid segment needs a separately bounded continuation plan; it is not a completed download.
 
+If checksum evidence comes from HTTP digest fields, record its scope as well as its algorithm and provenance. Under [RFC 9530 §§2–3](https://www.rfc-editor.org/rfc/rfc9530.html#section-2), `Content-Digest` covers message content: for a single-range 206 it checks the returned segment, not the preserved prefix or assembled file. `Repr-Digest` covers the entire selected representation. Bind that representation and content coding to the recovery contract before using it as a whole-file comparison. Parse the fields using their defined structured-field syntax; do not compare their encoded values directly with a hexadecimal checksum or reinterpret an ETag as a digest. Neither field by itself authenticates a publisher or overrides a separately supplied expected checksum.
+
+If a required digest is in a trailer, finish the framed response and read that trailer through the supported client before declaring the check complete. A client that cannot expose it leaves the required check unavailable. Keep segment-digest, whole-file-baseline and representation-binding results separate; an unsupported or mismatching required check remains a hold rather than silently lowering the contract.
+
 Count bytes actually returned. EOF, a timeout or an exception can leave a shorter body than advertised. An HTTP/1.1 message cut short under its framing is incomplete; saving its partial bytes does not make it complete. See [RFC 9112 §§6.3 and 8](https://www.rfc-editor.org/rfc/rfc9112.html#section-6.3). Do not assume a chunked read API will always raise for every truncation. Verify the observed count and final contract yourself.
 
 ## 3. Verify and publish one candidate
@@ -95,6 +99,10 @@ Scope: actual HTTP exchange or in-process test, and untested properties
 ```
 
 Keep failed copies visibly distinct from usable output. Do not delete real partials or leftovers automatically. A report that merely says “retry with resume” is not the completed operation.
+
+## Additional static illustration: a segment is not the whole file
+
+This original fictional illustration is unexecuted. A receipt-bound 60-byte prefix belongs to a 100-byte identity-coded notice. A proposed response has `Content-Range: bytes 60-99/100`, 40 body bytes and a matching SHA-256 `Content-Digest`. That would support only the segment's digest check. The 100-byte candidate must still match the separately supplied whole-file checksum; if it does not, publication stays held even though the segment passed. A correctly scoped `Repr-Digest` would be compared with all 100 bytes, never just the suffix. No HTTP request, checksum calculation or recovered file is claimed here.
 
 ## Reproducible fictional example
 
