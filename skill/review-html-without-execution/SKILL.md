@@ -31,6 +31,8 @@ For example, [MDN's DOMParser documentation](https://developer.mozilla.org/en-US
 
 Use already authorized local dependencies when suitable. Record the parser version, preserve required third-party notices if bundling it, and keep parsing separate from application rendering. The report renderer should construct its own elements and insert findings as text.
 
+For a fragment, preserve the intended parsing context as well as the text. Table, select and foreign-content contexts can produce a different tree from a full-document parse or a generic wrapper. Use the passive parser's documented fragment mode with the supplied context element and namespace; [parse5's fragment API](https://parse5.js.org/functions/parse5.parseFragment.html) is one example. This does not require inserting source into a browser. If the insertion context is unknown, ask only when it affects the requested finding, otherwise label context-dependent results unresolved. Do not call a node missing merely because the wrong parse mode discarded or relocated it. Reparse the unchanged source with the established context and rebuild affected indexes before revising the report.
+
 ### 2. Bound input and distinguish parser limits
 
 Reject oversized input before expensive decoding or allocation. Decode the declared encoding explicitly; report unsupported or invalid bytes rather than silently repairing a file and presenting exact source positions.
@@ -48,6 +50,8 @@ Treat the provided source as one evidence layer. A reference absent from static 
 ### 4. Check native label association precisely
 
 For an explicit label, inspect its `for` target and whether the target is a built-in labelable element. If the target is a custom element, preserve the uncertainty until its form-associated behavior is known.
+
+Apply explicit association before implicit fallback. Under the [HTML label rules](https://html.spec.whatwg.org/multipage/forms.html#the-label-element), a present `for` uses the first matching ID in the same tree. If that first element is not labelable, do not skip it to a later matching control. A present but empty, missing-target or non-labelable-target `for` does not fall back to a nested control; the descendant rule applies when `for` is absent. Report duplicate IDs separately from the association selected by these rules, retaining the uncertainty for custom elements described above.
 
 For an implicit label, use its first labelable descendant in tree order. That descendant can be an output, meter, progress element or another control, not necessarily the visually adjacent input. See the [HTML label definition](https://html.spec.whatwg.org/multipage/forms.html#the-label-element).
 
@@ -80,6 +84,8 @@ Omit the complete source when the findings suffice, but remember that IDs, label
 A label contains the text Hours, then an output showing 24, then a range input. It has no `for` attribute. The first labelable descendant is the output, so the range input has no native label from that wrapper.
 
 Adding `for="hours"` to the label and `id="hours"` to the range input makes the intended association explicit. Verify both the changed association and the remaining visible text. Do not conclude that the entire control or page is accessible from that repair alone.
+
+**Fictional, unexecuted illustration:** A supplied row fragment is intended for a `tbody` context. Within its cell, a label has `for="seat-count"`, contains a number input, and follows a non-labelable span with `id="seat-count"`; a later number input repeats that ID. The planned passive review would preserve the row's parsing context, flag the duplicate ID, and report that this label has no native association: the first matching element is the span, and the nested input cannot supply fallback while `for` is present. An authorized repair would need a unique intended target and a fresh association check. This illustration has not been parsed or executed and adds no evidence to the historical checks below.
 
 ## Executed checks and limits
 
