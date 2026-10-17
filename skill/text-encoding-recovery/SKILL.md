@@ -42,6 +42,14 @@ Choose only a small evidence-based set of candidate decoders. Use strict error h
 
 If candidates produce different plausible text and source evidence does not resolve them, return the comparison and one decision-changing question. Finish unrelated files with supported interpretations. Do not label the first decoder that succeeds as detected or confirmed.
 
+### Preserve decoder state across read boundaries
+
+For a large file read in blocks, use one strict incremental decoder per supported source interpretation, retaining its state across blocks. A read boundary can split a multibyte character, signature or stateful escape sequence; it is not evidence of mixed encodings. Do not independently decode each block or reset the decoder at a line boundary. Finalize explicitly at actual end of input so buffered incomplete bytes cannot disappear behind an apparently successful prefix. Keep partial output unavailable as a recovered copy if finalization fails. Python's [incremental codec contract](https://docs.python.org/3.12/library/codecs.html#incremental-encoding-and-decoding) describes state retention and final-buffer error handling.
+
+Check that different block boundaries produce the same complete character sequence as a bounded whole-input strict decode under the same rules. When reporting errors, include buffered bytes in the offset accounting so a chunk-local index is not mistaken for a source-file offset.
+
+Fictional, unexecuted illustration: a declared UTF-8 log splits the four bytes `F0 9F A7 AD` between `F0 9F` and `A7 AD`. Together they encode U+1F9ED under [RFC 3629](https://www.rfc-editor.org/rfc/rfc3629.html#section-3); rejecting the first block alone would misdiagnose valid input. If the file actually ends after `F0 9F`, strict finalization must fail and the saved prefix stays incomplete. Neither case licenses replacement characters or another decoder.
+
 ## 3. Distinguish decoding from reversing prior damage
 
 For a file that contains correct characters but uses a different encoding from the receiver, a justified decode and encode is sufficient. Preserve the decoded character sequence exactly unless the task explicitly authorizes another change.
