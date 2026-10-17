@@ -57,6 +57,18 @@ Reopen the exact saved template and make the smallest filled copy needed to exer
 
 Inspect native relationships after any application save or conversion as well as the rendered slides. A consumer can preserve visible text while changing placeholder identities or losing layout definitions. Explain the consequence for later filling or insertion; unchanged appearance alone does not establish that those operations still work. Keep the clean original intact, and distinguish package inspection and programmatic reuse from the target application's menu or keyboard behavior.
 
+## Check fonts needed for later editing
+
+When a deck or template must remain editable on another machine, inspect the fonts used by native text, theme/master definitions and chart labels. Distinguish an installed authoring font from an embedded font and from a font the recipient would need to obtain. A correct rendering on the author's machine can conceal that dependency.
+
+For PowerPoint, check the supported version and the font's embedding permissions before choosing embedding. [Microsoft's font-embedding guidance](https://support.microsoft.com/en-us/office/fonts/benefits-of-embedding-custom-fonts) distinguishes embedding permissions and warns that embedding only used characters limits later editing with that font. Where permitted and supported, an editable handoff may need all characters rather than a subset. Do not assume a Preview/Print permission allows the promised editing, or distribute or install a font simply to remove a warning.
+
+In a disposable copy, exercise the expected edit with representative new characters, accents or symbols that were absent from the original deck's use of that font. Save, reopen and inspect the changed text, line breaks and nearby objects in the intended application when available. Record whether that consumer already had the font installed: a pass with a local font does not demonstrate that the embedded font alone is sufficient.
+
+If a required font cannot travel with the deck, identify the dependency and resolve a material substitution with the user. If typography was delegated, choose an available suitable fallback within that scope. Recheck all affected slides, masters and chart labels after substitution; never flatten required editable text to make the preview match.
+
+Fictional acceptance illustration, not an executed application test: an editable quarterly-review template starts with the title `Q1`. Its intended users need to replace that with `År 2027 · 12%`. The reuse check covers those new characters, unchanged title editability, wrapping and save/reopen behavior. A subset-only embedding or a source-machine-only preview leaves recipient editing unresolved; an approved fallback requires the same checks on the revised file. This illustration does not change the separate five-slide worked example below.
+
 ## Verify the exact export
 
 Check content and file behavior separately:
