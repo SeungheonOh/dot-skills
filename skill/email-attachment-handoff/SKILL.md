@@ -87,6 +87,10 @@ Create a decision row for every requested deliverable and every candidate that c
 
 Use explicit replacement/approval wording, an identified revision inside the file, or another supplied authoritative selection rule. Date headers and filesystem modification times alone do not select a final revision. “Attached again” may support an equality relationship; it does not prove that different bytes are interchangeable. Do not deduplicate based on basename, subject, Message-ID or hash alone.
 
+Before using body wording to select a revision, check whether it belongs to a `multipart/alternative` group; if so, compare the decision-bearing text in the safely readable alternatives. [RFC 2046 §5.1.4](https://www.rfc-editor.org/rfc/rfc2046.html#section-5.1.4) defines alternate representations and a presentation preference, not a chronology of approvals. Do not treat the last MIME part as the newest decision or the plain-text part as automatically authoritative. Inspect HTML only as inert source or with an existing offline parser that loads no resources; preserve relevant qualifications and quote boundaries. Text extraction that loses a struck-through approval or its surrounding condition is insufficient decision evidence.
+
+Record which body part supports the decision and any material disagreement. Additional detail in a richer alternative can matter without making the entire message contradictory; retain the detail and its locator rather than discarding it because plain text omitted it. If alternatives disagree on approval/replacement, or a necessary alternative cannot be interpreted safely, hold the dependent revision choice and name the specific clarification needed. Do not merge quoted older wording with the current author's statement. Independent attachments with supported selections can still be delivered in a clearly partial packet.
+
 Typical outcomes are:
 
 | Evidence | Result |
@@ -124,6 +128,10 @@ Read the saved outputs back from disk. Independently check:
 Lead the handoff with the actual packet location, what is ready and the remaining decision. State the number of logical requests resolved, selected occurrence files and retained source occurrences. Give direct file/index references rather than an extraction recipe alone.
 
 Separate local parsing, transfer decoding, output-byte readback and text readability from untested claims. This work does not establish original sender authenticity, full mailbox/export coverage, preserved mail-client flags/folders, verified signatures, decrypted contents or live application compatibility. Stop when the requested local packet is delivered and the remaining blockers are specific enough for the user to resolve.
+
+## Additional static illustration: conflicting body alternatives
+
+This original fictional illustration is unexecuted. Source occurrence `s006` contains a `multipart/alternative` body at `root.1` and an attached revision C at `root.2`. The plain-text body `root.1.1` says “Revision C is approved”; the inert HTML source at `root.1.2` says “Revision C is pending review.” Part order and equal attachment bytes cannot settle that conflict. The decision record retains both body locators and holds C pending clarification, while a separately supported packing-list request can remain ready. No MIME parsing, file extraction or delivery is claimed for this illustration.
 
 ## Worked attachment handoff
 
