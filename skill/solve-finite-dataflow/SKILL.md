@@ -54,6 +54,12 @@ Check that every seed remains present, every transfer implication holds at the r
 
 For small acyclic grammar fixtures, enumerate complete derivation trees independently. Derive FIRST from the first terminal of each yield, nullable from empty yields, and FOLLOW from the terminal immediately after each nonterminal's span in a complete start derivation. Use reachable, productive fixtures for this oracle so that its language-yield interpretation matches the intended comparison. Bounded enumeration of a recursive grammar is not a completeness oracle.
 
+### Distinguish closure from the least result
+
+A returned state can retain every seed and satisfy every transfer rule while containing unsupported extra facts. Checking that another pass adds nothing establishes closure, not leastness. Under this guide's growth-only, set-inclusion model, independently replay from the declared seeds to convergence and compare exact sets, or validate a derivation for every reported fact as well as closure. Each non-seed derivation must name a valid rule whose required facts were established earlier; circular justifications alone do not suffice. A bounded verification that stops early leaves leastness unverified. [Cornell's FIRST/FOLLOW derivation](https://www.cs.cornell.edu/courses/cs4120/2026sp/notes/topdown/) explains why empty-set initialization selects the smallest solution even when the equations admit others.
+
+**Fictional, unexecuted illustration:** The only rules copy any fact from A to B and from B to A, and there are no seeds. Both empty sets are the least result. A report placing `red` in both sets also survives another pass and satisfies both implications, but neither occurrence has a seed-founded derivation. Reject that report as an incorrect least-result claim rather than accepting its unchanged final pass.
+
 ### 6. Deliver the result and its scope
 
 Report exact sets, empty sets, seeds, relevant conflicts and resource limits. Keep the source model with the output when authorized. If an interactive input changes, invalidate dependent analyses and traces together. Do not export a stale successful trace beside a newly edited model.
