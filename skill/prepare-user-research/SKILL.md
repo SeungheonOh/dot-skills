@@ -39,6 +39,10 @@ Use an introduction appropriate to the actual session: purpose, what will happen
 
 Make the live note sheet easy to use while listening. Capture the participant/task context, what happened or was said, relevant assistance and unresolved points. Put detailed answer keys, coding legends and later interpretation outside the live sheet when they would overload it. Label coding and synthesis as work after the session, unless the design genuinely requires a live measurement. Quotes require an exact record; otherwise label notes as paraphrases.
 
+For tasks that could affect real accounts, records or people, specify the approved environment, permitted data and stopping point before a real submission, payment or message. Dummy data alone does not make a live endpoint harmless. If real-data use and its safeguards are not established, prepare realistic dummy records in a suitable test setup or a task that stops before the consequential boundary; explain which behavior that fallback cannot establish. [GOV.UK's personal-data testing guidance](https://www.gov.uk/service-manual/user-research/using-moderated-usability-testing#testing-with-personal-data) distinguishes real-data conditions from dummy-data alternatives. Plan to collect only what the question needs, consistent with the organization's actual privacy arrangements; see its [research-data guidance](https://www.gov.uk/service-manual/user-research/managing-user-research-data-participant-privacy#collect-only-the-data-you-need).
+
+Include a proportionate recovery instruction for a broken prototype, unexpected personal information or an unsafe live action: pause the affected task and any recording that would capture unintended data, record only the necessary non-sensitive explanation, and use the pre-agreed safe fallback or stop. Do not ask someone to reveal a password or complete an unapproved transaction to rescue the session. Mark the outcome as blocked by setup where appropriate, separate from a participant's inability to complete a usable task. Retried or assisted attempts stay identifiable; a later success does not erase the first attempt or establish unaided success.
+
 ## Keep comparisons interpretable
 
 When comparing versions, identify the exact candidates and the intended comparison. Different content, capabilities or instructions can explain a difference; do not call it a wording-only effect when those also changed. Surface known omissions separately without silently editing the candidates or declaring how participants will respond.
@@ -46,6 +50,8 @@ When comparing versions, identify the exact candidates and the intended comparis
 If the same people see multiple versions, account for order and learning. Use an appropriate order allocation and comparable task details where feasible, while acknowledging residual carryover and any imbalance. Do not teach the first task's answers before the second and then treat the second as independent first use. Keep first answers distinct from answers after probes or hints.
 
 Define observations that bear on the decision before collecting them. Preserve unsuccessful, unfinished, skipped and unavailable observations separately. Repeated exposures from the same people are not additional independent participants. Preferences can inform a decision, but do not erase consequential misunderstandings. Avoid an arbitrary winning score that conceals tradeoffs or missing evidence.
+
+Give consequential versions of the guide, task, prototype and setup a short identifier and retain the reason for changes. If a practice run or later session reveals a leading prompt or broken setup, repair it for subsequent use while preserving which version each observation came from. Compare only the observations whose conditions remain meaningfully comparable, and disclose changed conditions rather than pooling them as identical trials. Specify any safe setup reset between participants so prior entries or completed task state do not reveal an answer; a reset does not undo a participant's learning.
 
 ## Check and hand over a workable packet
 
@@ -56,3 +62,7 @@ For a more complex session, a permitted practice run can reveal awkward wording 
 Deliver the ready materials with the few unresolved preparation choices that matter. State how observations will be compared or synthesized, what would justify a revision, and when the result should remain inconclusive. Keep contrary evidence and the limits of the sample, method and prototype visible. Do not force a winner or add participants merely to reach a preferred conclusion.
 
 Stop at the preparation the user requested. Recruiting, contacting or scheduling people, collecting their data, enabling recording, publishing a form and distributing findings are separate actions that need their own actual scope and authority. Preserve the original product materials and distinguish a prepared study from one that has run.
+
+## Fictional recovery illustration (not executed)
+
+A mock task asks someone to prepare an event invitation in a test workspace, stopping before Send. The guide says to pause if the workspace unexpectedly switches to a live account, avoid recording real recipients, and resume only from the approved test setup. A retry would be labeled as a second exposure, not a fresh unaided attempt. If the task card is then revised to clarify the stopping point, its new version stays attached to later observations. These are proposed instructions for invented materials; no participant, recording, account change or message was involved.
