@@ -39,6 +39,8 @@ Preserve original cell values in the output. Use a separate comparison key for a
 
 Do not infer which duplicate is newest or authoritative from row order, completeness or a convenient timestamp. A join request alone does not authorize collapsing repeats.
 
+For a multi-column key, compare an ordered tuple with a rule for each component, including what happens when only one component is missing. Never concatenate raw components with an ordinary separator unless the encoding is demonstrably unambiguous: `("ab|c", "d")` and `("ab", "c|d")` both become `ab|c|d` under naive joining. Preserve component boundaries and types with a structured tuple or reversible encoding. Include the source namespace when the identity contract scopes a code to a supplier or registry; equal local codes alone must not create a cross-namespace match. Review any new collisions introduced by normalization before expanding rows.
+
 ### 3. Predict multiplicity before materializing rows
 
 Index all source occurrences by comparison key, retaining their record IDs. For each matching key k with Lk left records and Rk right records, an ordinary many-to-many join produces Lk×Rk pairs. Sum those products before generating the result.
@@ -60,6 +62,10 @@ Preserve an exception register of unmatched record IDs even for an inner join wh
 Verify the result count against the preflight formula and compare source-record pairs with an independent bounded enumeration on small fixtures. Check that every outer unmatched record appears exactly once and that no blank-key pair was created contrary to policy.
 
 Spot-check normalized matches, duplicate expansions and preserved raw values. Ask the owner to resolve an unexpected many-to-many relationship if the business task required one-to-one identity. The arithmetic can be correct while the chosen key is inappropriate.
+
+If the output carries amounts or other measures, record the measure's source grain before anyone totals it. Fan-out repeats a source value on every matching pair; matching the expected join row count does not preserve that measure's total. Reconcile source totals by source-record lineage, separately from totals over pairs. Do not use distinct measure values as a repair: different source records may legitimately have equal amounts. Any allocation across matches or pre-aggregation requires its own evidenced rule; retain the requested pair output rather than quietly changing its grain.
+
+Fictional, unexecuted illustration: two left records each contain quantity 5 and share a key with two right records. The four pairs correctly contain four copies of 5, but the left-source quantity is 10, not the pair sum 20. Counting each distinct source-record ID once recovers 10; summing distinct quantity values would incorrectly give 5. A reconciliation should disclose both grains before the joined file is used in a report.
 
 Invalidate an old result if either input or matching policy changes. A delayed file read must not overwrite a newer edit, and an export must correspond to the currently reviewed inputs rather than an earlier preview.
 
