@@ -19,6 +19,8 @@ Before changing a signed or protected file, establish the permitted purpose and 
 
 Record page count and order; effective page boxes, rotation and size; encryption and signature indicators; forms and widget values; annotations, links, bookmarks and tags that matter to the user. Inspect representative renders and text extraction together. Reconcile apparent blanks with the rendered page. Do not drop a blank page or reorder pages because extraction returned nothing.
 
+When page references differ, keep physical file position, PDF page label and visible printed number separate. Bind corrections to the source digest, a declared physical-page numbering convention and the reviewed region; record the printed number or PDF label as an additional locator, not a unique identity. Translate requested ranges into the tool's actual indexing convention before processing, then verify the first and last selected pages visually. Repeated labels, unnumbered covers and inserted pages make a bare “page 3” ambiguous. [OCRmyPDF's page-selection documentation](https://ocrmypdf.readthedocs.io/en/stable/cookbook.html#process-only-certain-pages) explicitly distinguishes physical page order from printed document numbering.
+
 Classify each relevant page, not just the document:
 
 | Page evidence | Working decision |
@@ -51,6 +53,10 @@ For mixed content on a single page or existing OCR, use a supported selective/re
 
 Keep the raw OCR result distinct from the reviewed result. An OCR sidecar is the text recognized during that OCR operation, not a complete document transcript. Extract the final whole PDF separately, by page, to include preserved native text and reveal omissions or duplication.
 
+### Resume without mixing source versions or draft outputs
+
+After an interruption, inspect the existing job state and candidate files before starting another run. A sidecar, output filename or partial page render is not proof that the saved PDF completed or that all requested pages were OCRed. Reuse intermediate work only when its source digest, page mapping, relevant settings and completion status match the intended run. If any of those are uncertain, retain it as a draft and regenerate a separate candidate from the unchanged source rather than layering OCR over an unknown partial output. Keep the last reviewed copy intact until the replacement passes the required checks. A changed source file needs a new mapping and renewed review of affected corrections; matching filenames do not preserve page identity.
+
 ## 3. Review words against their source
 
 Review the rendered source beside the extracted text, using a sufficiently detailed image to resolve characters. Prioritize what the user will rely on: identifiers, names, dates, amounts, decimals, units, punctuation, filenames and URLs, plus negations and limiting words. Check headings, reading order, column boundaries and table cell associations where relevant. A confidence score can help choose what to inspect, but does not authorize a correction.
@@ -79,6 +85,10 @@ Fix an observed failure, regenerate the separate copy and rerun the affected che
 Provide the reviewed copy and a short review note: input identity, pages covered, corrections made, unresolved content, preservation checks and search/copy results. Distinguish completed checks from inaccessible or untested ones. Call a file an OCR draft if review is incomplete. Do not claim accessibility, PDF/UA, PDF/A, signature validity or legal evidentiary equivalence from searchability alone.
 
 If the requested goal includes saving to a named authorized destination, complete that save and verify the saved artifact. A newly shared location or audience still needs the appropriate authority. Provide a local reviewed copy when that is the authorized reachable destination, and explain any remaining requested delivery step.
+
+## Fictional, unexecuted recovery illustration
+
+A fictional scan's seventh physical page is printed “3” after four unnumbered front-matter pages. A correction note therefore identifies physical page 7, printed page 3 and the source digest. An interrupted OCR attempt leaves a sidecar containing that page's text but no verified complete PDF. The recovery keeps the candidate at draft status, checks the source and page selection, and inspects the saved replacement before reporting success. If a new cover was inserted, the old physical position cannot be reused blindly. No PDF, OCR engine or viewer was exercised for this illustration.
 
 ## Original worked example
 
