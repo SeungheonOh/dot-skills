@@ -45,6 +45,14 @@ For ordinary linear history, a genuine new edit after undo abandons the redo fut
 
 Make unavailable undo/redo behavior and availability indicators agree with actual retained entries. Restore the recorded editing context when promised, including after intervening navigation. Keep each document's history attached to that document; switching the active view must not send an undo action to an unrelated model.
 
+### Keep failed traversal from corrupting history
+
+Where an undo or redo can fail, define its recovery before moving the history cursor. Validate the target document and required objects, then use a staged candidate or a supported restoration mechanism so model content, retained context and cursor agree at the operation boundary. Check the actual framework contract: Qt's [stack operations](https://doc.qt.io/qt-6/qundostack.html#undo) invoke commands and move the index; their existence is not evidence that an application's partially applied inverse will be rolled back.
+
+A rejected traversal should leave the prior model and history usable under the agreed failure policy. If an inverse already changed part of the model, merely leaving the cursor unchanged is insufficient. Restore the known pre-traversal state through the chosen mechanism before allowing retry. If restoration cannot be established, preserve the current content and entries, disable further traversal and report the recovery gap instead of silently skipping the entry or marking it undone. Keep the saved reference truthful; a failed traversal is not a successful save.
+
+**Fictional illustration, not executed:** Undoing a two-shape move restores the first shape, then fails on the second. Repeating a relative inverse from that partial state could move the first shape twice. The expected outcome is full restoration to the pre-undo model with the cursor unchanged, or an explicit blocked history if recovery fails. Check both model positions and cursor, not only the error message. No editor or history operation was run for this illustration.
+
 ## Group and merge only compatible actions
 
 An explicit compound action and incremental coalescing solve different problems. A compound action may apply several distinct changes but reverse as one unit. Coalescing may compress adjacent low-level edits, such as typed insertions, into one meaningful action. Add either only when the requested experience needs it.
