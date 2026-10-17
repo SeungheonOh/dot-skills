@@ -28,6 +28,14 @@ If identity, duration, date range or a required zone is unresolved, continue ind
 4. For supplied availability, retain who supplied it, the dates it covers, whether it represents free windows or busy windows, and whether it has been superseded. Do not invent unavailable calendars or assume a message proves availability indefinitely.
 5. Split evidence into known, unknown and stale. Recheck stale accessible data before presenting confident options. If a required participant remains unknown, compute possibilities for the known subset only and label that gap explicitly. Do not contact the missing person unless that outreach is authorized.
 
+### Reconcile partial provider responses
+
+For a batched free/busy read, match the requested verified calendar identities and time bounds to the returned results before treating an empty busy list as free time. Inspect each calendar's and group's errors, including unknown error codes; a successful outer response does not establish success for every participant. For example, [Google's free/busy API](https://developers.google.com/workspace/calendar/api/v3/reference/freebusy/query) documents per-calendar and per-group response errors and coverage bounds, as well as request expansion limits. A missing entry, failed group expansion or errored calendar remains unknown even if a wrapper supplies an empty list.
+
+When limits require smaller requests, batch only the already authorized identity set and reconcile every batch over the needed coverage. Do not widen the audience to make a group query succeed. Accept all-required-participant coverage only after each required identity has a successful, complete result or explicit supplied availability covering the same interval. Preserve gaps if the connector hides per-item status or cannot establish completeness; do not label the remaining calendars' intersection universally available.
+
+**Fictional, unexecuted illustration:** a request names required calendars A, B and C for 09:00–10:00 UTC. A and B return successful empty busy lists; C returns `notFound`, with no supplied availability to replace it. The result is a known-subset proposal awaiting C, not a verified three-person window. No provider request, invitation or calendar write was performed for this illustration.
+
 ## 2. Normalize dates before intersecting intervals
 
 Convert endpoints with an installed time-zone database, using the actual meeting date rather than today's UTC offset. Use full dates, IANA zones and aware timestamps; do the interval arithmetic in UTC.
