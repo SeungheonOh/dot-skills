@@ -27,6 +27,16 @@ Use an existing explicitly endorsed rubric when one is available. If the rubric 
 
 Read all in-scope issues and the necessary prerequisite records. Preserve original IDs, status, version token and text. Deduplicate repeated exports by stable issue ID, not by similar titles; surface conflicting versions. Record each material input as value, source, observation date and any uncertainty. An issue's age or number of comments is not evidence of impact unless the rubric explicitly uses it.
 
+#### Keep issue identities scoped across sources
+
+Use the provider's actual identity scope in deduplication, dependency edges and any write ledger. Retain the tracker instance or host, repository/project namespace where required, native record ID and exact source locator. A displayed number or short key is not automatically globally unique. For example, [GitHub's issue lookup](https://docs.github.com/en/rest/issues/issues#get-an-issue) requires the repository owner, repository and issue number; preserve that repository context rather than joining mixed exports on the number alone. Retain the record kind too: that endpoint can return a pull request, whose inclusion must follow the requested backlog scope.
+
+Count repeated exports once only when they identify the same scoped issue; keep their row locators as provenance. Equal numbers in different namespaces remain separate even when their titles match. If the source does not establish a namespace, keep the identity unresolved rather than borrowing one from an adjacent row.
+
+Resolve a shortened prerequisite reference using its evidenced source context or an explicit cross-project link. If several targets still fit, leave that edge and affected readiness unknown. Carry the resolved identity into refresh, update and readback; do not recover the write target later from a title or bare number. A single-project input can declare its namespace once without repeating it in every display row.
+
+**Fictional, unexecuted illustration:** a packet contains closed `atlas/planner#17`, open `atlas/mobile#17`, and a second export of the planner issue. These are two issues, not one or three. If a third issue explicitly requires `atlas/mobile#17`, the closed planner issue cannot satisfy that prerequisite. A requested field update for the mobile issue must still target that same repository-qualified issue. This illustrates identity handling only; no tracker lookup or update was performed.
+
 Separate reported symptoms, verified effects and proposals. Do not infer a person's competence, effort or reliability from assignment history or a backlog. If an issue contains sensitive vulnerability information, use the authorized defensive impact summary without generating payloads, reproducing exploitation or exposing details to a broader audience.
 
 ### 2. Apply gates before claiming eligibility
