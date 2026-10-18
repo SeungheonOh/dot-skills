@@ -74,6 +74,16 @@ Apply these operation-specific distinctions:
 
 Keep snapshot and protected-system cleanup out of an ordinary file pass. For example, Apple counts Time Machine local-snapshot space as available storage and manages those snapshots automatically; that display is not an extra saving to add to a file list. Do not disable backups or purge snapshots to make the report's numbers match. [Apple's local-snapshot guidance](https://support.apple.com/en-us/102154)
 
+### Budget the space needed before any space is released
+
+For a copy, cross-volume move, export or cloud-file hydration, check peak additional allocation on each affected volume or shared pool, not just the expected final saving. Include the destination copy, relevant temporary/staging output and any source download the chosen route needs while the original remains available for verification. Account for applicable quota and working headroom. Future source removal cannot supply space needed to finish and verify the copy first, and two volumes sharing a pool cannot each spend the same available capacity.
+
+Use the actual transfer method and destination capabilities when estimating demand. Source allocation is not an upper bound on destination allocation: sparse holes, compression, shared extents or hard-link relationships may not survive that route. [GNU cp's sparse and copy-on-write options](https://www.gnu.org/s/coreutils/manual/html_node/cp-invocation.html) illustrate why the selected behavior and permitted fallback matter. Do not budget a lightweight clone when the tool may fall back to an ordinary copy. For ordinary files, full logical payload size for each separately materialized destination copy can be a conservative planning scenario when space-saving behavior is unverified; add relevant overhead and headroom rather than presenting it as an exact allocation bound.
+
+Recheck available capacity before starting and between bounded batches. If the planned route cannot fit, or observed growth makes the remaining plan infeasible, hold further writes and report the needed capacity or an already-authorized alternative. Keep the source and identify any partial destination. Do not delete originals early, purge unrelated data or switch to an unapproved destination merely to make a transfer fit.
+
+**Fictional, unexecuted illustration:** A sparse ordinary file has a logical size of 40 GiB and reported source allocation of 400 MiB. The approved separate destination has 5 GiB available, and the selected route would write a dense, uncompressed copy. Comparing 400 MiB with 5 GiB would wrongly approve the move; the 40 GiB payload cannot fit there while preserving the source until verification. The plan holds that row. No file, copy command or capacity check was executed for this illustration.
+
 ## 5. Execute clear authorized rows and read them back
 
 Before each operation, recheck source identity, current version, residency if relevant, destination identity/access and collisions. Stop a changed row rather than applying a stale plan. Prefer a supported no-overwrite or atomic conditional operation. A path check followed by a rename is not a general concurrency guarantee when other processes can change the directory.
