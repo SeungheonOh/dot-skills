@@ -59,6 +59,18 @@ Avoid original filenames, source paths and opaque payloads unless needed and aut
 
 Limit visible rows and long labels while keeping any complete bounded export clearly identified. Invalidate old exports when inputs change, and prevent late worker replies or canceled file reads from replacing newer results.
 
+### Keep name identity separate from its display
+
+Retain the exact decoded name sequence for tuple comparison and export. [WebAssembly names](https://webassembly.github.io/spec/core/syntax/values.html#names) are sequences of Unicode scalar values, not identifiers restricted to familiar letters. Do not trim, case-fold, normalize Unicode, remove invisible characters or use shortened labels as keys. Two names that look identical can still be different interface entries; display cleanup must not turn a removal and addition into an unchanged tuple.
+
+Provide a bounded escaped or code-point view when names contain invisible controls, line breaks or visually ambiguous text. Distinguish an actual character from literal backslash-escape text, and keep that presentation separate from the unchanged machine-readable name. Clipping a label is a display limit, not permission to shorten the name in the complete comparison or export.
+
+Treat module-controlled names as text in the report renderer. For an HTML interface, use a text insertion API or the framework's equivalent escaping rather than interpreting a label as markup; [MDN's textContent guidance](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#differences_from_innerhtml) explains that distinction. Non-instantiating module inspection does not by itself make an unsafe report-rendering path passive.
+
+For an implemented inspector, add a distinguishing name pair and a markup-shaped name to the relevant comparison/rendering checks. Confirm exact keys and exported names survive while the visible report keeps labels literal. These checks concern representation and passivity, not whether the named export is safe to call.
+
+**Fictional, unexecuted illustration:** One artifact exports the name `run`; its successor instead exports `run` followed by U+200B ZERO WIDTH SPACE, displayed in an escaped diagnostic as `run\u200B`. Under exact name identity this is a removal and an addition, not an unchanged export. A separate name `<b>run</b>` must remain literal label text rather than becoming a bold `run` in an HTML report. No module, inspector or rendering check was executed for this illustration.
+
 ## Worked example
 
 The before module imports ("env", "log", "function") and exports ("tick", "function"). The after module imports ("env", "record", "function") and exports ("run", "function"). The name/kind comparison reports two removed tuples and two added tuples, tied to the two SHA-256 hashes.
