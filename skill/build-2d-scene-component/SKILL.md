@@ -29,6 +29,14 @@ Choose what a query means for this caller:
 
 Use the native operation matching that meaning and map its result to source identity. A bounding envelope can include points outside a shape; painted strokes and antialiasing can extend beyond a fill. Clipping or a visual effect may change visible pixels without changing the underlying path. Do not substitute one of these results for another. Check the selected API's exact limits: Matplotlib's [path containment](https://matplotlib.org/3.10.8/api/path_api.html#matplotlib.path.Path.contains_point), for example, leaves exact-boundary results undefined. Add a boundary policy only when the application needs one.
 
+### Handle transforms without a usable inverse
+
+Before an inverse-based query or edit, check whether the complete mapping for that operation is invertible and inspect the native API's failure signal. A returned matrix alone may be misleading: [Qt's QTransform::inverted](https://doc.qt.io/qt-6/qtransform.html#inverted) returns identity for a singular matrix and reports failure through its optional Boolean output. Do not use that fallback as though source and display coordinates actually coincide.
+
+If the document permits collapsed objects, retain their source geometry. Use a forward-space query only when it satisfies the declared selection contract; otherwise report inverse-based interaction unavailable for that mapping. Do not replace zero scale with an arbitrary small scale or mutate source geometry to manufacture an inverse. A negative nonzero scale can simply reflect an object and is not by itself a failure. Check the relevant singular case and recovery after restoring an invertible transform through the public query/edit path.
+
+**Fictional, unexecuted illustration:** an object's mapping is `(x, y) → (0, y)`. Source points (2, 4) and (9, 4) both map to (0, 4), so a pointer there cannot identify a unique source x coordinate. An identity fallback would invent x = 0. Preserve the accepted object and withhold an edit that needs a unique inverse; this illustration is paper reasoning, not a rendered or executed test.
+
 ## Carry changes through the complete path
 
 Distinguish a source edit from a view-only change. Validate an edit at the established acceptance boundary, change the intended source object, and update or rebuild the native representation through supported APIs. Preserve unrelated source meaning and order. If native geometry changes require notifications, follow that facility's contract so later queries and rendering see the update. Keep rejection behavior consistent with the caller's promise.
