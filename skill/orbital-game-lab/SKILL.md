@@ -29,6 +29,14 @@ Pin the units and integration interval before running any case. If the supplied 
 
 Keep a case-level result: expected model property, measured quantity, tolerance, observation and conclusion. If no tolerance was supplied, report measured drift and convergence without inventing a pass criterion. Preserve the original implementation while an authorized candidate fix is compared against it.
 
+### Separate invariant drift from trajectory error
+
+Report invariant drift, agreement between step sizes and error against a reference trajectory as different quantities. The same implementation can repeat a defect at both step sizes, and conserved energy or angular momentum does not establish the correct orbital phase. [Hairer's analysis of symplectic integration](https://www.unige.ch/~hairer/preprints/varsymp.html) distinguishes energy-error behavior from growth of angle error; a good conservation result is not a position-accuracy guarantee.
+
+When trajectory accuracy is the requested claim, use an analytic solution for the same equations and initial conditions where available, or an independently justified numerical reference. Compare position and, when relevant, velocity at fixed physical times, including an intermediate checkpoint rather than only a whole-period endpoint. Name the norm, units and reference basis. Do not rotate a trajectory or match nearest points along its curve to erase a timing error. For a numerical reference, retain its method, settings and accuracy limits; disagreement is not an exact error estimate unless the reference uncertainty supports that claim. If only invariant or step-agreement evidence is available, return those findings with trajectory accuracy unresolved.
+
+**Fictional, unexecuted illustration:** In the unit circular model below, the analytic position is `(cos t, sin t)` and velocity is `(-sin t, cos t)`. A faulty recorder that repeats the initial position `(1, 0)` and velocity `(0, 1)` at every timestamp would show zero energy and angular-momentum drift, identical repeated runs and identical coarse/fine states. It would even match the true position after one full period. At `t = π/2`, however, the true position is `(0, 1)`, so its Euclidean position error is `√2` distance units. This is an algebraic counterexample, not an executed trajectory test.
+
 ## Output
 
 A table of cases, step sizes, duration, error measures, terminal outcome and tolerance result, plus reproducible initial conditions and untested model assumptions.
