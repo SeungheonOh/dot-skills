@@ -17,6 +17,12 @@ A logic implementation, generated puzzle or reusable circuit needs evidence for 
 
 ## Workflow
 
+### Establish the target's defined domain
+
+Before enumeration, require a defined 0 or 1 for the selected output on every assignment in the ordinary Boolean workflow. Check input width/order, row coverage and conflicting duplicate rows. A missing expected value is an unresolved specification, not implicit zero or permission to ignore that assignment. Do not coerce tokens such as X, Z or a dash into Booleans or infer their meaning from their spelling.
+
+Use a partial target only when its don't-care or legal-input semantics are explicitly supplied and supported. Preserve the care mask or input restriction, count compared and excluded assignments separately, and qualify agreement to that domain. An empty comparison domain checks no behavior. Do not invent exclusions to remove a counterexample. HDL unknown/high-impedance behavior needs a suitable semantics-aware route; it is not established by this two-valued check. [YosysHQ's equivalence documentation](https://yosyshq.readthedocs.io/projects/eqy/en/latest/xprop.html) explains why undefined/don't-care values require a different comparison contract.
+
 1. Validate references and topological order. Reject cycles, nonexistent outputs and unsupported gates rather than treating them as zero. State that propagation delay and analog behavior are outside the model.
 2. Enumerate all input assignments in a declared bit order. Evaluate every gate and the selected output for each assignment without deriving the target from the same gate implementation.
 3. Compare complete output vectors and retain every failing input as a counterexample. Passing the currently displayed input is not circuit equivalence.
@@ -52,3 +58,7 @@ Selecting t as the output instead produces 1, 1, 1, 0 and fails at 00. Return th
 ## Evidence status
 
 The worked example illustrates the stated inputs and reasoning. Unless an execution result is explicitly identified, it is not a claim that external services, real devices or user data were tested. Report actual checks and unrun stages on each use.
+
+## Fictional incomplete target, not executed
+
+A fictional two-input target lists 00→0, 01→1 and 10→1 but omits 11. Both OR and XOR match those three rows, yet disagree at 11. Report the missing specification before claiming full equivalence. If 11 is explicitly declared an output don't-care, report agreement on the three cared assignments and retain the exclusion; that does not establish XOR over all four inputs. No netlist evaluator or search was run for this illustration.
