@@ -30,6 +30,14 @@ Backreferences, lookarounds, locale behavior and engine-specific constructs requ
 7. **Verify a witness independently.** Feed the full string into an independent interpreter or engine that truly shares the supported semantics. Confirm exactly one match and, for small fixtures, enumerate shorter strings to check minimality. Do not accidentally use a substring matcher or engine-specific end anchor that changes the conclusion.
 8. **Package the evidence.** Return the exact patterns, supported semantics, alphabet, status, budget/work counts and full witness with each side's acceptance. Render the empty string explicitly. If previews are truncated, preserve the complete witness in the evidence artifact. Keep private patterns local unless sharing is authorized.
 
+## Keep one-sided rejection in the product search
+
+A missing transition is a rejecting state, not a reason to drop the paired search branch. For an explicit DFA, complete missing transitions with a nonaccepting sink that loops on every symbol in the declared alphabet. For on-demand epsilon-NFA subset construction, retain the empty state set as that sink: its epsilon closure is empty and every next state set remains empty. This is different from the empty input string and from a failed or budget-limited computation. [Cornell's lexical-analysis notes](https://www.cs.cornell.edu/courses/cs4120/2026sp/notes/leximpl/) explain total DFA transitions and the empty subset's nonaccepting error state.
+
+Advance both sides on the same symbol across the declared alphabet; do not explore only labels for which both sides have an outgoing transition. Keep a pair with one empty side even when neither side currently accepts: a later suffix may lead the surviving side to acceptance. Record and deduplicate these pairs normally, with predecessors intact. A branch where both sides are empty cannot later distinguish the patterns, but pruning every pair containing an empty side is unsound. Include delayed one-sided acceptance and the same comparison with the patterns exchanged in an independent check.
+
+**Fictional, unexecuted illustration:** Compare `a` with `a|bc` under full-string matching over `{a,b,c}`. Both reject the empty string, both accept `a`, and both reject the one-symbol strings `b` and `c`. After reading `b`, the left state set is empty while the right can still consume `c`. Continuing gives `bc`, accepted only on the right, so the shortest distinguishing length is two. Discarding the pair after `b` would erase the only accepted-string difference and could falsely report equivalence. These outcomes follow from the supplied patterns; no automaton, matcher or example was executed for this illustration.
+
 ## Worked examples
 
 ### Empty-input regression
