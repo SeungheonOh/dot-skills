@@ -15,6 +15,10 @@ Identify the requested object or scene, its visual treatment and the actual deli
 
 Resolve the constraints that change construction: intended consumer, dimensions and units, up and forward directions, placement origin, separate parts, material or texture needs, motion, and any geometry or file-size budget. Use the supplied brief and references before asking questions. A simple static object does not need a rig, UV atlas, multiple levels of detail or a design interview.
 
+Before opening or rendering a supplied native scene, check whether the format and tool can execute embedded code. In Blender, keep the file's Trusted Source option off for untrusted scenes; for command-line loading, place `--disable-autoexec` before the scene filename rather than relying on saved preferences. Preserve that restriction on later reopens. Registered text blocks and Python animation drivers can affect loading or evaluation; do not enable them merely to dismiss a warning or match a reference pose. Follow the installed version's [scripting-security controls](https://docs.blender.org/manual/en/4.5/advanced/scripting/security.html).
+
+Auto-execution controls do not cover every execution path: running a text block or rendering with Freestyle can still execute Python. Review those dependencies before invoking the affected operation, and obtain any required authorization for their execution. Continue supported inspection without them, or identify the blocked rig/render behavior instead of declaring it verified. Disabling auto-execution is a precaution, not a sandbox or a guarantee that a hostile scene is safe to parse; see Blender's [security explanation](https://developer.blender.org/docs/handbook/new_developers/faq/).
+
 For supplied models, inspect the actual source before editing. Check its object hierarchy, transforms, construction features, materials, linked resources and animation as relevant. Separate appearance references from files that must be preserved. Determine which properties may change and which must survive; retain the original unless replacement is explicitly requested.
 
 ## Choose a representation that stays useful
@@ -60,3 +64,7 @@ Format conventions can differ from the native scene. For example, glTF defines m
 Deliver the requested native source, exchange file and necessary dependencies, with concise previews when useful. Keep filenames and the handoff clear about which file is editable and which is an export. State the units, orientation or pivot convention the recipient needs, the software or consumer actually checked, and any consequential limitation.
 
 Keep the handoff proportional. A small prop usually needs its files and a short usage note, not a modeling diary or a test ledger. Do not add asset-store publication, hosting or uploads to unrelated services merely to deliver it.
+
+## Fictional supplied-scene boundary, not executed
+
+A fictional lamp model arrives with a Python-driven hinge and a scripted Freestyle outline. Opening it with automatic execution disabled does not authorize the outline render. Inspect the available geometry without running the embedded code and report the hinge pose and scripted outline as unverified until their execution is trusted and authorized. A different pose is not a reason to enable scripts or silently replace the requested rig. No scene was loaded, script executed or render inspected for this illustration.
