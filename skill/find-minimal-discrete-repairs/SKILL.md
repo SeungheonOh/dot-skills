@@ -49,6 +49,14 @@ For independent weighted field changes, sum the supplied coordinate costs. Use e
 
 Keep feasibility, minimal cost and uniqueness separate. Several targets can share the same minimum cost. Use an explicit stable tie-break for repeatability, without calling the first tied target aesthetically or operationally best.
 
+#### Check cost assumptions before searching transition paths
+
+For the transition-graph branch, distinguish a cost attached once to a final changed field from the sum of costs along an edit sequence. State whether edits may repeat and whether a maximum sequence length is a rule of the requested model or merely a computation budget. Finite configurations do not imply finitely many permitted walks when cycles can repeat.
+
+Choose cost-search logic accordingly: ordinary BFS minimizes equal unit-cost transitions, 0–1 BFS handles zero/unit costs, and Dijkstra requires nonnegative edge costs. A visited-on-first-discovery rule from ordinary BFS must not discard a later cheaper route in a weighted search. If negative transition costs are genuinely part of the model, use a method that handles them and check whether a negative-cost cycle is reachable from the baseline and can lead onward to a goal. With unrestricted repeats, such a cycle makes the path objective unbounded below; it is neither a finite minimum nor proof that no valid target exists. A disconnected cycle does not establish that conclusion. SciPy documents [Dijkstra's nonnegative-cost requirement](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.dijkstra.html) and [negative-cycle failure in shortest-path search](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csgraph.shortest_path.html).
+
+**Fictional illustration, not executed:** From baseline A, A→B costs −2, B→A costs 1 and A→goal G costs 5. If all transitions and repeated visits are allowed, going directly to G costs 5, while k repetitions of A→B→A followed by A→G cost 5−k. There are only three configurations but no minimum-cost unrestricted repair sequence. A user-specified step limit would define a different bounded problem; an interrupted search does not supply that rule. No search or settings changes were executed for this illustration.
+
 ### 5. Produce a verified next edit only when justified
 
 When independent toggles are the allowed operation, choose one differing coordinate from a minimum-cost witness. Flipping it reduces the remaining minimum distance by exactly one: the witness is now one step closer, and a single flip cannot reduce distance by more than one.
