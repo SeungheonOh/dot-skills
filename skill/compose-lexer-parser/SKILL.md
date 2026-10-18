@@ -54,6 +54,14 @@ If the parser cannot choose deterministically from its table, report that confli
 
 When source, rule order, dialect, input mode or grammar changes, invalidate the dependent ledger and parse trace. If exporting reproducible evidence, include the declared rules and policy along with token names/spans and parser results. Lexemes may contain private input; a token trace is not automatically sanitized.
 
+### Complete-input acceptance is a separate result
+
+For a whole-source parse, require the start rule or caller to verify the real end of the token stream. A rule can return after recognizing a valid prefix while leaving more tokens unread; [ANTLR's start-rule documentation](https://github.com/antlr/antlr4/blob/master/doc/parser-rules.md#start-rules-and-eof) explicitly distinguishes this from consuming a whole file. Preserve deliberate fragment parsing when that is the contract, but return its consumed span and remainder instead of labeling the entire source accepted. With lazy tokenization, unread source must not escape the lexical-error and work-limit checks needed for a whole-input claim.
+
+Collect lexer and parser diagnostics independently of the returned tree. Some parsers recover by inserting a missing token or deleting an unexpected one, as documented by [ANTLR's default recovery strategy](https://www.antlr.org/api/Java/org/antlr/v4/runtime/DefaultErrorStrategy.html). A recovered tree can support diagnostics or an editor preview; it does not establish that the original input was syntactically valid. Keep recovery edits visible and gate a clean acceptance result on the declared error policy, not merely on the absence of a thrown exception.
+
+Fictional illustration, not executed: a grammar accepts exactly `number + ( number )`. Input `12 + (3) 4` has a recognizable prefix but an extra final token; input `12 + (3` is missing a closing parenthesis even if recovery supplies one. Neither is a clean whole-input success. A future check should distinguish both from `12 + (3)` and from an explicitly requested prefix parse; no parser run is claimed here.
+
 ### 6. Verify the composition independently
 
 Test keyword-versus-identifier overlap, a longer identifier beginning with a keyword, zero-length patterns, unmatched punctuation, end-of-input, skipped whitespace and a multi-code-unit literal. Confirm that ties change with rule priority but a longer match still wins.
