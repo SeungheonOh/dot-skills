@@ -39,6 +39,10 @@ In operational intake, distinguish what the person observed from what they suspe
 
 Order questions around the respondent's task and knowledge. Explain the purpose in the instrument and keep the ordinary route concise. Put prerequisites before dependent questions, and ensure valid participants can reach an appropriate finish without inventing an answer. A short questionnaire should not acquire a mandatory intake interview or an elaborate section hierarchy.
 
+Treat question and option order as part of the measurement, not just page layout. An earlier list can supply answers to a later open question. When unaided recall matters, place that question before related prompts; preserve consequential context when repeating an existing measure. For unordered alternatives, consider a declared rotation or randomization when position could influence selection. Keep ordinal scales in a meaningful sequence and preserve prerequisites and routing; do not shuffle everything indiscriminately. Randomization distributes order effects rather than proving their absence. [Pew Research Center's question-design guidance](https://www.pewresearch.org/writing-survey-questions/) explains these distinctions.
+
+If using multiple orders, keep stable option codes independent of display positions, retain the assigned order or form version, and keep that order stable during a respondent's return visits. Inspect that each eligible option appears once and still maps to its intended answer value after reordering. For a fixed paper instrument, document its chosen order rather than implying randomization occurred. Testing order effects with respondents is separate from this design-only check.
+
 For paper or plain text, make skip instructions explicit and unambiguous. For conditional forms, define when a field is shown, when it is required and how its answer is interpreted. Check that hidden fields cannot remain impossible requirements. Distinguish one repeated item's answers from another item's answers; equal names do not necessarily identify the same item.
 
 Where earlier answers can change, decide what happens to dependent answers. A retained draft can be useful, but inactive values must not silently become current answers. Specify whether they are cleared, preserved separately or offered for review, and how that affects the current export. Treat this as a design proposal when the service has not established a rule. Do not claim that a prototype implements it unless the actual behavior was exercised.
@@ -65,3 +69,7 @@ State whether the result is a reviewable instrument, an implemented private form
 
 - [GOV.UK guidance on designing questions](https://www.gov.uk/service-manual/design/designing-good-questions) discusses understandable wording, useful local help and valid uncertainty answers
 - [Government Analysis Function questionnaire guidance](https://analysisfunction.civilservice.gov.uk/policy-store/questionnaire-design-guidance/) distinguishes an instrument from a whole survey and discusses answer design and respondent testing; its page is marked as under review
+
+## Fictional order illustration (not executed)
+
+A workshop questionnaire asks which improvements participants remember wanting, then offers a list containing captions, pacing and examples. The proposed unaided-recall question comes before that list. In two proposed option orders, captions retains the same answer code even when its screen position changes. These are invented design choices, not observed responses or evidence that order bias was removed.
