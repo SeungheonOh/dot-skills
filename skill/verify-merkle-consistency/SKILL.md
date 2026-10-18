@@ -21,6 +21,14 @@ Handle boundary cases explicitly. The older size cannot exceed the newer size. E
 
 Do not replace a failed consistency proof by rebuilding an unrelated tree whose root happens to match one anchor. Reconstructing from a complete authorized record set is useful independent evidence only when it is tied to both intended snapshots and the same encoding rules.
 
+### Validate empty-tree snapshots before fast paths
+
+When zero-size snapshots are supported, check each zero-size root against the scheme's empty-tree hash before accepting an equal-size or empty-prefix case. For [RFC 9162 §2.1.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1), that is HASH of zero bytes. It is not an all-zero digest, a missing root, or the root of one empty record, which hashes the leaf prefix byte. Equal supplied roots alone do not validate two zero-size snapshots.
+
+Keep the empty-case handling outside the [growing nonempty verifier](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.4.2), whose precondition is 0 < old size < new size. Declare the accepted empty-proof representation. An accepted empty-to-nonempty pair establishes only the vacuous prefix relationship; it does not reconstruct or independently verify the newer root's contents.
+
+Fictional, unexecuted illustration: two size-zero snapshots supply the same well-formed digest that differs from HASH of zero bytes. An equality-only shortcut would pass, but both snapshots fail the declared tree scheme. Check this case, a valid empty pair, an empty-to-nonempty pair and one empty record separately when implementing the verifier; these are proposed checks, not execution evidence.
+
 ## Report the bounded conclusion
 
 Include scheme, both sizes and roots, provenance, pass/fail or unsupported status, and which checks failed. A path trace can show the old and new accumulators at each step. Label incomplete accumulations as intermediate hashes, not verified roots. Retain the distinction between a well-formed nonmatch and malformed input.
