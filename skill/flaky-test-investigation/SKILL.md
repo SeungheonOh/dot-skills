@@ -48,6 +48,16 @@ For every experiment preserve:
 
 Report the observed failure ratio with its denominator and experiment conditions. Do not pool different revisions or environments into one rate, drop failed retries, or interpret a small chosen seed sample as an estimated production failure probability.
 
+### Separate fresh executions from cached results
+
+If a runner or task wrapper can reuse test results, record that behavior before a repetition experiment. Keep command invocations, cache replays, fresh test executions and completed assertion comparisons distinct in the ledger. A newly printed pass, copied report or new command timestamp does not establish that the target assertion ran again. Use the runner's execution/cache indicators and per-attempt evidence; when that provenance is unavailable, leave the fresh-execution count unknown rather than treating each invocation as another observation.
+
+For a diagnostic repetition, use an existing supported invocation-level way to avoid test-result reuse when safe and within scope. For example, Bazel's [test-result caching options](https://bazel.build/docs/user-manual#flag--cache_test_results) distinguish reuse of saved results from executing tests; `--cache_test_results=no` disables that reuse. Check the installed version, effective options and actual target execution instead of assuming a flag overrides an incompatible wrapper or report-only mode. Record the changed diagnostic configuration and keep it consistent across before/after comparisons.
+
+Test-result reuse is different from dependency/build caching and from the application or fixture state that may cause the flake. Do not delete caches, reset product state or change shared CI settings merely to obtain a fresh assertion execution. If state reset is itself the hypothesis, compare it as a separately identified controlled condition. Fresh execution also matters for negative controls: reusing an earlier passing test result cannot show that a newly invalid fixture was rejected.
+
+**Fictional, unexecuted illustration:** Ten invocations of one test produce ten green summaries, but the runner evidence shows one fresh passing execution followed by nine reuses of that result. Report one fresh pass and nine cache replays, not zero failures in ten completed comparisons. The nine invocations remain visible in the command ledger and do not supply new flake observations. No runner, test or cache was operated for this illustration.
+
 ## 3. Isolate the cause with controlled comparisons
 
 Start by reading the failing assertion and the product contract it intends to enforce. Identify the earliest divergence, not merely the final exception. Inspect the relevant code and fixture setup before launching a broad suite.
