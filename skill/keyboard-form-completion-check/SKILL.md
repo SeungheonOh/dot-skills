@@ -44,6 +44,16 @@ On validation failure, check the recovery route: an understandable error identif
 
 For success, inspect the actual receipt, saved record or local result required by the contract. A status-region attribute does not prove an announcement was heard. Name the screen reader and version only if that combination was actually used; report what it announced. Without it, mark announcement behavior untested.
 
+### Check which action Enter actually selects
+
+When a repair changes submit controls or submission handlers, or several actions share a form, include the supported implicit-submission route as the relevant neighboring case. Pressing Enter in a single-line field is not necessarily the same action as focusing and activating the intended button. Under the [HTML implicit-submission rules](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission), the default button is the first submit button in tree order whose form owner is that form; visual prominence and proximity to the field do not choose it.
+
+Before exercising that route, identify its form owner, applicable submit button and any submitter-specific destination, method or validation override. [HTML's submission attributes](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-attributes) allow these to differ from the form's defaults. A successful keyboard activation of Save does not authorize or verify an Enter route that selects a different action. Hold that route if its effect is outside the agreed test boundary.
+
+From separate clean resets, compare the intended button path with the supported Enter-from-field path using the same relevant valid and invalid answers. Record which action occurred, validation/recovery behavior, focus and actual result. Keep a draft, a preview and a completed submission distinct even if each displays a success message. Source inspection can explain a likely submitter; it cannot establish how the current browser and application handlers behaved. A scripted submission is not a substitute for this keyboard observation. If implicit submission is unsupported, report that route separately; an equivalent usable keyboard route can still complete the task.
+
+**Fictional, unexecuted illustration:** A local planner has Save draft first and Mark ready second in the same form. The intended task requires a ready result. Activating Mark ready by keyboard could satisfy that contract while Enter in the title field selects Save draft instead. The planned check would inspect the result's draft/ready state rather than accepting either success message. No browser, form submission or repair was executed for this illustration.
+
 ## Repair within the authorized scope
 
 If asked only to check, return the observed blocker and a precise proposed repair. If asked to fix, preserve a recoverable baseline and change the responsible code now:
