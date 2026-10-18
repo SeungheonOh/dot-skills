@@ -60,6 +60,14 @@ Apply the explicit output line-ending policy. For a preserve-source profile, add
 
 Recheck output byte and line bounds, counts of added/removed lines and the final-newline flag. Preserve the original and produce a new copy or preview. Changing the real target, running tests from the patch or committing to a repository requires the corresponding user authorization.
 
+#### Bind any later overwrite to the checked source
+
+A successful preview establishes a relationship between one source snapshot, one patch and one output. If the request also authorizes replacing the original, carry that exact source identity into the write boundary. Use a supported conditional update against the checked version, or an exclusion mechanism that actually prevents other writers from changing the target between comparison and replacement. A separate reread followed by a write still leaves a race. Atomic replacement alone is not a version precondition: [Python's `os.replace` contract](https://docs.python.org/3/library/os.html#os.replace), for example, permits replacing an existing destination without comparing its prior contents.
+
+For an HTTP destination that supports it, [`If-Match` with the checked representation's strong entity tag](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.1) is a concrete conditional-write mechanism; `If-Match: *` checks existence, not that version. Use the destination's actual version contract rather than assuming a locally calculated digest is an accepted server token. On a changed version, preserve the current target and reverify against the new source only within the authorized revision scope. If the required write precondition cannot be enforced, return the verified separate copy and identify the unresolved overwrite boundary; do not describe a preview as safely installed. Read back any completed authorized write and tie the observed output to that operation.
+
+**Fictional illustration, not executed:** A patch changing line 2 is checked against version V1. Before it is saved, another editor appends a new final line, creating V2. The patch may still match line 2 exactly, but writing the entire V1-derived output would erase the added line. A V1-conditional replacement must refuse V2; a newly checked result must preserve V2's unrelated content. No files were patched or overwritten for this illustration.
+
 ### 6. Verify edge cases independently
 
 Use independently generated standard diffs and compare the reconstructed bytes with known targets. Include insertion at the start/end, deletion, separated hunks, zero context, blank lines, header-like content, CRLF, BOM and absent final newline.
