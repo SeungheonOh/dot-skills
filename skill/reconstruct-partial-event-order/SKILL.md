@@ -19,6 +19,14 @@ Use this when a user or agent needs to reconcile records from several services, 
 
 Do not invent predecessor links from similar text or close timestamps. If a local sequence is merely an ingestion index, do not silently treat it as the event's execution order. Unclear sequencing semantics are a missing input.
 
+## Translate intervals and associations before adding edges
+
+Decide whether each source record describes a point event or an interval. When an interval's boundaries matter, retain the original record and derive separately identified start/end vertices with source-field mappings. Add lifecycle edges only under the operation's established semantics. Do not collapse whole spans into atomic events and translate a parent relation into parent-end-before-child-start. OpenTelemetry's [span-ending rules](https://opentelemetry.io/docs/specs/otel/trace/api/#end) allow children to outlive their parent and allow an ended span to remain a parent. Parentage alone therefore establishes neither non-overlap nor child completion before parent completion.
+
+A shared trace ID or reused operation identifier groups related records; it does not order every pair. Require documented attempt and endpoint semantics before matching a send with a receive. Preserve an ambiguous sibling or retry association as an annotation rather than a directed edge. [Protocol-sequence documentation](../document-protocol-sequences/SKILL.md) can establish the matching rules, but the reconstruction still needs evidence for the particular records.
+
+**Fictional, unexecuted illustration:** supplied lifecycle evidence establishes P.start→P.end, C.start→C.end and P.start→C.start. C names P as parent, with no join or response evidence. Both P.start, C.start, C.end, P.end and P.start, P.end, C.start, C.end satisfy those constraints. The relative order of C.end and P.end remains unresolved; inserting C.end→P.end merely from parentage would falsely remove a permitted history. These are authored possible orders, not an observed trace or an executed check.
+
 ## Workflow
 
 1. **Preserve source evidence.** Retain stable identifiers, original timestamps and relevant correlation fields. Work on a copy. Separate source record identity from a display position; the latter can change when new evidence arrives.
