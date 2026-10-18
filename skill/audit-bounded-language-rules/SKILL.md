@@ -57,6 +57,14 @@ Do not automatically update an expected phrase to the generator’s new output. 
 
 When both baseline and candidate are available, show whether each collision is new, resolved or still present. A candidate with fewer collisions can still break approved examples or erase an important distinction elsewhere. Do not rank it as better from one count alone.
 
+### Compare collision membership across revisions
+
+Match collisions through the stable semantic frames, not through the spelling used as a reverse-index key. A group can change its entire surface without separating any meanings; the same surface can also acquire different members. For frames evaluated in both versions under the same semantic-equivalence and surface-comparison policies, compare whether each relevant unordered pair is merged before and after: newly merged, newly separated, still merged or still distinct. Use aligned group membership or a bounded pair comparison rather than materializing an unbounded quadratic list. The [pair-based partition comparison described by scikit-learn](https://scikit-learn.org/stable/modules/clustering.html#pair-confusion-matrix) illustrates this same-group/different-group distinction independently of label values; a summary score is not a replacement for the actual meaning witnesses here.
+
+Report added, removed, unsupported and untested frames outside that common comparison cohort. Removing a meaning or failing to generate it does not establish that its old collision was resolved. If the semantic-equivalence or normalization policy changes, identify that as a separate comparison change; re-evaluate both versions under an agreed common policy before attributing the difference solely to the grammar. Keep spelling changes and saved-example regressions visible even when collision membership is unchanged.
+
+**Fictional, unexecuted illustration:** Three distinct meaning frames A, B and C produce `mira`, `mira` and `tavo` in the baseline, then `sena`, `sena` and `sena` in a candidate. The A/B collision persists despite its new spelling, while A/C and B/C are newly merged. Both versions have one ambiguous surface group, so unchanged group counts conceal the lost distinctions. If B is instead absent from the candidate, classify B as removed or unsupported according to the source; do not count A/B as newly separated. These are authored comparison cases, not results of running a generator or audit.
+
 ### 5. Verify witnesses and return a decision-ready result
 
 Recompute representative collision witnesses independently from the supplied composition rules. Check that each reported pair has distinct in-scope frames and equal comparison surfaces. Reconcile all frame counts: every enumerated frame belongs to exactly one reverse-index group, and the sum of group sizes equals the tested-frame count.
