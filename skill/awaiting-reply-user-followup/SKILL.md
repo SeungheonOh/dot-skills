@@ -25,6 +25,16 @@ A project organizer sent a routine venue question and wants to avoid forgetting 
 
 Record the exact conversation reference, outgoing message reference and timestamp, authorized reader account, sufficient-reply criteria, first check, optional cadence, final check boundary, maximum user notifications, suppression window, IANA timezone and personal destination. Confirm which questions remain unanswered. The correspondent's identity and the thread are scope selectors, not authorization to send anything to them.
 
+### Keep source identity bound to the saved watch
+
+Treat the conversation and outgoing-message references in the setup-matching tuple as qualified by their provider, relevant workspace/tenant and verified reader account or mailbox. Preserve a supported, non-secret account reference with the saved watch; a subject, correspondent, display name or export-local thread label cannot substitute for that binding. The personal notification destination is separate from the source account and does not establish which mailbox was read.
+
+Recheck the connection's source identity when recovering a watch or resuming after reconnection. A provider alias such as `me` is not a durable account identity by itself: [Gmail's thread-read method](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.threads/get) takes both a user and thread ID and resolves `me` to the authenticated user. Its [profile method](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users/getProfile) can establish the connected mailbox through a supported read. Use the available provider or connector equivalent; do not add credentials or broaden access to obtain an identity check.
+
+For the same verified source and reply criteria, recover the existing watch and its counters. If the source account changed or cannot be established, keep the original watch's last evidence and counters, record a source-identity blocker, and follow the agreed diagnostic-notice rule. Do not classify a missing thread in another mailbox as unanswered, close the original watch from a lookalike conversation, or silently retarget it. An authorized source change requires resolving the new outgoing message and scope before further checks.
+
+**Fictional, unexecuted illustration:** an exported watch records source A, thread `T1` and outgoing message `M1`. After reconnection, `me` identifies source B, which also exposes an export-local `T1` label. Even with matching subject text, that is insufficient to reuse B's answer as A's reply evidence. A's current reply status remains unknown until its authorized source is verified. No account, scheduling service or notification was exercised for this illustration.
+
 ### Procedure
 
 1. Read the specified conversation through the connected messaging or email app. Confirm that the outgoing message exists and establish the last relevant message visible now. Check that the relevant reply pages and time range are covered before concluding no answer is present. If a sufficient answer has already arrived, report that result and avoid starting an unnecessary watch. A failed or incomplete read produces a coverage/access blocker, never an absent-reply conclusion; preserve prior successful evidence as historical, not current.
