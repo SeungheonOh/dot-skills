@@ -38,6 +38,14 @@ Represent each job by resource assignment and a half-open interval [start,end), 
 
 For each dependency A→B, require end(A)≤start(B). For each pair sharing an exclusive resource, require nonoverlapping intervals. Touching endpoints are allowed under the half-open convention. List violations with job IDs, resource and exact intervals rather than a single undifferentiated invalid result.
 
+#### Enforce the supplied time windows and resource inventory
+
+Resolve every assignment against the declared resource inventory or integer worker range. A fresh worker label must not create an extra resource that escapes overlap checks. For the identical-worker model, validate a positive integer worker count; for named resources, check unique identities and any declared job eligibility before counting capacity.
+
+When the model includes release times or hard completion deadlines, check start(job)≥release(job) and end(job)≤deadline(job), with equality allowed only under the declared boundary rule. A latest-start limit is a different constraint from a completion deadline. When a horizon bounds completion rather than just permissible start times, require every end(job)≤horizon; starting before that boundary is insufficient. Check the entire nonpreemptive interval against any declared resource-availability windows, not just its start. These checks apply to the original candidate, each searched plan and the independent final verification. If the chosen checker cannot enforce a supplied restriction, report that unsupported part rather than certifying the simplified plan. [IBM's scheduling tutorial](https://ibmdecisionoptimization.github.io/tutorials/html/Scheduling_Tutorial.html) illustrates release dates and worker-assignment restrictions alongside precedence and nonoverlap.
+
+**Fictional illustration, not executed:** Job J takes 3 ticks, cannot start before tick 4 and must finish by tick 6. The interval [3,6) meets the completion deadline but violates release; [4,7) satisfies release but misses completion. Even with unlimited otherwise eligible workers, earliest completion is 7, so no plan meets this job's stated window. An overlap-only checker would miss this contradiction. No scheduler or real jobs were run for this illustration.
+
 Calculate makespan only for a complete plan. If some rows are missing or invalid, report the observed partial extent without calling it the final completion time. Do not export an incomplete plan as ready to execute.
 
 ### 3. Derive lower bounds with their assumptions
