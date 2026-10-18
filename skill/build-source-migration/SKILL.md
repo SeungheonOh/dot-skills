@@ -61,6 +61,18 @@ Map parser coordinates to the original representation before using them as edit 
 
 Handle imports, declarations and generated support code as part of the transformation. Respect language-required placement, existing aliases and initialization effects. Keep an old import when unresolved callers still need it. Remove a declaration only when the accepted consumer scope supports that conclusion; absence from a simple search is not proof about dynamic or external callers.
 
+### Establish the writable origin of a semantic match
+
+When the compiler model includes implicit operations, template instantiations or expanded syntax, establish which written construct an edit would change. One semantic match need not correspond to one independently editable source occurrence. Use the framework's traversal and source-origin facilities. Clang's [AST matcher documentation](https://clang.llvm.org/docs/LibASTMatchersReference.html) shows incorrect changes caused by matching implicit nodes or template instantiations.
+
+For expanded syntax, distinguish the invocation, supplied arguments and shared definition. Clang's [source-location model](https://clang.llvm.org/docs/InternalsManual.html) distinguishes where a token was spelled from where it was expanded; neither location alone establishes the replacement boundary. Replacing an entire invocation can discard other behavior, while editing a shared definition can affect callers beyond the matched occurrence. Choose that boundary only when eligibility holds for the affected supported uses; otherwise retain the site as unresolved. Respect the tool's unsupported-range result instead of guessing a nearby span.
+
+Reconcile matches mapping to the same written source before scheduling edits. Repeated observations can justify one identical edit, but different instantiations or expansion contexts may require incompatible replacements. Do not let traversal order choose a winner or treat one instantiated case as sufficient evidence for changing its generic definition.
+
+**Fictional, unexecuted illustration:** A generic field declaration is instantiated with an integer type and with a text type. An integer-specific migration recognizes the first, but both semantic instances point to the same written type parameter. Replacing that parameter with a concrete integer wrapper would also change the text instance. Leave the shared declaration unresolved unless the accepted migration justifies a transformation for both uses.
+
+Where this boundary matters, select a distinguishing check involving a direct written occurrence and a relevant implicit, expanded or shared-origin occurrence. Inspect the actual proposed range and affected consumers. Unsupported origins should remain unresolved without preventing independently eligible edits.
+
 ## Preview and apply with an honest write contract
 
 Show the proposed changes and unresolved sites before a consequential batch write when the task calls for review. Preview must not change target source. If apply is already authorized, complete it after the relevant checks rather than adding an unnecessary confirmation step.
