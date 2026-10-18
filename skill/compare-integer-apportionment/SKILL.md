@@ -13,6 +13,14 @@ Identify groups with distinct stable labels, nonnegative weights and the whole-u
 
 Keep weights unchanged when testing the effect of total size. Changing weights, membership or tie priority at the same time answers a different question. Preserve identifiers and input precision; converting a large integer to a floating-point number can erase a consequential difference.
 
+### Resolve zero totals before allocating
+
+Require a nonnegative integer unit total. For a positive total under the proportional rules below, require positive total eligible weight; an empty eligible roster or all-zero weights does not define a proportional allocation. Hamilton's quota denominator would be zero, while a divisor loop could assign units solely through its tie order. Return that undefined case explicitly instead of silently substituting equal weights or reporting arbitrary awards as proportional. A separately supplied rule for allocating without positive weights is a different model. The [Census Bureau's Hamilton description](https://www.census.gov/about/history/historical-censuses-and-surveys/census-programs-surveys/decennial-census/methods.html) supplies the population/divisor construction; this zero-weight guard is its arithmetic boundary, not an election-law claim.
+
+A zero-unit request with zero minimum guarantees may return zero for every supplied group without entering an award loop. If total weight is also zero, keep quotas and proportional-share diagnostics undefined rather than evaluating zero divided by zero. Check any required minimum guarantees separately: their sum cannot exceed the available total. Individual zero-weight groups remain valid when the eligible total weight is positive; do not reject them merely to avoid the all-zero case.
+
+**Fictional illustration — unexecuted:** For groups A and B with weights 0 and 0, three units have no defined proportional allocation. With weights 0 and 5, the three zero-minimum methods below assign all three units to B. With zero units and zero minimum guarantees, both allocations are zero; an all-zero weight vector still has no defined proportional shares. Use these as distinct boundary expectations, not as claims that an allocator was run.
+
 ## Compute only the requested rules
 
 For Hamilton/largest remainder, compute each exact quota as total units times group weight divided by total weight. Allocate floors, then give the remaining units to the largest fractional remainders. With a common denominator, compare integer remainder numerators directly.
