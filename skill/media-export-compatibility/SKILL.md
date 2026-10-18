@@ -25,6 +25,12 @@ Separate preparation from submission. A local conversion does not authorize send
 
 Create a new output directory. Preserve the original bytes and record the source filename, size and a checksum before transformation. Review helper code for downloads, installation, overwrites, source deletion and network outputs before running it. Check the installed tools and available encoders/filters; do not assume another machine has the same build.
 
+Before the first probe, distinguish a self-contained media file from a playlist, concat manifest or reference movie. A local input pathname does not establish that the parser will read only that file. Inspect references as data and resolve them within the authorized source scope; retain the identity of required media dependencies as well as the manifest. For local-only work, keep network access out of both probing and conversion, using the installed tool's supported [protocol restrictions](https://ffmpeg.org/ffmpeg-protocols.html#Protocol-Options) and [demuxer restrictions](https://ffmpeg.org/ffmpeg-formats.html#Format-Options) where appropriate. A protocol allowlist is not a filesystem sandbox: local paths and symlinks still need scope checks.
+
+Do not disable [concat safe-path checks](https://ffmpeg.org/ffmpeg-formats.html#concat-1), enable [external MOV tracks](https://ffmpeg.org/ffmpeg-formats.html#mov_002fmp4_002f3gp), or broaden permitted inputs merely to bypass an error. If the source genuinely requires additional media, identify the dependency and obtain the missing access or supplied file before continuing; preserve the unresolved state instead of silently delivering an incomplete clip.
+
+Fictional illustration, not executed: a supplied concat manifest names an authorized `media/opening.wav` and a second file outside the approved media folder. The manifest is local, but that does not authorize the second read. Hold the conversion until the dependency is supplied within scope or its use is authorized. No probe, media read or conversion was run for this illustration.
+
 For an installed FFmpeg toolchain, start with:
 
 ```sh
@@ -86,7 +92,7 @@ Adapt the mappings for the actual file; the null output does not test subtitles 
 
 Use evidence appropriate to each claim:
 
-1. **Conformance:** Check actual container, stream counts, codec details, pixel format, size, geometry, audio fields and every documented target requirement. Inspect initialization/index placement if the contract requires it. A `+faststart` command is intent; the example also inspects its MP4 box order. The [MP4 muxer documentation](https://ffmpeg.org/ffmpeg-formats.html#mov_002c-mp4_002c-ismv) describes that option.
+1. **Conformance:** Check actual container, stream counts, codec details, pixel format, size, geometry, audio fields and every documented target requirement. Inspect initialization/index placement if the contract requires it. A `+faststart` command is intent; the example also inspects its MP4 box order. The [MP4 muxer documentation](https://ffmpeg.org/ffmpeg-formats.html#MOV_002fMPEG_002d4_002fISOMBFF-muxers) describes that option.
 2. **Picture and time:** Reconcile duration, start offsets, frame/packet timing when needed, and intended orientation. Inspect beginning, ending and relevant interior frames, plus transformed borders, captions and fine text. If the source is VFR, compare actual timestamps rather than treating an average as its complete cadence. Explain small container time-base or codec-padding differences instead of forcing identical decimal values.
 3. **Sound content:** Confirm the expected content on each retained channel, near the beginning/end and at transitions. Listen where the available capability permits. For a known synthetic fixture, decoded signal evidence can test channel identity and sequence; it does not constitute a listening test of speech or music. Presence, nonzero duration and a moving waveform alone do not prove content survived.
 4. **Captions and other content:** Compare all cues' text, order and intervals to the source track. Check sidecar association and actual display in the intended player when available. Reconcile languages, forced/default behavior, attachments and chapters with the planned dispositions. Never count an extracted sidecar as embedded captions in the MP4.
