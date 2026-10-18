@@ -42,6 +42,14 @@ Escape TEXT backslashes, commas, semicolons and line breaks. Reject unsupported 
 
 Fold lines at no more than 75 UTF-8 octets, including the leading whitespace of continuation lines. Iterate Unicode code points so a multibyte character is never split. Bound record count and text lengths before creating the file.
 
+### Require a complete date-only file
+
+Emit one `VCALENDAR` containing exactly one `VERSION:2.0` and one `PRODID`, with one `VEVENT` per reviewed occurrence. Each event needs one `UID`, one UTC `DTSTAMP`, one `DTSTART;VALUE=DATE` and, for this workflow's explicit one-day span, one `DTEND;VALUE=DATE`. Do not also emit `DURATION`. Omit `METHOD` for this file-only snapshot; producing a scheduling message is outside its scope. These container and property constraints come from RFC 5545's [calendar](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6) and [event](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6.1) definitions; requiring an explicit end for every milestone is this workflow's narrower output choice.
+
+Check the saved structure and property multiplicity, not only values returned by a convenient parser getter. Date endpoints use basic `YYYYMMDD` values without a `TZID` parameter or UTC `Z` suffix; a date must not acquire a zone simply because the export timestamp has one. See the [DATE](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.3.4) and [TZID](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.2.19) rules.
+
+**Fictional, unexecuted illustration:** a draft repeats the same `DTSTART;VALUE=DATE:20280229` twice. Recovering February 29 from one getter does not clear the duplicate-property failure. Regenerate from the reviewed occurrence and inspect the saved structure. No file generation, parser execution or calendar import occurred for this illustration.
+
 ### Validate and hand over
 
 Parse the exported bytes with an independent calendar library when available. Compare recovered dates, exclusive ends, exact text, event count, status, transparency and UID uniqueness to the reviewed source. Include delimiter/newline injection fixtures and long non-ASCII labels. If a parser is unavailable, state the narrower validation performed.
