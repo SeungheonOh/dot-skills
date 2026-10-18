@@ -31,6 +31,14 @@ Distinguish a receipt, its card posting and a forwarded copy from separate purch
 
 For repayments, preserve reported, confirmed, pending, failed and unknown outcomes. Apply only the completion state supported by the source and the user's accounting boundary. State whether that is a supplied report or an independently read payment record. A proposed transfer or pending payment is not completed settlement. Record each transfer once with both endpoints, even when payer and recipient each supplied a copy.
 
+### Separate multiple payers from beneficiary shares
+
+When several participants fund one expense, retain its one expense identity and source-linked contributions for each payer, with amount, currency and payment status. Allocate the beneficiaries' cost shares once, independently of who funded the bill. Credit each participant only for their evidenced completed contribution under the reporting boundary. A payment directly to the merchant is an expense outlay, not a repayment to another participant. Linked contribution rows must not each repeat the receipt's gross as an additional expense or trigger another complete allocation.
+
+For a fully paid and allocated expense, reconcile two independent sums to its total: all payer contributions, and all beneficiary shares. Check the person attached to each contribution as well as those sums; crediting the entire amount to one nominal payer can leave group balances at zero while changing who owes whom. If funding does not account for the total, retain the known cash evidence and the unpaid or unexplained remainder. Keep the affected settlement provisional rather than manufacturing a payer or treating a pending contribution as completed. Correct funding attribution from its evidence without changing the accepted beneficiary shares.
+
+**Fictional, unexecuted illustration:** One USD 120 bill is fully paid to the merchant by A (USD 90) and B (USD 30). The agreed cost shares are USD 40 each for A, B and C, with no refunds or repayments. Applying the balance formula below gives A +50, B -10 and C -40. Both funding and shares total USD 120, and balances total zero. Recording USD 120 against A alone would instead produce +80, -40 and -40, which also sum to zero but miscredit B's payment. Keep one bill and both contributions; these are expected arithmetic results, not evidence of a performed reconciliation or payment.
+
 ## 2. Allocate each supported expense
 
 Use exact decimal or integer-minor-unit arithmetic. For a weighted split, check that all named participants exist, weights are nonnegative, the total weight is positive, and any fixed amounts plus residual shares cover exactly the intended expense.
