@@ -29,6 +29,16 @@ Record both snapshots’ generation times, retrieval times and source status. A 
 
 Keep per-record revision detail: old/new selected values and update times. An update-only timestamp change is different from a changed measurement even when both count as revisions. If a response arrives out of order, preserve the newer accepted snapshot or explicitly open the older one as historical data; do not silently move the live view backward.
 
+### Conditional HTTP revalidation is not an empty snapshot
+
+When the reader uses conditional GET, retain the accepted body and its validator together with the exact request URL and representation-selection context, including relevant `Vary` headers. Associate a `304 Not Modified` with the matching stored representation using the documented cache rules; a validator from another endpoint or variant is not a substitute. A 304 contains no new content. Do not parse it as an empty catalog or replace the accepted record set. If its stored body is missing or cannot be matched, report the missing baseline and obtain a bounded unconditional response from the same approved endpoint when possible. See [RFC 9110 §15.4.5](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.5) and [RFC 9111 §4.3.4](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.3.4).
+
+Record successful HTTP revalidation separately from the time the body was retrieved and from provider generation, update and individual observation times. Update HTTP cache metadata as required without rewriting those domain timestamps. Report “representation revalidated and reused,” rather than a newly measured event or independently refreshed station reading. Keep entity tags opaque; they are validators, not authenticated content digests, and weak validation does not establish byte equality. See [RFC 9110 §8.8](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.8).
+
+Fictional, unexecuted illustration: a body retrieved at 10:00 contains three records, including a station last observed at 09:40. A matching conditional request returns 304 at 10:05. The proposed result retains all three records, records the 10:05 revalidation, and still applies the station-age limit to 09:40. If the body was lost, the reader has no usable snapshot until it obtains one; it must not display zero records. No request or implementation was executed for this illustration.
+
+For an implementation, check matching 304 reuse, a missing stored body, mismatched variants, a subsequent full response and unchanged domain timestamps. Keep these checks separate from the previously recorded exercises below.
+
 ## Output
 
 A dated change set, field-level revisions, missing/excluded counts and provenance, plus any unresolved completeness or freshness limits.
