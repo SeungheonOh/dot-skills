@@ -46,7 +46,17 @@ Another valid method combines the prefix and suffix runs with the longest interi
 
 For a grid, apply the chosen sequence operation to the relevant rows and columns. When reporting the worst case, preserve an unbounded result from any line; do not coerce a sentinel to zero or let an ordinary numeric maximum hide it.
 
+#### Joining different patterns
+
+When the boundary joins distinct blocks, use their actual order rather than wrapping each block to itself. An [uninterrupted run](https://csrc.nist.gov/glossary/term/run) can cross a block boundary: for two finite blocks, combine the left block's matching suffix and the right block's matching prefix, then compare with each block's longest run. With several blocks, a wholly matching middle block can connect both joins into one longer run. Scan the complete bounded concatenation or carry enough summary state to preserve that connection; taking only the largest isolated pairwise seam can undercount it.
+
+Keep the outer boundary separate. A known finite end bounds the measurement; an unknown continuation at a matching edge makes the observed run a lower bound, not a complete maximum or proof of an unbroken infinite cycle. If the whole block arrangement repeats, treat that complete arrangement as the cycle before applying the cyclic method. Preserve block identities and positions in any seam witness.
+
+**Fictional, unexecuted illustration:** Joining A = [false, true, true], B = [true, true] and C = [true, false] in that order gives a true run of five across both joins. Checking A–B and B–C independently finds only four and three; treating B as its own repeated cycle incorrectly reports an unbroken run. The two false endpoints establish the finite run's boundaries. No sequence checker or physical pattern was run for this illustration.
+
 ### 4. Verify with a structurally different oracle
+
+Select the independent oracle for the declared boundary. For an open sequence or a finite joined arrangement, count from each index in the actual concatenation only to a mismatch or the known end, without wrapping. The modulo oracle and rotation invariant below apply to a declared repeating cycle; unknown continuations remain incomplete.
 
 For small sequences, start at every index and count matching elements modulo n until the first mismatch or n steps. The largest count is the reference result. A count of n means the repeating sequence never breaks.
 
