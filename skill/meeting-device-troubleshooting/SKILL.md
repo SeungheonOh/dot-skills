@@ -59,6 +59,21 @@ Start with the failing direction. Avoid changing the working speaker and camera 
 
 For each proposed change, write the hypothesis, one changed variable, expected distinguishing observation and reversal. An alternative device can be a useful comparison if already available; a successful comparison does not establish why the first device failed.
 
+### Check Bluetooth playback while the microphone is in use
+
+When the reported symptom starts as a meeting opens the headset microphone, compare that combined state rather than relying on separate speaker and input passes. The diagnostic input meter or test view may itself keep capture active. Record the exact input/output endpoints and which capture views or apps are open before interpreting a change in playback.
+
+[Apple's Bluetooth sound-quality guidance](https://support.apple.com/en-us/102217) describes reduced playback quality while the headset microphone is used and includes closing Sound settings in its recovery steps. [Microsoft's communications-audio documentation](https://learn.microsoft.com/en-us/windows/win32/coreaudio/communications-audio-format-capabilities) distinguishes Bluetooth Classic HFP's mono input/output from supported Windows 11 LE Audio configurations that can retain stereo playback with the microphone active. Check the actual OS, device and supported mode; neither a Bluetooth label nor a successful music test establishes simultaneous call capability.
+
+Within the existing capture/playback authority:
+
+1. Compare the same harmless playback at a comfortable unchanged volume before, during and after a bounded headset-input check. Record whether input really was active or that state remains unknown; a mute icon alone does not establish that the app released its microphone stream.
+2. End only the diagnostic capture/view opened for this comparison, using the app's supported control, and verify its state. Do not close an unrelated call or recording. If another necessary app still uses the headset microphone, label the playback-only comparison unavailable rather than claiming capture ended.
+3. If the difference follows capture state, report that observation as consistent with a mode/capability change, not proof of a defective headset or a particular codec. Keep an unknown mode unknown. A different already-available microphone can be a separate, authorized comparison while retaining headset output; do not silently replace the user's required input.
+4. Judge the final setup in the simultaneous-use state the user needs. Restored music playback after ending capture does not establish usable meeting audio. Preserve pairing and driver settings rather than disabling microphone services or re-pairing merely to force higher-quality playback.
+
+**Fictional, unexecuted illustration:** a supplied report says headset playback is clear with a test view closed, becomes coarse when that view opens the headset input, and clears after the view closes. The next conclusion would be a capture-state-dependent change requiring a supported-mode check, with speech intelligibility and remote receipt still unverified. These invented observations are not an operated device test; no app, microphone, playback, setting or connection was used for this illustration.
+
 ## 3. Apply, retest and preserve what worked
 
 Make the already-authorized change, then repeat the same relevant check under comparable conditions. Record before/after values and evidence. If several changes were made together, say the contribution of each is unresolved.
