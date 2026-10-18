@@ -27,6 +27,10 @@ Check what parser or safe local consumer is actually installed, record its versi
 
 Record source hashes, encoding, calendar/component counts, calendar-level metadata and parser errors. Assign each source component a stable reference using the file hash and ordinal. Preserve line-ending and normalization changes separately from semantic changes. A tolerant parse is useful evidence, not a complete conformance verdict.
 
+Check required properties and permitted occurrence counts before projecting components into an identity/revision map. Inspect each component's own parsed properties, retaining repeated occurrences instead of relying on a convenience accessor that may select one value. Under [RFC 5545's event-component rules](https://www.rfc-editor.org/rfc/rfc5545#section-3.6.1), a `VEVENT` requires exactly one `UID` and `DTSTAMP`; `DTSTART` is required when the calendar has no `METHOD` and must never repeat. Optional single-occurrence properties such as `RECURRENCE-ID`, `SEQUENCE` and `STATUS` must not repeat, and `DTEND` and `DURATION` cannot coexist. Do not apply a blanket ban on repetition: properties such as `ATTENDEE`, `EXDATE` and `RDATE` can legitimately recur.
+
+A duplicate single-occurrence property is not another component revision. Do not pick its first or last value, merge competing values, or discard the extra property merely to obtain a serializable event. Keep the invalid component tied to its source reference; recover a complete supported revision from authoritative evidence or hold the affected dependency groups. If conflicting UIDs leave group membership uncertain, retain that uncertainty and check all implicated series rather than filing the component under one convenient UID. If the parser cannot expose the original occurrences faithfully, use a preserving parser route or report that validation limit before claiming the copy is ready.
+
 Identify `METHOD`, organizer/attendee data, alarms, attachments, remote references and components other than `VEVENT`. Preserve their evidence without activating anything. Do not fetch a `TZURL`, follow an attachment URL, execute alarm actions or upload a private export as an incidental validation step. Treat invitation or cancellation messages as scheduling material requiring their own intended-action review; the included helper accepts snapshot files without `METHOD`.
 
 Read the relevant [format references](references.md) when applying unfamiliar semantics. Use current official documentation for an actual destination. Product import behavior is not defined merely by the `.ics` extension.
@@ -102,6 +106,12 @@ If an installed consumer can be exercised in an isolated, unsynchronized local p
 If only parsing was tested, say so. For a named destination, check its official import route and establish whether it creates copies, updates existing identities, ignores repeats or accepts only part of the file. Do not promise idempotent re-import without evidence. For example, Google documents that imported events do not remain synchronized with the source and that guests and conference data are not imported; see [Google's import guidance](https://support.google.com/calendar/answer/37118?hl=en).
 
 A requested, authorized live import is a separate next action with a known destination and side effects. Before retrying any uncertain import, inspect what arrived; do not upload the entire file again as a diagnostic. Finish this skill's file result with the actual corrected copy, review and honest verification status.
+
+## Fictional conformance hold, not executed
+
+An otherwise complete fictional `VEVENT` contains both `UID:series-a@example.invalid` and `UID:series-b@example.invalid`, plus separate `DTEND` and `DURATION` properties. A tool returning one UID and one computed end would not resolve the source conflict. The planned disposition keeps this component's file-hash/ordinal reference, holds potentially affected series A and B pending authoritative evidence, and allows unrelated coherent events to proceed. Merely removing the second UID or choosing an end representation would invent a repair.
+
+This is an authored illustration of the validation decision. No parser, recurrence engine, helper, calendar import or application check was executed for it; it does not extend the worked example's recorded verification.
 
 ## Worked file repair
 
