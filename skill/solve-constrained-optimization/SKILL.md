@@ -36,6 +36,14 @@ Use valid, reasonably tight bounds for logical or activation formulations. An ar
 
 Check units and signs before solving. Multiplying a greater-than inequality by a negative value reverses its direction. A maximization converted to minimization must be converted back consistently in the reported objective and bounds. Default library bounds may exclude permitted negative values or allow unintended quantities; inspect them explicitly. The official [SciPy linear-programming reference](https://docs.scipy.org/doc/scipy-1.17.0/reference/generated/scipy.optimize.linprog.html) illustrates the distinction between variable bounds, equality rows and inequality rows.
 
+### Preserve strict boundaries
+
+Check whether “less than” or “more than” excludes the endpoint. For an integer-valued quantity `x` and an exact threshold `b`, `x < b` can be written as `x <= ceil(b) - 1`, and `x > b` as `x >= floor(b) + 1`. This requires the constrained quantity itself to be integer-valued in the declared units; an expression with fractional coefficients is not automatically integer-valued just because its decision variables are integers. Use another discrete grid only when its spacing and origin are established.
+
+For continuous quantities, do not silently replace a strict inequality with an inclusive one or invent an epsilon. A numerical feasibility tolerance is not an agreed minimum separation. If a closed-constraint solver needs a margin, use the task's supplied separation or resolve that model decision explicitly, then check the returned plan against it. [Gurobi's strict-inequality guidance](https://support.gurobi.com/hc/en-us/articles/360060594351-Why-doesn-t-Gurobi-support-strict-inequality-constraints-like-x-a) explains why its solver does not accept strict comparators and why an application-dependent margin is a modeling choice. An exact continuous problem can be feasible and bounded yet have only an unattained infimum or supremum; do not classify that as an attained optimum or as infeasibility.
+
+**Fictional illustration, not executed:** Minimize `x` subject to `3 < x <= 4`. For real `x`, feasible values approach 3 but none is the minimum: for every feasible value, a smaller value halfway to 3 is also feasible. Replacing the lower bound with `x >= 3` admits a forbidden answer; choosing `x >= 3.001` excludes allowed values such as 3.0005. If the original contract instead makes `x` an integer, 4 is the only feasible value. No optimizer was run for this illustration.
+
 ## Choose a method suited to the model
 
 Use available tools and a method appropriate to the variable domains and relationships. A transparent calculation or complete bounded enumeration may be preferable for a tiny problem. Linear programming handles divisible variables with linear relationships. Mixed-integer methods handle linear models with required integer or binary decisions; rounding a relaxed solution is not an integer optimization method.
