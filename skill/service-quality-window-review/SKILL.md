@@ -53,6 +53,18 @@ For the requested empirical quantile, identify the first cumulative bucket reach
 
 If histogram coverage differs from the count denominator, report its own denominator and coverage. A count/latency mismatch blocks the combined SLI claim even if each source can support a narrower descriptive result.
 
+### Do not infer a joint SLI from separate marginals
+
+If the contract defines a good request as both successful and within a latency threshold, count that conjunction on the same eligible requests. Separate availability and latency objectives remain separate unless the supplied policy combines them. Google's [SLI guidance](https://sre.google/workbook/implementing-slos/#what-to-measure-using-slis) includes successful-and-fast requests as a distinct good-event definition.
+
+Matching totals and complete coverage do not establish which successful requests were fast. Prefer a request-level join with established identities, or a histogram/counter explicitly conditioned on the required outcome with matching scope. A latency histogram for successful requests can supply the joint numerator at a supported bucket boundary, but dividing by its own successful-request count yields a conditional latency fraction, not the joint fraction of all eligible requests.
+
+When only exact marginal counts exist for the same fully observed population, retain a logical bound. If there are `N > 0` eligible requests, `S` successes and `F` requests meeting the latency threshold, the joint good count `J` satisfies `max(0, S + F - N) <= J <= min(S, F)`. The upper bound cannot exceed either group; the lower bound follows because their union cannot exceed `N`. Divide those bounds by `N` for the joint fraction. These are set-membership bounds, not a confidence interval or an independence assumption. Do not multiply marginal percentages or add error and slow counts without accounting for their overlap.
+
+Apply the requested comparison to the entire supported range: for an at-least target, the lower bound must meet it to establish a pass, while the upper bound must fall below it to establish a failure. Otherwise report the joint decision unresolved and name the missing outcome-by-latency evidence. Unknown population coverage or inexact marginal counts require additional uncertainty; the exact-count bounds alone do not resolve those gaps.
+
+**Fictional, unexecuted illustration:** A complete window contains 100 eligible requests, 95 successes and 90 requests within the latency limit. Between 85 and 90 requests could meet both conditions. A target of at least 88% is unresolved even though each marginal exceeds 88%. The missing fact is how the five failures overlap the ten slow requests. No telemetry query, calculator or service was run for this illustration.
+
 ## 4. Make the bounded decision
 
 Apply only the specified target and coverage rule. Distinguish an observed subset's comparison from the requested whole-window verdict. Missing traffic may change a weighted fraction in either direction; without defensible bounds on it, a subset failure need not prove whole-window failure. A complete-window result still describes only that window and definition.
