@@ -81,6 +81,18 @@ Continue from the final stop to the actual end point and test the user's deadlin
 
 For each feasible candidate, show waiting and slack against every relevant hard cutoff. Slack means remaining room under the stated inputs, not a promised lateness tolerance. Where travel/service times have supported ranges, evaluate plausible combinations or a clearly identified upper-bound case; do not label an arbitrary extra allowance statistically reliable. Identify the first constraint to fail in a sensitivity check. Avoid precise probability claims unsupported by data.
 
+### Preserve linked visits and elapsed-time limits
+
+When the supplied errands include collection followed by handoff, or a drop-off followed by a later collection at the same branch, give each visit its own stable ID. Keep its service, window and dependency distinct even when the location is identical. Do not deduplicate those visits by address or treat an intermediate return to the start point as the end of the trip. A collection-ready time is a separate prerequisite from the branch's opening time.
+
+For each supplied time-linked pair, identify the exact event that starts the clock, the event that stops it, the maximum elapsed interval and its source. For example, a rule may run from collection completion to handoff completion rather than from departure to arrival. Check that interval across all intervening travel, buffers, waiting and services, not just the direct leg between the two places. Keep the associated item or required document available at the dependent visit; an earlier visit to the receiving location cannot fulfill a later handoff.
+
+[Google's pickup-and-delivery routing documentation](https://developers.google.com/optimization/routing/pickup_delivery) models linked pickup/delivery requests and pickup-before-delivery precedence. That structural example does not supply a real errand's allowable elapsed time, collection readiness or handling rules. Use the user's explicit constraint or applicable provider evidence; do not invent a universal transport limit or certify an item's safety from schedule arithmetic.
+
+Report the pair's elapsed time and remaining slack beside the ordinary venue cutoffs. If a required interval or event meaning is unknown, leave that part conditional. Recheck it whenever an optional stop, waiting period or departure changes. Propose an alternate order or a separately identified intermediate handoff only within the requested planning scope, then recalculate every affected leg and window; do not add an unrequested stop silently.
+
+**Fictional, unexecuted illustration:** a user-supplied document errand requires handoff completion within 40 minutes after collection completion. Collection finishes at 10:00; an optional visit and its waiting place handoff completion at 10:50. Both offices' opening windows pass, but the linked limit fails by 10 minutes. A candidate completing handoff at 10:35 would leave five minutes under that constraint, while still needing its other legs and windows checked. These invented times establish no live route, provider rule or completed collection. The existing fixed fixture checker does not validate this additional case.
+
 ## 4. Choose and explain the useful plan
 
 Apply the user's priorities only after hard constraints pass. Show an optional stop's effect on finish time, waiting and the tightest cutoff. If an optional stop makes a required visit fail, present a required-only plan and the optional stop as omitted or unresolved, with a reason. If no complete plan can be verified, say whether the obstacle is a demonstrated conflict or missing evidence.
