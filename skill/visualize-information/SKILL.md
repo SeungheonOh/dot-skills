@@ -42,6 +42,14 @@ Keep scales comparable across panels intended for direct comparison, or visibly 
 
 For composition, verify the whole and whether categories overlap or omit an unknown share. Do not force incomplete or overlapping values into a 100% total. Keep rounding consistent with source precision and avoid labels that falsely suggest reconciliation. Place qualifications where a reader will see them, not only in a separate explanatory file.
 
+### Keep histogram widths and normalization meaningful
+
+For a histogram, retain bin edges and boundary-inclusion rules, and use common edges when directly comparing groups. Label whether height represents count, proportion or density. For adjoining numeric intervals of unequal width, use density when area must represent the share of observations: for a nonempty unweighted sample, height is `count / (included total * bin width)`. The areas, not the heights, sum to one. Count heights over unequal widths give wider intervals disproportionately large areas. If the question is simply counts in named ranges, a categorical bar chart with explicit range labels can avoid implying a continuous numeric scale. [NIST's histogram guidance](https://www.itl.nist.gov/div898/handbook/eda/section3/histogra.htm) explains the normalization by sample size and class width.
+
+Check which observations actually enter the bins. Cropping the displayed axis and excluding values before normalization are different operations. A selected histogram range can discard observations and renormalize the remainder; [Matplotlib's histogram reference](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.hist.html) documents both range exclusion and density normalization. Reconcile bin counts with the included population, retain any excluded count, and make the denominator clear near the plot. Check observations on bin edges and verify density using height times width rather than summing heights. When only pre-binned counts are supplied, preserve their boundaries; they do not reveal how observations split across finer bins.
+
+**Fictional illustration, not executed:** An invented duration summary contains 20 observations in `[0, 10)` minutes and 80 in `[10, 50]`, covering all 100 observations. Probability-density heights would both be `0.02 per minute`; widths of 10 and 40 minutes give areas of 0.2 and 0.8. The wider interval contains more observations without a higher density. These are illustrative arithmetic expectations, not a rendered chart or an observed analysis result.
+
 ## For diagrams: preserve relationship meaning
 
 Define what nodes, containers, lines, arrows, and spatial grouping mean before arranging them. An arrow may indicate execution order, a message, a dependency, ownership, or a proposed transition; these meanings are not interchangeable. Preserve direction and endpoints from the evidence. Distinguish relationship types with labels or an explicit legend when they coexist.
