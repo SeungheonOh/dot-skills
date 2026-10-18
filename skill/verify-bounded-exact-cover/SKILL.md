@@ -30,6 +30,16 @@ A candidate generator is part of the model. Missing legal candidates can produce
 7. **Turn a solution into an actionable hint if requested.** Offer one unchosen row from a valid completion, with its exact position/transformation or assignment. Keep the user's fixed choices intact. Call it one possible completion unless uniqueness was separately established. If a partial plan is proven impossible, identify that scope and suggest reconsidering a fixed choice rather than declaring the original task unsolvable.
 8. **Test the model boundary.** Include a known solution, an independently justified impossible instance, a deliberately tiny budget, malformed fixed choices, duplicated resources and symmetric candidates. Verify that each search status is distinguishable in the UI or report. Where feasible, compare small instances with an independent brute-force enumeration.
 
+## Enforce exclusions that do not share a required item
+
+The forbidden combinations in the inputs need an explicit representation. Ordinary exact cover excludes rows that share a required item; it does not by itself exclude a forbidden pair whose required-item sets are disjoint. Check those rules both while applying fixed choices and during search, and independently recheck them on a returned solution. If the chosen solver cannot express them, report that model gap rather than solving only the coverage portion.
+
+For pairwise exclusions, a direct route is a symmetric incompatibility relation over stable row IDs: choosing a row also excludes its incompatible rows, and backtracking must restore that exclusion state correctly. An alternative is a generalized exact-cover model with a separate secondary marker for each forbidden pair, included in exactly those two candidate rows. Secondary columns mean at most once; primary required columns mean exactly once, as described in [Donald Knuth's Dancing Links paper, pages 17–19](https://arxiv.org/pdf/cs/0011047). Branch on uncovered primary items and allow unused secondary markers when all primary items are covered. Keep the two column classes distinct in validation and output; these declared auxiliary markers are not additional required items.
+
+Do not reuse one secondary marker across several rows unless every pair among those rows is forbidden. Likewise, a rule forbidding only a whole triple is not equivalent to banning each pair in it; retain an explicit higher-order compatibility check or use a suitable formulation. The independent verifier must inspect the original exclusion rules, not merely confirm that the transformed columns were covered correctly.
+
+**Fictional, unexecuted illustration:** Required items are A and B. Rows p, q and r cover {A}, {B} and {A, B}, respectively. The user forbids choosing p together with q. Coverage alone accepts {p, q}, but that pair violates the actual task; {r} remains valid. A secondary marker X on p and q rules out the pair while allowing {r} to leave X unused. Making X an ordinary exactly-once requirement would wrongly reject {r}. Include this distinction, incompatible fixed choices and a legal pair inside a forbidden triple among the small model checks when implementing this extension.
+
 ## Worked example
 
 Required items are slots A, B, C, D and physical resources P, Q. Candidate rows are:
