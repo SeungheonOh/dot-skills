@@ -76,6 +76,14 @@ For security-sensitive item restrictions, batteries, liquids or special equipmen
 
 Keep source links, effective dates and qualifications with the affected check. An inaccessible official page leaves the requirement unverified. Continue unaffected packing work rather than treating a third-party travel blog as an equivalent authority.
 
+### Keep a gate-check branch usable
+
+For air travel, account for a cabin bag being checked at the gate: an item's original bag label does not establish its final permitted location. Put any rule-required removal beside the affected item, with a reachable cabin location after the bag is handed over. For U.S. guidance, the [FAA's lithium-battery rules](https://www.faa.gov/hazmat/packsafe/lithium-batteries) require spare lithium batteries and power banks to remain in the cabin when a carry-on bag is gate-checked, with terminals protected against short circuits. Verify the actual carrier and route's applicable restrictions; cabin placement alone does not establish that the item is allowed.
+
+Recalculate affected bag totals and recheck per-bag and combined limits after a proposed redistribution. Moving an item into the retained personal bag does not remove its weight from an applicable combined cabin limit. Keep that branch conditional if the retained bag's capacity or allowance is unknown.
+
+**Fictional, unexecuted illustration:** a selected power bank is listed in the cabin roller. The checklist adds a gate-check step to move it to the retained personal bag before handover, subject to verified item and bag rules. Its weight remains in that bag's subtotal. This illustration involved no traveler, airline check, physical packing or bag handover.
+
 ## 5. Separate a weight check from a fit claim
 
 Assign items to cabin, personal, checked, worn or provider-supplied locations. Include empty bag weight, cases, containers, packed accessories and selected optional items. Use actual measured weights where supplied, otherwise mark weights as estimates or unknown. Do not enter zero for an unknown item or exclude it from the limit test just because it is optional.
