@@ -30,6 +30,16 @@ Resolve unit mismatches and undefined sinks before proceeding. A model with deli
 7. **Cross-check with an independent small oracle.** Use a slow direct implementation that differs from the optimized queue or batching logic. Compare final cells and sink counts on bounded fixtures. Changing update order can be a useful check only when order independence is part of the model; do not assume it for arbitrary dynamics.
 8. **Verify export and restore.** Export the exact displayed state and ledger, then validate them after restoration. Separate the physical/model state from UI counters such as “steps this session.” If exporting art or a preview, derive it from the same state and disclose whether the computation was stable or still in progress.
 
+## Preserve the opening balance and counter origin
+
+The zero-start lattice equation above needs an explicit opening term when the chosen accounting interval begins with stored units. Record the starting state and its independently summed quantity `opening`. For counters that begin at that same boundary, check `opening + added_since_start = stored_now + removed_since_start`, including every modeled sink in removals. Internal transfers cancel in this total; they are not external additions. [MIT's stock-and-flow lecture](https://ocw.mit.edu/courses/esd-36-system-project-management-fall-2012/800ceb204ef03177b61e1288533446c1_MITESD_36F12_Lec06.pdf), slides 30 and 35, gives the initial-stock term and the discrete stock-update equation.
+
+Distinguish a checkpoint from a newly declared starting state. If restoring lifetime addition/removal counters, retain their original baseline and validate the full ledger before continuing. For an interval check from that checkpoint, subtract each counter's saved value to obtain only the subsequent additions and removals. Do not add the checkpoint's stored units to lifetime additions again, mix lifetime losses with interval additions, or reset counters to conceal a failed restore check. Store the accounting origin with the state and counters so resume and export use the same convention.
+
+A state-only snapshot can be an explicitly declared new baseline for future transition checks, but it cannot establish conservation before that snapshot. Label the historical ledger unavailable instead of inventing prior additions or losses. Independently check a nonempty start, a checkpoint with nonzero historical losses, and an unchanged resumed state with zero new flows; these expose origin mismatches that an empty-start fixture cannot.
+
+**Fictional, unexecuted illustration:** An empty-start model has lifetime additions 12, stored units 7 and lifetime losses 5 at a checkpoint. Later it adds 3 and loses 2, leaving 8 stored. The lifetime check is `15 = 8 + 7`; the checkpoint-interval check is `7 + 3 = 8 + 2`. Adding the opening 7 to lifetime additions would count those units twice. If only the 7-unit state had been supplied, it could support the second equation for subsequent observed transitions, but not a claim about the earlier 12 additions or 5 losses. No simulation or restore procedure was executed for this illustration.
+
 ## Worked example
 
 An open-boundary grid starts empty. Add4 grains to its upper-left corner. A toppling removes4 grains from that cell and sends1 to each orthogonal neighbor.
