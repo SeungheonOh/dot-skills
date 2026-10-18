@@ -37,6 +37,16 @@ Account for comments when choosing breaks. A line comment needs a terminator bef
 
 Keep choices stable for the same source, configuration and relevant tool versions. Avoid deriving layout from incidental traversal order or mutable state left by a previous call. A newer formatter can intentionally change its output; [native formatting documentation](https://pkg.go.dev/go/format#pkg-overview) gives an example of why version identity matters for repeatable results.
 
+### Account for source text that becomes a value
+
+For languages with source-observing operations, decide which observations the preservation contract includes. In C and C++, [macro stringizing](https://gcc.gnu.org/onlinedocs/cpp/Stringizing.html) converts argument spelling into a string and retains a normalized distinction between present and absent internal whitespace. The [predefined `__LINE__` macro](https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html) observes the current input line number. Changing layout can therefore alter a value even when the unexpanded token spellings remain unchanged.
+
+If those values must survive, preserve the relevant invocation spelling or line behavior, use an established formatter's supported protection mechanism, or report the affected region as unsupported under the strict contract. Retaining only the macro definition is insufficient when formatting changes its arguments. If the accepted style permits changed source-derived diagnostics or other observations, state that limit rather than claiming unrestricted semantic equivalence. Do not silently introduce line-control directives or rewrite the macro to compensate.
+
+**Fictional, unexecuted illustration:** With `#define LABEL(x) #x`, changing an invocation from `LABEL(a+b)` to `LABEL(a + b)` changes its stringized value from `"a+b"` to `"a + b"`. Both forms remain valid, and repeated formatting can be stable, so parsing and idempotence alone would miss the difference. This illustration was not compiled or executed.
+
+When this boundary matters, check the affected expanded value or intended consumer under the relevant preprocessing configuration, within the task's execution authority. Include a layout change that would expose the source observation. Evidence from one active configuration does not establish preservation for unexamined conditional branches or macro definitions.
+
 ## Honor the requested integration boundary
 
 Whole-document formatting can be a complete task. If range or fragment formatting is requested, establish permitted boundary expansion, surrounding indentation/context and source that must remain unchanged. A fragment is not automatically equivalent to extracting text and formatting it as a whole file. If incomplete editor input is supported, preserve its intended recovery behavior without inventing missing syntax.
