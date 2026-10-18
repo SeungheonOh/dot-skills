@@ -27,6 +27,14 @@ Use the argument that fits the code; there is no need to apply every technique.
 
 For repeated operations, write setup plus the sum of call costs under the actual initial state and update rules. Include rebuilds or disposal when the boundary charges them. Do not distribute setup over hypothetical future uses or infer constant per-call cost merely because some work is cached.
 
+### Separate parallel work from completion time
+
+When the caller permits overlapping execution, distinguish total work W from span S, the longest dependency chain under the same cost model. Sum work across parallel branches; use their maximum span only when those branches really can overlap, then add serial phases and fork/join costs that the model charges. Trace actual dependencies, including serialized launch loops or locks, instead of assuming a parallel-looking API removes them.
+
+For a fixed computation DAG on P identical processors under the idealized model, completion time is at least max(W/P,S). This is a lower bound, not an achieved runtime. A matching upper bound needs a scheduling argument and its assumptions; unknown scheduling, contention or external waits remain explicit. [MIT's work/span lecture](https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/543e419bff1ed05b1a649115c24c44b3_MIT6_172F18_lec7.pdf) develops these distinctions. Do not divide a sequential Big-O bound by the thread count and label the result measured or guaranteed latency.
+
+**Fictional illustration, not executed:** Two independent branches each require n unit operations in a serial chain, followed by a join of one unit. Ignoring launch overhead by explicit assumption, W=2n+1 and S=n+1. Two ideal processors can run the branches together and then join in n+1 units; arbitrarily many processors cannot shorten either internal chain. This is a source-analysis illustration, not a benchmark or an observed speedup.
+
 ## Qualify and check the bound
 
 State what the bound covers: all permitted inputs, a worst case at stated dimensions, a particular shape, or a conditional operation sequence. Retain unknown contributions, for example total callback work, beside the known structural term. An upper bound remains an upper bound until matching lower-bound reasoning justifies tightness. For a worst-case tight claim, give a permitted family that attains the order; a small example or the largest input inspected is insufficient. Do not describe one implementation's bound as a lower bound for every algorithm solving the problem.
