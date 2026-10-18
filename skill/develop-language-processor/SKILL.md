@@ -47,6 +47,16 @@ Make output eligibility reach the real caller. A preview, saved result or downst
 
 Apply resource policies in proportion to the language and exposure. When source size, nesting, expansion, evaluation or generated output can grow materially, bound the relevant work and report exhaustion distinctly from a valid empty or truncated result. Apply a whole-request budget across contributing constructs rather than resetting it for every expression. A returned-row limit alone does not bound earlier computation, and a check after allocation cannot protect that allocation.
 
+### Preserve bindings introduced during lowering
+
+When lowering introduces temporary variables, helper references or import aliases, preserve binding identity as well as evaluation order. Check the scopes the target language actually gives those names, including existing free references carried into a generated scope. Reserve generated names across fragments that will share a scope. A distinctive prefix alone does not establish freshness, and a valid identifier can still bind the wrong occurrence.
+
+Prefer the target framework's binding-aware construction or fresh-name facility. If the target is ordinary source text, ensure the printed names retain the intended references; internal symbol identities alone do not make a textual collision safe. The [Racket guide's lexical-scope example](https://docs.racket-lang.org/guide/pattern-macros.html#%28part._.Lexical_.Scope%29) illustrates both introduced temporaries capturing supplied references and local names interfering with introduced operations. Its automatic hygiene is a framework property, not a guarantee supplied by every syntax template. Use [capture-avoiding substitution](../substitute-bound-syntax/SKILL.md) when replacing bound syntax is the actual operation.
+
+**Fictional, unexecuted illustration:** A source expression is `next() + _tmp`, where `next()` returns 3 without changing the outer `_tmp`, whose value is 10. Lowering it to `let _tmp = next() in _tmp + _tmp` captures the original free reference: the expression would yield 6 instead of 13. A fresh temporary must carry the first operand while the second reference still resolves to the outer binding. These are stipulated semantics for an illustration, not observed processor results.
+
+Where name introduction is supported, include a distinguishing check with a user name resembling the generated temporary and, when relevant, a local name resembling a helper. Inspect the actual generated consumer's bindings and result. Parsing successfully or matching one noncolliding input does not establish that references survived lowering.
+
 ## Verify through the useful boundary
 
 Exercise the saved processor through the intended caller or target consumer. Derive expected outcomes from the accepted meanings, not from the processor's own resolution or conversion helper. Select a few cases that distinguish the changed behavior, such as:
