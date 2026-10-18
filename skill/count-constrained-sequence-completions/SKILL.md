@@ -37,6 +37,16 @@ Keep the domain, fixed choices and external context immutable during one solve. 
 
 If a correct compact state cannot be established, use a bounded direct enumeration or report the unsupported rule. Do not omit a constraint merely to keep the dynamic program small.
 
+### Keep completion identity separate from cached state
+
+State what makes two completions different before summing branches. For a sequence of values, repeated occurrences of the same value in an imported position domain are not additional choices: reject or deduplicate them under the declared value equality. If the task instead distinguishes physical items with identical labels, keep their stable IDs and resource-use constraints; do not silently collapse those assignments into value sequences.
+
+Memoization shares suffix work, not the identity of distinct prefixes. Each distinct permitted next value contributes its successor's cached count even when several values reach the same sufficient state. A reachability-style global visited set that skips a state on later arrival can undercount. In the other direction, duplicate domain entries or overlapping rule alternatives must not produce several counted branches for the same completed sequence. A count recurrence needs disjoint branches whose union contains every permitted completion exactly once.
+
+If rules are represented by an automaton, counting accepting runs is not automatically counting accepted value sequences: a nondeterministic automaton can have several accepting paths for one string. This distinction is formalized in the introduction to [Hing Leung's paper on automaton ambiguity](https://www.cs.nmsu.edu/~hleung/ciaaLNCS.pdf). Use a deterministic representation, a justified unambiguous representation, or another distinct-sequence counting method within the budget; do not present run counts as completion counts.
+
+**Fictional, unexecuted illustration:** A length-two sequence with domain {A, B} at each position and no other rules has AA, AB, BA and BB. Position alone is a sufficient state. The one-position suffix count is two, and both first-position choices must receive that cached count, yielding four. Replacing a domain list with [A, A, B] does not create more value sequences. For a small independent check, compare the set of complete sequences under the declared identity rule, including duplicate-domain and converging-state cases; checking only that one returned witness is valid cannot detect either counting error.
+
 ### 3. Count suffixes and retain one witness
 
 At each state, iterate permitted candidates, restricted to the user's fixed value when present. Reject candidates violating the applicable local or transition rules. Sum the counts returned by valid successor states. A completed valid sequence contributes one; a dead end contributes zero.
