@@ -23,6 +23,18 @@ Read large lengths and offsets as exact integers, compare with supported and ava
 
 Return integers in an exact representation. Do not apply token decimals, currency units, ownership meaning or address identity based on a field's apparent shape. Escape invisible formatting controls in human-readable output without changing the decoded value.
 
+### Resolve nested offset bases before following pointers
+
+For supported composites, apply the [formal ABI encoding rules](https://docs.soliditylang.org/en/latest/abi-spec.html#formal-specification-of-the-encoding) recursively:
+
+- A tuple's dynamic-member offsets use that tuple's start. Static members occupy their full encoded widths in its head
+- A fixed array is encoded as an element tuple without a length word. Fixed element count does not imply a static type: `string[2]` is dynamic
+- A variable-length array has a length word followed by its element tuple. Dynamic-element offsets use the start immediately after that length word, not the length word's address
+
+Record the pointer-word position, relative value, selected base and resolved target separately. Check the complete enclosing head before following tails; do not infer its size from argument count alone.
+
+**Fictional illustration, unexecuted:** For one `string[]` argument containing two empty strings, the canonical argument payload has outer offset 32, array length 2 at byte 32, and element offsets 64 and 96 at bytes 64 and 96. Their base is byte 64, so the empty-string length words are at bytes 128 and 160. Using byte 32 as the element base is wrong. All positions exclude any selector. This illustrates expected layout, not an executed decoder check.
+
 ## Separate readability, canonicality and behavior
 
 A bounded decoder can recover values from some gapped, aliased, reordered or trailing-byte layouts. Report those separately from malformed or unsupported input. When supported, re-encode the decoded tuple using a canonical encoder and compare the complete byte sequence. Keep the original bytes intact; canonical output is a separate artifact, not an automatic repair.
