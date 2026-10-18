@@ -31,6 +31,14 @@ Use an authoritative unit reference. For SI derived units and selected non-SI co
 
 Do not handle offset units by multiplying a scale alone. Celsius readings require an offset when converted to kelvin; temperature differences are a separate case. Reject them if that distinction is outside the chosen implementation.
 
+### Keep temperature readings distinct from differences
+
+The scale-only arithmetic and target division below apply to multiplicative units. If offset temperatures are supported, retain whether each quantity is a reading or a difference alongside its dimensions. For a reading whose base conversion is `base = scale × value + offset`, convert back with `value = (base - offset) / scale`; a difference uses the scale without the offset in either direction. The [NIST Celsius definition](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-4-two-classes-si-units-and-si-prefixes) specifies the 273.15 K offset and equal-sized Celsius/kelvin intervals. Checking dimensions alone cannot choose the correct output conversion.
+
+Subtracting compatible readings produces a difference; adding a compatible difference to a reading produces a reading. Do not silently treat two offset readings as ordinary additive magnitudes, or multiply their displayed Celsius values in a formula requiring thermodynamic temperature. Establish the intended quantity operation and convert to its required scale first, or reject that operation. [Pint's offset-unit documentation](https://pint.readthedocs.io/en/stable/user/nonmult.html) illustrates why these operations need explicit handling rather than the ordinary dimension-vector rules.
+
+**Fictional, unexecuted illustration:** a supplied reading of 293.15 K converts to 20 °C, while a supplied difference of 10 K converts to a difference of 10 °C. Readings of 30 °C and 20 °C differ by 10 K; adding that difference to the 20 °C reading gives 30 °C. Applying the reading offset to the difference would corrupt the result. Use separate reading and difference roundtrips when verifying such support; none were executed for this illustration.
+
 ### 2. Parse structure without running input as code
 
 For user-entered formulas, use a bounded parser or a suitable library, not eval. Specify supported operators and precedence. Require explicit multiplication if implicit multiplication would create ambiguity. Decide how powers, unary minus, functions and variable names behave.
