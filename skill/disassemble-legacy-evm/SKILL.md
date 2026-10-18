@@ -18,6 +18,14 @@ Use when someone needs to inspect hexadecimal EVM code and understand its instru
 
 Do not infer runtime-code identity from an arbitrary hex string. Unknown metadata or embedded data should remain a caveat; do not strip it based on a guessed compiler signature. If the format is EOF or the requested instruction set is unsupported, report that instead of silently interpreting it as the supported legacy profile.
 
+### Recognize account-code delegation before opcode decoding
+
+For account-code input under a fork that supports [EIP-7702 delegation indicators](https://eips.ethereum.org/EIPS/eip-7702#delegation-indicator), distinguish the exact 23-byte form `0xef0100 || address`, where `address` occupies 20 bytes, from a legacy instruction stream or an EOF container. The marker directs code-executing operations to another account's code; the address bytes are not instructions of the delegating account. A legacy-only inspector should return a specifically identified unsupported delegation artifact, not a control-flow map or a claim that the account necessarily halts on opcode `0xef`.
+
+Keep shape recognition separate from provenance: unknown-origin bytes matching that form do not prove a deployed account, chain, fork or delegation. A deliberately requested raw legacy-byte exercise may still show syntax under its declared profile, separately labeled from account-code interpretation. Preserve the marker unchanged. If inspecting the target code is already within scope, retain the authority account, target address, chain and block/state reference alongside the separately retrieved target bytes; do not silently replace the original artifact or recursively chase delegation chains as if that reproduced execution.
+
+**Fictional illustration — unexecuted:** A supplied account-code record for an EIP-7702-capable fork consists of `ef0100` followed by twenty `5b` bytes. It describes a delegation-shaped record, not twenty JUMPDEST instructions. No account or target was queried for this illustration. Distinguish that exact shape from shorter or longer inputs and from the same byte pattern embedded inside ordinary legacy code; prefix resemblance alone is not a valid delegation record.
+
 ## Workflow
 
 ### 1. Normalize transport syntax without changing bytes
