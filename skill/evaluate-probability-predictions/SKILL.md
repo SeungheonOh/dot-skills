@@ -73,6 +73,14 @@ Changing the decision threshold changes confusion counts and threshold metrics, 
 
 Do not choose a final threshold on the evaluation set and then describe that same result as untouched validation. If costs or constraints are supplied, retain them explicitly and distinguish exploratory threshold review from a prospective operating policy.
 
+### Preserve pairing in requested uncertainty estimates
+
+If uncertainty for a model comparison is requested, estimate the declared score difference on the common cohort, with its sign and units explicit. Do not substitute overlap of separate model intervals for an interval or test of that difference. Keep each case's outcome, both predictions and applicable weight together. Under an appropriate independent-case bootstrap, resample the same case indices for both models and recompute their score difference in every draw; independently resampling the two models destroys their within-case dependence. Grouped, temporal or survey data require a design-compatible method, not automatic row resampling. [SciPy's bootstrap reference](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html) documents shared-index resampling with `paired=True`; the default is unpaired.
+
+Keep the uncertainty target narrow: resampling supplied predictions describes evaluation-sample variability under the stated assumptions, not variability from retraining or choosing the model. A shared resampling scheme does not repair leakage or biased coverage. Retain the method, resampling unit, settings and any undefined replicates. Do not silently discard one-class AUC draws, turn non-finite losses into finite differences, or suppress a degenerate-interval warning to return a plausible interval. Use a justified alternative or report that the requested interval was not established.
+
+**Fictional, unexecuted diagnostic:** Two models have identical predictions on every case, but their Brier losses differ across cases. Every shared-index resample must give a Brier-loss difference of zero. Independent draws can create artificial variation in that difference. A degenerate bootstrap distribution may leave a chosen interval method undefined; it does not establish population equivalence or error-free predictions. No model evaluation or resampling was executed for this illustration.
+
 ### 6. Verify independently and deliver
 
 Use hand-computable cases for perfect, tied and reversed rankings; one-class data; exact zero/one probabilities; empty shared cohorts; missing and conflicting rows. For a small dataset, compare the efficient AUC computation against direct positive-negative pair enumeration. Check total confusion counts and bin counts against the used denominator.
