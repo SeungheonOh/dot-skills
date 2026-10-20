@@ -63,6 +63,12 @@ Use statistical intervals or tests only when they answer a real question and the
 
 Separate what was observed from possible explanations. An association or before-and-after change can suggest a mechanism but does not establish that an intervention caused it. Say what further evidence would distinguish important alternatives without withholding a useful descriptive answer.
 
+### Compare changes directly, not significance labels
+
+When the question is whether changes differ between groups or periods, estimate that contrast on a common outcome scale. One change being statistically significant while another is not does not establish a difference between them; [Gelman and Stern's original paper](https://sites.stat.columbia.edu/gelman/research/published/signif4.pdf) explains this error. Report the changes and their direct comparison, with an appropriate interval or test only when warranted. Preserve covariance from shared cases, controls or fitted parameters; separate standard errors do not establish independence. If the necessary joint information is unavailable, report the descriptive contrast and the inference limit. Failure to detect a difference does not establish equivalence.
+
+**Fictional, unexecuted illustration:** Independent estimates of two comparable changes are 5 and 4 percentage points, with standard errors 2 and 3 percentage points. Under a justified normal approximation, only the first excludes zero at the two-sided 5% level. Their estimated difference is nevertheless just 1 percentage point, with standard error `sqrt(2² + 3²)`, approximately 3.61 percentage points. The separate significance labels cannot support a claim of differing changes. No data analysis was executed; the independence assumption must not be transferred to overlapping samples.
+
 ## Deliver a result someone can use
 
 Lead with the answer and its practical meaning, then the few calculations that support it. State material qualifications near the affected claim. If the evidence cannot answer the full question, give the bounded answer it does support and identify the specific missing data or decision.
