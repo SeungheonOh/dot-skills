@@ -35,6 +35,14 @@ Classify the symptom with evidence:
 
 Do not fix a column-width display problem by editing arithmetic. Do not convert identifiers into numbers, fill missing inputs with zero, enable iteration, or change the workbook date system merely to make a symptom disappear.
 
+### Check whether display precision changes the data
+
+Inspect the workbook's precision setting before changing number formats or diagnosing a rounded value as display-only. Excel's [precision-as-displayed option](https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/floating-point-arithmetic-inaccurate-result#method-2-precision-as-displayed) can reduce stored numeric precision across all worksheets; disabling it does not restore discarded digits. Record the setting and preserve the file before any authorized change. Do not enable it as a shortcut for matching a total, or assume a formatting edit is cosmetic while it is active.
+
+If constants have already lost precision, a formula-only repair cannot reconstruct them. Recover a supported value from preserved source evidence or a suitable earlier revision, retaining that input correction separately; otherwise leave the missing precision unresolved. Distinguish an explicitly required rounding step from workbook-wide precision loss. Any proposed setting change needs its own scope and dependent-output checks, not silent inclusion in a local formula patch.
+
+**Fictional, unexecuted illustration:** A source rate is 0.1234, but a workbook saved with precision as displayed and a two-decimal number format now stores 0.12. Multiplying by 1,000 correctly gives 120 for that stored input, rather than 123.4 for the original rate. Increasing the displayed decimals or replacing the multiplication formula cannot recover the missing digits. No workbook was edited or recalculated for this illustration.
+
 ## 2. Trace the first meaningful divergence
 
 Start at the reported result and follow actual precedents until the first unsupported value or relationship appears. Retain a compact path of cell/name identities, formula meaning and observed values. Trace shared dependencies before repairing dozens of downstream errors independently.
