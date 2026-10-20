@@ -17,7 +17,7 @@ A choice depends on competing priorities and the user wants to understand which 
 
 ## Workflow
 
-1. Check that all scores use a comparable higher-is-better scale. Do not combine raw costs, durations and ratings without an agreed conversion. Keep subjective judgments labeled.
+1. Check that all scores use a comparable higher-is-better scale and establish what score differences mean before averaging. Do not combine raw costs, durations and ratings without an agreed conversion. Keep subjective judgments labeled.
 2. Treat missing scores as unknown rather than zero. If weights sum to zero, return no ranking. Do not fabricate missing evidence to complete the matrix.
 3. Calculate each weighted average using full precision and identify ties using a numerical tolerance, not rounded display values.
 4. Vary the selected priority over a declared grid or solve its crossing points analytically. Reallocate remaining weight in the original proportions; disclose any convention needed when the other weights are all zero.
@@ -28,6 +28,16 @@ A choice depends on competing priorities and the user wants to understand which 
 Assign each criterion a source or an explicit user judgment. When a cost is converted into a higher-is-better score, retain both the original amount and the agreed conversion rule in the working record. A missing score can be handled as an unresolved row or an explicitly requested range; do not impute a point estimate silently.
 
 For sensitivity, state what stays fixed. Varying one weight while preserving all scores answers a preference question. Varying uncertain scores answers an evidence question. Keep those analyses separate, and record ties at crossing points rather than choosing a winner by list order.
+
+### Require meaningful score differences
+
+An ordering or label code does not establish equal preference gaps. Assigning low/medium/high to 0/5/10, or rescaling ranks to a common range, introduces a value judgment. For additive value scores, equal point differences within one criterion should represent equal preference differences; equal raw-unit changes need not. See the [UK multi-criteria analysis manual](https://assets.publishing.service.gov.uk/media/5a790545e5274a2acd18b975/1132618.pdf), sections 5.6 and 6.2.9.
+
+Use the supplied value mapping and anchors. If only order is supported and spacing could change the choice, preserve the ordinal comparison or show explicitly conditional mappings instead of inventing a cardinal winner. Ask only for that consequential missing judgment; no new elicitation is needed when usable value scores are already supplied. If the user deliberately requests a rank-points rule, compute and label that agreed rule without presenting it as measured preference intensity.
+
+Changing weights while holding one invented mapping fixed cannot establish robustness to that mapping. Check score meaning before treating the weight sweep as decision support.
+
+**Fictional, unexecuted illustration:** Option A has high usability and a cost-fit value score of 0; B has medium usability and a cost-fit value score of 10. Usability is supplied only as low < medium < high. The requested weights are 60% usability and 40% cost fit. Mapping usability to 0/5/10 gives A = 6 and B = 7. Mapping it to 0/1/10 instead gives A = 6 and B = 4.6. Both mappings preserve the usability ordering and its endpoints but reverse the winner. Neither spacing follows from the ordinal input alone. Return the conditional result or resolve the usability-value mapping rather than choosing the preferred winner. No ranking program or live comparison was run.
 
 ### Separate feasibility from scoring assumptions
 
@@ -43,7 +53,7 @@ The input matrix and provenance, baseline ranking, ties, sensitivity range and d
 
 ## Verification and limits
 
-Confirm that scaling every weight by the same positive constant leaves the ranking unchanged. Check endpoints and at least one independently calculated weighted average.
+Confirm that scaling every weight by the same positive constant leaves the ranking unchanged. Check endpoints, the provenance of score differences and at least one independently calculated weighted average.
 
 ## Example request
 
@@ -51,7 +61,7 @@ Confirm that scaling every weight by the same positive constant leaves the ranki
 
 ## Worked example
 
-The supplied criteria are cost fit, quality and convenience with weights 35, 40, 25. Supplied scores are A=[9, 6, 7], B=[6, 9, 6], C=[7, 7, 9]. All are subjective 0–10 higher-is-better ratings.
+The supplied criteria are cost fit, quality and convenience with weights 35, 40, 25. Supplied scores are A=[9, 6, 7], B=[6, 9, 6], C=[7, 7, 9]. All are explicitly supplied subjective 0–10 higher-is-better value scores, not numeric codes for ordinal labels.
 
 The baseline averages are A=7.30, B=7.20 and C=7.50. C leads by 0.20. At 100% cost-fit weight, A leads with 9. At 0% cost fit, distributing the remaining weight in the supplied 40:25 ratio gives B≈7.846, C≈7.769 and A≈6.385.
 
