@@ -30,7 +30,7 @@ Record the inspected revision and whether findings concern committed blobs, the 
 With an available authorized Git installation, useful read-only queries include:
 
 ```text
-git ls-files --eol -z -- <bounded-paths>
+git --literal-pathspecs ls-files --eol -z -- <bounded-paths>
 git check-attr text eol working-tree-encoding filter ident -- <representative-paths>
 git check-attr --cached text eol -- <representative-paths>
 ```
@@ -86,6 +86,16 @@ Before migration, capture the approved file list, each source's bytes or recover
 
 Use a bounded reviewed path set and preferably a disposable copy for the migration comparison. Do not run repository-wide `git add --renormalize .` in a dirty working tree as a convenience. Preserve original staging boundaries; if they cannot be safely maintained, return the policy plus a migration patch/plan instead of replacing the user's index.
 
+### Keep the migration file list literal
+
+A list of approved filenames is not an approved Git pattern. Shell quoting and the `--` option separator do not disable Git's own pathspec interpretation. For filename-driven queries and migration, use the supported invocation-local [`--literal-pathspecs` option](https://git-scm.com/docs/git) before the subcommand, with safely passed arguments. Do not change persistent environment or repository settings to obtain this behavior.
+
+For a longer list, `git add` supports `--pathspec-from-file` with `--pathspec-file-nul`. NUL framing preserves filename boundaries, including embedded newlines; it is not a substitute for literal pathspec mode. Keep the manifest outside the selected tree and bind it to the reviewed file list. See [Git's pathspec-input options](https://git-scm.com/docs/git-add).
+
+Run from the established repository root with repository-relative file names. Literal mode does not make a directory entry mean one file: do not substitute a containing directory, `.` or an empty selection for the enumerated approved files. If the user intentionally selected a pattern or subtree, expand its scope through a permitted read-only inventory first and review the resulting files before migration. [Git's pathspec definition](https://git-scm.com/docs/gitglossary) distinguishes directory-prefix scope, wildcard matching and magic forms.
+
+Reconcile the selected set against the current tracked entries immediately before staging. A missing worktree file is not an EOL conversion: `--renormalize` implies `-u`, which can record a tracked removal. Hold unexpected deletions or type changes instead of including them in a newline-only migration. Compare before/after index changes against the approved set, retaining the existing staged baseline; a restricted diff must not hide an out-of-scope change.
+
 For every changed file, compare the actual before/after bytes under the specific allowed transformation. A newline-only change should preserve all non-line-ending bytes, final-newline presence, encoding/signature, permissions and path identity. Do not delete lone carriage returns as though they were necessarily CRLF pairs. A whitespace-ignoring diff alone cannot prove this invariant.
 
 Inspect the staged diff without external diff/text-conversion helpers when appropriate, and account for all changed paths. Keep content edits separate from mechanical normalization. A file that remains unchanged may already comply; do not manufacture a diff to demonstrate activity.
@@ -115,5 +125,7 @@ assets/*.png -text
 ```
 
 The proposed map says `src/main.sh` is normalized as text with LF checkout; `scripts/setup.cmd` is normalized to LF in the index with CRLF checkout; protocol fixtures receive no EOL conversion. The asset and fixture claims still depend on the absence of other conversion attributes. No global default is added because unclassified files have not been reviewed.
+
+A second fictional boundary case selects only the literal file `src/report[1].txt`, with `src/report1.txt` present but excluded. Treating the selected name as a pattern can also match the excluded file; quoting it in the shell does not prevent that Git-level match. The migration plan must preserve the literal selection. If the selected file disappears before staging, hold it rather than staging its removal. These are unexecuted decision cases, not observed Git results.
 
 This is an unexecuted paper illustration. It is not evidence that files were normalized, a Git client resolved these rules, or either operating system was tested.
