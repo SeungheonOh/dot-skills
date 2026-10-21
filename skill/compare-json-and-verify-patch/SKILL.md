@@ -42,6 +42,16 @@ Use this branch when the input is an ordered patch supplied by a person, service
 7. Bound the resulting size and depth after operations as well as before them: repeated copies can amplify a small input. For interactive work, cancel or invalidate results when any input changes, and reject late results from earlier runs.
 8. Export the successful result and a minimal operation journal tied to the frozen source. Represent removal of the entire document distinctly from a JSON null value. If the source changes later, rehearse again; a previous preview does not establish that the patch is safe against a newer version.
 
+### Use JSON equality, not host-language shortcuts
+
+For `test` and semantic round-trip comparison, use recursive JSON-type-aware equality. [RFC 6902 section 4.6](https://www.rfc-editor.org/rfc/rfc6902.html#section-4.6) distinguishes booleans from numbers: `true` is not `1`, including inside arrays or objects. Numeric `1` and `1.0` compare equal when represented without precision loss. Strings compare by their decoded characters, not their serialized escape spelling; object member order is irrelevant, but array order matters.
+
+Do not substitute a generic host equality operator or a serialized-string comparison. Python, for example, documents [booleans as an integer subtype](https://docs.python.org/3/library/stdtypes.html#boolean-type-bool); checking only that a value is numeric can route a Boolean through the wrong comparison. Classify JSON types before comparing values at every nesting level, while treating the host's integer and decimal representations as one JSON number category where appropriate.
+
+Keep any requested lexical-number comparison separate from RFC patch equality. A report may distinguish `1` from `1.0` as source spellings, but that distinction must not turn a conforming numeric `test` into a failure. Conversely, lossy parsing cannot establish numeric equality.
+
+**Fictional, unexecuted illustration:** from `{"flags":[true],"count":1}`, testing `/flags` against `[1]` must fail and prevent a following count replacement. Testing `/count` against `1.0` succeeds under lossless numeric handling. A generated comparison from `{"flags":[true]}` to `{"flags":[1]}` must not return an empty patch. These authored expectations cover both supplied-patch guards and generated-patch verification; no applicator or test was run.
+
 ### Resolve append targets by destination type
 
 In step 4, “for add” includes the addition phase of `move` and `copy`: their destination uses add semantics, so a final `-` can append to an existing array. For `move`, resolve that insertion after removing the source. This follows [RFC 6902 sections 4.1, 4.4 and 4.5](https://www.rfc-editor.org/rfc/rfc6902.html#section-4.4); restricting append to the literal operation name `add` would reject valid patches. The append rule does not create a missing parent container.
@@ -85,3 +95,4 @@ Apply these operations to a local copy of before and compare with after. The rep
 ## Evidence status
 
 The worked example illustrates the stated inputs and reasoning. Unless an execution result is explicitly identified, it is not a claim that external services, real devices or user data were tested. Report actual checks and unrun stages on each use.
+
