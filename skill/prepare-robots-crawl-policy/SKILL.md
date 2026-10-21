@@ -41,11 +41,19 @@ For [Google's documented profile](https://developers.google.com/crawling/docs/ro
 
 Treat blank lines and comments as presentation, not a reliable way to force a new group. Check the parser's actual grouping after every edit; an ignored extension line must not be used as a group delimiter. Retain supported sitemap declarations as discovery metadata, not path permissions. If existing crawler-specific extensions matter, consult that consumer's documentation and preserve or hold them rather than silently discarding them.
 
+### Keep URI comparison separate from blanket decoding
+
+Use [RFC 9309 §§2.2.2–2.2.3](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.2.2) when explaining encoded paths. Decode percent-encoded ASCII unreserved octets for comparison, but do not decode reserved octets indiscriminately: `%2F` must not become a structural slash. Non-ASCII characters need their UTF-8 percent-encoded comparison form. Compare octets, not displayed-character counts, for specificity.
+
+Literal robots metacharacters need percent encoding in patterns: `%2A` for a literal asterisk and `%24` for a literal dollar sign. Shell quoting or a backslash is not an equivalent robots escape. Preserve source spelling alongside the comparison explanation.
+
+**Fictional, unexecuted boundary cases:** consider each rule alone in the applicable user-agent group. For `Disallow: /notes/~draft$`, `/notes/%7Edraft` matches. For `Disallow: /notes/a/b$`, `/notes/a%2Fb` does not. For `Disallow: /notes/item%2A.txt$`, the literal-star item is blocked but `/notes/item7.txt` is not. These are authored expectations, not parser observations.
+
 ## 3. Compare the saved candidate against intent
 
 Save outside a watched publishing directory. Reopen the exact bytes, inspect the decoded rules and group boundaries, and compare every selected decision before and after. For each changed result, identify the responsible rule or group-selection change. Confirm unchanged public routes and unrelated crawler policies remain intact.
 
-When a compatible offline parser is available and its use authorized, evaluate the bounded decision set against both files. Record its identity/version and any unsupported syntax. Include the meaningful boundaries from step 1 and cases where a specific agent overrides the fallback. If only source inspection is possible, say so; do not claim a parser run, live crawler test or complete rule-space proof.
+When a compatible offline parser is available and its use authorized, evaluate the bounded decision set against both files. Record its identity/version and any unsupported syntax. Include encoded/unencoded boundary pairs and literal metacharacters when present; hold unexplained matcher disagreements rather than rewriting expected decisions. Include the meaningful boundaries from step 1 and cases where a specific agent overrides the fallback. If only source inspection is possible, say so; do not claim a parser run, live crawler test or complete rule-space proof.
 
 Check the candidate for accidental `Disallow: /`, unapproved widening, misplaced rules, unresolved placeholders and private comments. Separate the intended policy from the parser's output: if they disagree, repair the candidate or hold the conflicting request. Do not revise the expected decisions just to match what the file happens to do.
 
