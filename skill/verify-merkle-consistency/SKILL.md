@@ -13,6 +13,14 @@ Obtain both expected roots and sizes, their provenance, the proof's hash list, a
 
 Keep the old and new roles explicit throughout parsing, output and comparison. Bound sizes, proof length and input bytes to the implementation's supported range before converting large numeric fields or allocating memory. Reject unknown schemes and malformed digests instead of trying alternate padding or concatenation conventions until something passes.
 
+### Preserve exact sizes before choosing a verifier branch
+
+Parse both sizes without rounding before testing zero, equality, ordering or powers of two. [RFC 9162 §4.11](https://www.rfc-editor.org/rfc/rfc9162.html#section-4.11) carries both sizes as unsigned 64-bit integers. Preserve those values in the report as well as the calculation. A smaller implementation range is acceptable when declared; an unsupported size is not a failed cryptographic proof.
+
+For JavaScript, use an exact integer representation throughout, such as BigInt parsed from lossless input, or reject sizes outside an explicitly supported exact range. Converting an already rounded Number to BigInt does not recover the original size. The [safe-integer boundary](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-number.max_safe_integer) matters even before hashing: distinct transported sizes can otherwise compare equal and wrongly select the equal-size shortcut. Apply the same exactness to the power-of-two test that selects the verifier's initial hash and to both traversal counters. Number [bitwise operations](https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-numberbitwiseop) narrow operands to 32 bits; replacing a signed shift with an unsigned Number shift does not preserve a 64-bit counter.
+
+Fictional, unexecuted illustration: an older size of 4,294,967,297 is not a power of two. A JavaScript Number implementation using `(size & (size - 1)) === 0` reduces the operands to 1 and 0 and incorrectly reports that it is. In the RFC verifier that selects the wrong initialization route by prepending the older root. Keep the size exact and use a compatible exact-integer test instead. This illustrates a branch-selection defect, not a computed proof or an observed failure in a particular implementation.
+
 ## Apply the scheme's verifier
 
 For the history-tree scheme, use [RFC 9162 §2.1.4](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.4) with its separate old/new hash accumulators and uneven-tree handling. A single root reconstructed from a membership path is insufficient. Both reconstructed roots and the traversal's completion condition must match.
@@ -39,4 +47,7 @@ For an interactive checker, bind results and exports to the submitted pair of an
 
 Generate synthetic sequences and compute their complete prefix roots using an independently structured hash calculation. Verify every supported old/new size pair, especially around powers of two and uneven right edges. Mutate each anchor and path component; remove and append nodes. A rewritten old-prefix record should fail against the preserved old anchor, while a changed newly appended tail with its corresponding new proof can legitimately pass.
 
+For an implementation that supports large snapshots, add bounded metadata/path cases around 2^31, 2^32 and its exact-integer limit. Check power-of-two classification, both traversal counters, unequal adjacent sizes, and round-trip preservation through the input and report formats. Include an explicitly rejected value outside the supported range. Use an independent exact-integer reference rather than materializing enormous trees; keep these checks separate from the small full-record exercise below.
+
 A local October 2026 exercise checked all 8,256 positive size pairs through 128 records against independent full-prefix roots, with altered anchors, truncated/excess/changed paths, equal-size pairs, a rewritten prefix and a legitimate new tail. UI tests checked separate anchor entry and stale/cancelled results. These results cover the bounded synthetic implementation, not a deployed log, signed head, publisher identity or global split-view detection.
+
