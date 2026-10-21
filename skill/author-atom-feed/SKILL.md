@@ -58,6 +58,18 @@ Define what counts as a meaningful feed update in this workflow. Rebuilding iden
 
 Use absolute, approved alternate URLs for portability. Preserve meaningful query strings and fragments; do not silently follow redirects, add tracking or replace a destination with an inferred canonical URL. Hold access-bearing or credential-bearing links for a safe, authorized replacement instead of copying them into syndicated output. A public-looking hostname is not proof that the linked content is meant for this audience.
 
+### Preserve inherited context when revising a feed
+
+Before extracting or reparenting entries, record their effective base and language context, not just attributes on the entry itself. Atom permits inherited `xml:base` and `xml:lang`; the latter affects language-sensitive fields. Keep entry IDs outside link rewriting: an `atom:id` must already be absolute and must not be repaired by resolving a relative value against a base. See [RFC 4287 §§2 and 4.2.6](https://www.rfc-editor.org/rfc/rfc4287.html#section-2).
+
+For each supported relative link, resolve the original reference against its in-scope base before moving it. Nested relative `xml:base` values resolve against the parent's base; copying only the nearest relative base can therefore lose context. Preserve the original retrieval/base evidence, rather than substituting the new local filename or a planned hosting URL. If that evidence is missing, hold the unresolved destination. These resolution rules come from [XML Base §4](https://www.w3.org/TR/xmlbase/#resolving).
+
+For the portable profile, write the approved resolved alternate URL, or preserve a sufficient explicit base chain when the selected output contract requires relative references. Inspect supported rich-content references separately; making the alternate link absolute does not fix links inside content. Resolution is a local interpretation step, not permission to fetch the destination. Review resolved destinations for access material and audience scope before including them.
+
+Carry inherited language onto a moved subtree when its new parent would change that context, while retaining descendant overrides. An explicit empty `xml:lang=""` cancels inherited language; do not discard it as missing metadata or replace it with the new feed's language. See [XML 1.0 §2.12](https://www.w3.org/TR/xml/#sec-lang-tag). Record unresolved source language rather than guessing from a title.
+
+Fictional, unexecuted illustration: a feed has `xml:base="https://journal.example/issues/"` and `xml:lang="fr"`; its entry has `xml:base="2026/"` and an alternate `href="note.html"`. Moving the entry into an English feed must preserve the destination `https://journal.example/issues/2026/note.html` and the French language context, while leaving its established ID unchanged. Copying only `2026/` under a different base would not preserve that destination. No feed was generated or reader exercised for this illustration.
+
 ## 4. Serialize source values as values
 
 Use a namespace-aware XML serializer. Do not interpolate raw titles, summaries or author names into XML tags. XML escaping preserves text syntax; it does not authorize interpreting that text as HTML. Decide the representation before serialization and compare the decoded result to the approved source.
@@ -74,7 +86,7 @@ Reopen the candidate with a non-networking XML parser and an available Atom-awar
 
 1. **Well-formedness:** XML syntax, namespace identity, encoding and escaped literal values
 2. **Atom contract:** required members, authorship, date and ID syntax, content/link conditions and any selected extension rules
-3. **Source fidelity:** exact approved items and decoded fields, stable source-to-entry IDs, attribution, dates and destinations
+3. **Source fidelity:** exact approved items and decoded fields, stable source-to-entry IDs, attribution, dates, resolved destinations and effective language before/after reparenting
 4. **Revision behavior:** unchanged items keep IDs and dates; an approved correction retains identity; a new item cannot overwrite an older item
 5. **Audience:** no unpublished content, private notes, unapproved author contact data, authentication links or unintended remote resources
 
@@ -101,3 +113,4 @@ A small journal has two approved posts with stable entry IDs. One post's headlin
 The proposed feed keeps both existing entry IDs, uses the corrected headline and supplied revision time for the first entry, and leaves the second entry's update time unchanged. It excludes the draft. Regenerating the same candidate tomorrow would not stamp tomorrow's time on both entries. If no feed endpoint has been assigned, the handoff records that limitation without inventing a hosted URL.
 
 This is an authored, unexecuted illustration. No XML file was generated, reader exercised, feed published or subscriber contacted by the example.
+
