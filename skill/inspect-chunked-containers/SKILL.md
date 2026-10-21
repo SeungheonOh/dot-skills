@@ -48,7 +48,13 @@ Preserve a useful chunk ledger when decompression or reconstruction fails. Keep 
 
 When output size is derivable, use that exact expectation as an expansion bound and require equality at completion. Read compressed output incrementally, cancel when it exceeds the bound, and impose a compute deadline in a stoppable worker. Bound dimensions and total samples independently of compressed input size. These controls are application safeguards, not proof of an OS-enforced memory limit.
 
-For PNG row filters, use bytes per pixel rather than image width for the left-neighbor distance. Reconstruct row order, preserve the previous row, apply the specified tie-breaking predictor and wrap additions modulo 256. Keep sample reconstruction separate from gamma/color-profile rendering.
+For PNG row filters, use the encoded pixel's byte stride, rounded up to at least one byte, for the left-neighbor distance, not image width or decoded display channels. Reconstruct row order and preserve the previous reconstructed row. Keep sample reconstruction separate from gamma/color-profile rendering.
+
+### Keep predictor arithmetic exact before wrapping the reconstructed byte
+
+[PNG filter rules](https://www.w3.org/TR/png-3/#9Filter-types) distinguish predictor calculations from final byte reconstruction. For Average, compute `floor((left + above) / 2)` with at least nine-bit sum precision. For Paeth, compute `p = left + above - upper_left` and its distances without overflow; preserve the specified left, above, upper-left tie preference. Do not wrap or clamp these intermediates. Apply modulo 256 only to the final filtered-byte-plus-predictor reconstruction. Missing neighbors are zero; the first row of each reduced image has a zero previous row.
+
+**Fictional illustration, unexecuted:** with reconstructed left and above bytes both 200 and an Average-filtered byte of 100, the predictor is 200 and the reconstructed byte is 44. Wrapping the neighbor sum first would instead produce 172, silently corrupting output despite valid container checksums. No file, decoder or test was run for this illustration.
 
 ### Require stream completion as well as the expected size
 
