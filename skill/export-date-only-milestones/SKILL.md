@@ -14,7 +14,7 @@ Use when a reviewed list of calendar dates should become a portable calendar fil
 - Validated dates and labels, with supplied versus projected provenance
 - A bounded reporting window and any unresolved source conflicts
 - Which details may be exported and whether amounts or other fields are unknown
-- Identity intent: a fresh snapshot or updates to established calendar entries
+- Identity intent: newly authored snapshot entries, unchanged re-exports or updates to established entries, with revision evidence for retained identities
 
 ## Workflow
 
@@ -34,7 +34,9 @@ Omit source URLs, private notes and account details that are unnecessary for the
 
 For an actual update, preserve established UIDs and the consumer's revision semantics. For a standalone snapshot without an established import target, fresh export IDs are reasonable, but disclose that importing another snapshot may duplicate entries. A local row number is not a durable identity across different inventories.
 
-Use a real export-time DTSTAMP. Never treat a file download request as confirmation that a calendar accepted the entries.
+Use a UTC `DTSTAMP` tied to the event revision, not automatically to export time. In this no-`METHOD` profile, [RFC 5545 §3.8.7.2](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.8.7.2) makes it the component's last-revision timestamp. Newly authored entries use their actual creation/revision time; unchanged retained identities keep their established stamp. An authorized revision uses its actual revision time. Keep file-generation time in the handoff; if included, `LAST-MODIFIED` must agree with `DTSTAMP`.
+
+Missing historical revision evidence is not permission to substitute today's time. Hold the affected update-ready entries and identify the missing fact rather than silently regenerating their UIDs. Never treat a file download request as confirmation that a calendar accepted the entries.
 
 ### Serialize safely
 
@@ -46,13 +48,13 @@ Fold lines at no more than 75 UTF-8 octets, including the leading whitespace of 
 
 Emit one `VCALENDAR` containing exactly one `VERSION:2.0` and one `PRODID`, with one `VEVENT` per reviewed occurrence. Each event needs one `UID`, one UTC `DTSTAMP`, one `DTSTART;VALUE=DATE` and, for this workflow's explicit one-day span, one `DTEND;VALUE=DATE`. Do not also emit `DURATION`. Omit `METHOD` for this file-only snapshot; producing a scheduling message is outside its scope. These container and property constraints come from RFC 5545's [calendar](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6) and [event](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.6.1) definitions; requiring an explicit end for every milestone is this workflow's narrower output choice.
 
-Check the saved structure and property multiplicity, not only values returned by a convenient parser getter. Date endpoints use basic `YYYYMMDD` values without a `TZID` parameter or UTC `Z` suffix; a date must not acquire a zone simply because the export timestamp has one. See the [DATE](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.3.4) and [TZID](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.2.19) rules.
+Check the saved structure and property multiplicity, not only values returned by a convenient parser getter. Date endpoints use basic `YYYYMMDD` values without a `TZID` parameter or UTC `Z` suffix; a date must not acquire a zone simply because the revision timestamp has one. See the [DATE](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.3.4) and [TZID](https://www.rfc-editor.org/rfc/rfc5545.html#section-3.2.19) rules.
 
 **Fictional, unexecuted illustration:** a draft repeats the same `DTSTART;VALUE=DATE:20280229` twice. Recovering February 29 from one getter does not clear the duplicate-property failure. Regenerate from the reviewed occurrence and inspect the saved structure. No file generation, parser execution or calendar import occurred for this illustration.
 
 ### Validate and hand over
 
-Parse the exported bytes with an independent calendar library when available. Compare recovered dates, exclusive ends, exact text, event count, status, transparency and UID uniqueness to the reviewed source. Include delimiter/newline injection fixtures and long non-ASCII labels. If a parser is unavailable, state the narrower validation performed.
+Parse the exported bytes with an independent calendar library when available. Compare recovered dates, exclusive ends, exact text, event count, status, transparency and UID uniqueness to the reviewed source. Include delimiter/newline injection fixtures and long non-ASCII labels. For an unchanged re-export with retained UIDs, compare revision metadata with the previous record; a later file-generation date alone must not advance it. If a parser is unavailable, state the narrower validation performed.
 
 Disable export when inputs change or a replacement review fails. Keep file generation separate from account import, which needs its own authorization and verification.
 
@@ -62,6 +64,8 @@ A fictional review contains a supplied renewal on February 29, 2028 with an unkn
 
 A later March 31 date projected from an evidenced original-day rule is a separate event labeled projected. Replacing that list with an unqualified monthly recurrence could skip or shift dates. The recipient reviews the snapshot before import; repeated fresh snapshots can produce duplicates.
 
+An unchanged re-export of an established milestone last revised October 18 at 10:00 UTC retains `DTSTAMP:20261018T100000Z` even if the file is generated October 21. This fictional timestamp illustration does not represent a generated file, parser check or calendar import.
+
 ## Stop conditions and limits
 
 Stop when the file is validated and delivered, or when an unresolved date or export-permission conflict prevents trustworthy output. File syntax validation is not proof of destination privacy, calendar import or billing accuracy.
@@ -69,3 +73,4 @@ Stop when the file is validated and delivered, or when an unresolved date or exp
 ## Reference
 
 [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545.html), especially content-line folding, TEXT escaping and VEVENT date boundaries.
+
