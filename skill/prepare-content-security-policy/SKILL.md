@@ -47,6 +47,18 @@ If choosing `'strict-dynamic'`, document the resulting trust delegation. The [CS
 
 Return required application changes as explicit prerequisites. Do not insert `'unsafe-inline'`, `'unsafe-eval'` or broad compatibility fallbacks simply to make the candidate look complete. If a legacy dependency cannot meet the intended restriction, expose the choice between refactoring, a deliberately reviewed exception and deferring that page. Do not silently label the exception strict.
 
+### Resolve specialized script directives before claiming strictness
+
+Map each script behavior to the directive actually governing it in each retained policy. In supporting browsers, `script-src-elem` takes precedence over `script-src` for script elements; `script-src-attr` does so for inline event handlers. If absent, each falls back to `script-src`, then `default-src`. These are fallback choices within one policy, not the intersection rule for separate enforcing policies. See the [CSP Level 3 working draft's directive-selection rules](https://www.w3.org/TR/CSP3/#directive-fallback-list).
+
+Do not leave a legacy `script-src-elem 'self'` beside a new nonce-based `script-src` and assume both restrict the same script element. The [script-element reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src-elem) explains its separate scope. A nonce/hash or strict-dynamic decision must reach the effective element directive, or the specialized directive must be deliberately removed so the intended fallback applies. Review the change at its owning layer; do not delete specialized rules without checking the behavior they were preserving.
+
+Likewise, a permissive `script-src-attr` can preserve inline handlers despite a restrictive `script-src`; consult the [script-attribute reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src-attr). Keep handler permission separate from element permission. Check browser-target support rather than assuming an older browser honors the specialized restriction.
+
+Do not move all script policy into `script-src-elem`: string-evaluation checks still use `script-src` or its fallback. Worker requests have their own chain: `worker-src`, `child-src`, `script-src`, then `default-src`, not `script-src-elem`. Record those dependencies when present; a page-script nonce decision alone is not a worker policy. See the [CSP script-element scope](https://www.w3.org/TR/CSP3/#directive-script-src-elem).
+
+**Fictional, unexecuted illustration:** one candidate policy for an invented gallery introduces correctly paired per-response nonces in `script-src`, but retains `script-src-elem 'self'`. For a supporting browser, an ordinary same-origin parser-inserted script without a nonce is still permitted by that element directive, assuming no other enforcing policy blocks it. The intended nonce requirement therefore remains unmet. Hold the strictness claim and reconcile the effective directive. The later worksheet must distinguish approved nonce-bearing scripts, unapproved nonce-free elements and inline handlers. This is source reasoning for invented inputs, not a browser result; no page, parser, test or deployment was run.
+
 ## 4. Reconcile delivery and reporting
 
 Prefer an HTTP response-header candidate when the target can emit one. [CSP multiple-policy rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#multiple_content_security_policies) mean an additional enforcing policy cannot loosen an existing enforcing policy: an operation must satisfy them all. Propose an explicit replacement at the intended owner when necessary, not a second permissive header as an override. Meta delivery applies only after its position and does not support all header capabilities; in particular, it cannot supply report-only policy or frame-ancestors.
@@ -65,7 +77,7 @@ Write a later verification worksheet proportional to the selected pages:
 
 - Exact document/route, source revision, intended browser/context and user journey
 - Expected headers and mode, including other policies that must remain active
-- Required behavior and a synthetic disallowed case with an expected observation
+- Required behavior and a synthetic disallowed case with an expected observation; for scripts, name the effective element/handler directive rather than checking only `script-src`
 - Header/markup pairing for nonce pages, or final-byte/hash pairing for hash pages
 - Evidence to capture, reporting privacy constraints, owner and stop condition
 
