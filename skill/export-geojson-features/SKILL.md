@@ -64,6 +64,16 @@ Include optional bounding boxes only when they serve the receiver and can be com
 
 Record every selected feature as exported or held with a precise reason. If a selected feature cannot be represented, do not quietly skip it and deliver an apparently complete layer. Return a clearly labeled partial candidate only when that is useful and consistent with the request; otherwise hold the complete transfer until the missing decision is resolved.
 
+### Bind each bounding box to its geometry scope
+
+A box on a FeatureCollection describes the collection, not just its first feature. Check nested GeometryCollection members too; do not mistake an object without a direct `coordinates` member for an empty spatial scope. Null geometry contributes no coordinate, not a zero position. For this export workflow, omit a box when its scope has no positions; if the receiver requires one, hold that requirement rather than inventing an extent.
+
+[RFC 7946 §5](https://www.rfc-editor.org/rfc/rfc7946.html#section-5) requires twice as many box elements as represented dimensions, with one complete corner followed by the other. For established three-dimensional output use `[west, south, minimumHeight, east, north, maximumHeight]`, not a four-element horizontal box with two heights appended. Resolve mixed-dimensional scopes before promising a dimensional extent; never supply missing heights as zero. Retain geometry while omitting an optional unresolved box, or hold a required box.
+
+Check every emitted box against its own saved geometry after rounding or splitting. Verify dimension/order and containment, not merely array length. Longitude containment must respect wrapped extents: sorting west/east changes an antimeridian box. Use the [polar rules](https://www.rfc-editor.org/rfc/rfc7946.html#section-5.3) for pole-containing or pole-touching extents, not an invented latitude beyond 90 degrees. A consumer that mishandles a valid box needs a disclosed compatibility decision, not silent coordinate edits.
+
+**Fictional, unexecuted counterexample:** two 3D points are `[12, 40, -8]` and `[14, 43, 25]`, with established ellipsoidal heights. Their proposed box is `[12, 40, -8, 14, 43, 25]`. The superficially plausible `[12, 40, 14, 43, -8, 25]` instead misplaces height and horizontal axes. A third null-geometry feature would remain in the feature count without extending this box to zero. No file, parser or mapping application was exercised.
+
 ## 4. Check the saved interchange, then the receiver
 
 Reopen the actual saved file using a strict JSON reader and a GeoJSON-aware reader where available. Check different claims separately:
@@ -95,3 +105,4 @@ A supplied layer contains three site occurrences with IDs `0012`, `0013` and `00
 The proposed export keeps all three occurrences, preserves the IDs as strings, and represents the unlocated feature with null geometry. It does not invent `[0, 0]`, add excluded addresses, or claim three points will appear on a map. A readback check would compare all three identities and the two coordinate pairs against the source, then separately check whether the named reader retains the unlocated record.
 
 This is an authored example. No spatial data was transformed, file generated, reader tested or service updated by this illustration.
+
