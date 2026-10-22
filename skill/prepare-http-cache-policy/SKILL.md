@@ -62,6 +62,14 @@ Record validator strength as well as its value. [RFC 9110 §§8.8.3.2–8.8.3.3]
 
 [RFC 9110's 304 requirements](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.5) tie Not Modified to conditional GET/HEAD and prohibit response content. A 304 must include the applicable Content-Location, Date, ETag, Vary, Cache-Control and Expires fields that would accompany its 200 response. Check the owning conditional-response path, not only ordinary 200 handling. Do not mistake an empty 304 for missing content or fabricate an unconditional 304 example.
 
+### Account for changes behind cached reads
+
+When the selected content changes through writes, map each write route to affected read URLs and the caches on each path. Include collection views, alternate query URLs and separate read hosts only when the application actually has them. Identify how each read path meets the approved freshness requirement after a change; do not infer a global purge from a successful save.
+
+[RFC 9111 §4.4](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.4) requires a cache receiving a 2xx or 3xx response to an unsafe method, or one whose safety is unknown, to invalidate the target URI. Invalidation removes its stored responses or makes validation mandatory before reuse. Related URIs, including Location and Content-Location, are optional invalidation candidates, not guaranteed purge instructions; this mechanism must not invalidate a different origin. It reaches only caches traversed by the write, not every cache holding related content.
+
+Record the owner and mechanism for any additional consistency requirement: an agreed freshness delay, validation policy, versioned read identity or separately scoped invalidation integration. Keep proposed mechanisms distinct from established behavior. Do not add write requests or cache purges to a read-only verification worksheet. An uncertain save requires resolving its outcome, not repeating it to watch caches.
+
 ## 4. Translate into the actual owning layer
 
 Provide complete candidate header values for each class. When the requested target syntax is known, also provide a narrowly scoped patch or configuration fragment with its insertion point and replacement behavior. Do not invent generic CDN YAML or label a prose matrix deployable. If the platform is unknown, finish the header contract and hold only the platform translation.
@@ -107,3 +115,10 @@ The handoff should distinguish those two cache decisions and hold any requested 
 An invented document route negotiates gzip at its gateway. The supplied candidate preserves `Vary: Accept-Encoding` but forwards the same strong `ETag: "notice-8"` for both the compressed and unencoded bodies. The worksheet rejects that validator contract even though its variant key is present. The package names the gateway/tag-generator dependency and holds activation until its owner establishes representation-specific strong tags or a deliberately reviewed weak-validator design.
 
 A separate conditional-GET worksheet compares stored `W/"notice-8"` with current `"notice-8"`. The opaque values match under weak comparison; the result is not a byte-equality certificate. These invented tag labels illustrate decisions, not deployable generators or observed responses. No compression, HTTP request, cache process, range request, write, test or deployment was performed.
+
+### Fictional write-path illustration, not executed
+
+An invented catalogue uses `PUT /items/7` through gateway A, returning 204, and serves `GET /items` through gateways A and B. Its proposed requirement is immediate list freshness after edits. The write's required target invalidation at A does not establish freshness for the collection URL or for B. A same-origin Location naming the list is only an optional invalidation candidate, not proof of that requirement.
+
+The handoff holds the immediate-freshness claim and names the list-policy/invalidation owner. The already prepared item-response policy can remain reviewable without pretending the collection dependency is solved. No write, HTTP request, cache operation, test or deployment was performed.
+
