@@ -69,6 +69,16 @@ The [report-only header reference](https://developer.mozilla.org/en-US/docs/Web/
 
 Before proposing a reporting destination, identify its operator, approved data scope, retention and access. [The report-uri reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/report-uri) describes fields such as document URI and optional script samples, and cautions that received reports are untrusted. Treat reports as potentially sensitive input. Do not enable samples or send visitor URLs to a third party without the necessary approval. If reporting is out of scope, omit a fabricated endpoint and specify the later local observation plan instead.
 
+### Distinguish duplicate directives from multiple policies
+
+Inspect the final serialized value, not just the intended settings. The [CSP Level 3 working draft's parser](https://www.w3.org/TR/CSP3/#parse-serialized-policy) keeps the first occurrence of a directive name and ignores later duplicates in the same policy. Names are ASCII case-insensitive. Appending a stricter `script-src` after a semicolon therefore does not replace an earlier one; do not apply a last-setting-wins model.
+
+Preserve policy boundaries when tracing delivery. [CSP's serialized-policy-list grammar](https://www.w3.org/TR/CSP3/#framework-policy) uses commas between policies, whereas semicolons separate directives within one policy. Multiple enforcing policies must all be satisfied; they are not merged into one directive list. Do not flatten headers, merge source lists or swap separators as cosmetic cleanup.
+
+When a duplicate appears, identify the configuration/template owners that produced it and propose one intentional definition at the appropriate owner. Retain unrelated policies and report-only mode. If final serialization is unavailable, hold the effective-policy claim rather than assuming the framework resolves duplicates. Add the duplicate and the intended replacement to the source-review worksheet.
+
+**Fictional, unexecuted illustration:** an invented static page should run no scripts. Its sole enforcing policy contains `script-src 'self'; SCRIPT-SRC 'none'`, with no `script-src-elem`. The later denial is ignored, so an otherwise eligible same-origin script is not blocked by that policy. The candidate must replace the first definition, not append a third. By contrast, separate enforcing policies containing those two directives would require the script to satisfy both. These are authored expectations, not browser observations; no parser, request, test or deployment was run.
+
 ## 5. Review the candidate before activation
 
 Reopen the saved policy and integration notes. Walk each required behavior through its actual directive/fallback, script trust mechanism and every retained enforcing policy. Check one meaningful disallowed behavior too. This is source reasoning, not an executed browser result.
