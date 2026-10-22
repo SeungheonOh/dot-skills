@@ -35,7 +35,7 @@ The [Cache-Control reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/
 - Unqualified `no-cache`: storage is possible, but reuse requires successful validation.
 - Unqualified `private`: prohibit shared-cache storage while allowing private-cache storage subject to other rules.
 - `max-age=N`: a freshness lifetime in seconds, not a promise of retention.
-- `s-maxage=N`: shared-cache lifetime, overriding max-age/Expires there, not in private caches.
+- `s-maxage=N`: shared-cache lifetime, overriding max-age/Expires there, not in private caches; it also requires successful origin validation before shared reuse once stale.
 - `must-revalidate`: once stale, do not reuse without successful validation.
 
 Choose the smallest coherent set that meets the requirement. Do not pile every restrictive directive into a single header. Record nonnegative integer durations and distinguish browser and shared-cache decisions. Avoid duplicate or contradictory values emitted by multiple owners. Review existing Expires values rather than leaving an unexplained competing policy.
@@ -43,6 +43,8 @@ Choose the smallest coherent set that meets the requirement. Do not pile every r
 [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111.html#section-3.5) allows shared reuse of Authorization-bearing requests under particular directives, including public, s-maxage and must-revalidate. Do not treat authentication as an automatic cache bypass. Set-Cookie alone does not prohibit caching under that standard. Hold personalized shared caching unless the intended isolation is explicitly established; adding Vary is not an authorization design.
 
 For content-versioned assets, [RFC 8246](https://www.rfc-editor.org/rfc/rfc8246.html#section-2) defines immutable as a commitment not to change the representation during its freshness lifetime, not forever and not a freshness lifetime by itself. Require an actual never-overwrite/versioning practice before proposing it. Keep mutable entry documents separate. Record how old asset versions remain available to older documents and how a corrected asset receives a different URL.
+
+Treat failure behavior as part of the selected directive, not a separate undocumented CDN default. [RFC 9111 §5.2.2.10](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.10) gives s-maxage the shared-cache revalidation constraint of proxy-revalidate; it is not merely max-age with a different audience. Under [the stale-response rules](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.4), disconnection or a client's max-stale request does not override that prohibition. Record the expected outcome when the shared copy is stale and origin validation fails. Do not promise an offline fallback from the lifetime value alone, or remove the directive to obtain one without revisiting the approved freshness and privacy requirements.
 
 Do not add stale-serving extensions merely for performance. If requested, document the allowed failure conditions, maximum extra age and target implementation support from its current official documentation. Keep that business decision distinct from the normal freshness interval.
 
@@ -89,3 +91,9 @@ A fictional museum supplies three requirements: public exhibit HTML must be vali
 The museum's asset matcher also catches missing artwork. The candidate therefore holds activation until the owning configuration distinguishes successful asset responses from the application's fallback. Its public HTML is language-negotiated, so the handoff records `Vary: Accept-Language` and requires checking the selected CDN's variant handling. It does not add a made-up ETag; the existing generator remains an explicit dependency.
 
 Expected review outcomes are three distinct policies, a visible fallback hold, preserved language variants and a named validator owner. No HTTP requests, cache simulation, browser checks, deployment or purge were performed for this illustration. The policy remains a draft until its platform translation and checks are completed at the authorized level.
+
+### Fictional shared-cache outage illustration, not executed
+
+An invented public timetable has `Cache-Control: max-age=600, s-maxage=60` and no stale-serving extension. At an established current age of 90 seconds, an otherwise eligible browser copy is still within its 600-second lifetime, but the shared copy is stale. If origin validation cannot succeed, the shared cache must not serve that stale copy merely because the request accepts stale data. Replacing that two-lifetime policy with `max-age=60` would also shorten the browser lifetime; it is not an equivalent outage fix.
+
+The handoff should distinguish those two cache decisions and hold any requested stale-fallback redesign for owner review. These are authored expectations, not measured cache behavior. No request, cache process, outage simulation, deployment or test was executed.
