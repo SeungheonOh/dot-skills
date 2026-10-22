@@ -39,6 +39,14 @@ Determine preflight requirements from the complete request and the standard's sa
 
 Choose whether a route is genuinely public to arbitrary browser origins or restricted to the approved clients. Do not equate lack of a cookie with public data: intranet/network access and other contextual privileges need owner review. Keep route-specific policies separate instead of giving an administrative endpoint the policy of a public asset.
 
+### Separate missing exposure from forbidden access
+
+Classify each response header the client wants to read: already safelisted, exposable through an explicit grant, or forbidden. Under [Fetch's forbidden response-header names](https://fetch.spec.whatwg.org/#forbidden-response-header-name), Set-Cookie and Set-Cookie2 cannot become script-readable through Access-Control-Expose-Headers. The [filtered-response rules](https://fetch.spec.whatwg.org/#concept-filtered-response-basic) also exclude them from a basic response; moving a call to the same origin is not a remedy for this read requirement.
+
+Record the blocked call site and intended application outcome, not cookie values. Distinguish browser cookie handling from application code reading a response header. A missing script-visible value alone establishes neither that the server omitted the header nor that a cookie was rejected.
+
+Do not add a forbidden name to the candidate and mark the dependency solved. Refer an impossible client requirement to the application/authentication owner while continuing valid exposure work. Do not copy session credentials into a custom exposed header or body, remove HttpOnly, or introduce a token-storage scheme as an incidental CORS fix. A replacement application signal needs its own agreed contract.
+
 ## 3. Name the layer that owns each header
 
 Identify whether the application, framework middleware, reverse proxy or gateway emits each value. Record ordering, matching boundaries, replacement behavior and the exact version documentation. Avoid double emission by two owners. Inspect the selected OPTIONS path, ordinary responses and relevant errors rather than only a successful controller response.
@@ -77,3 +85,9 @@ A fictional catalogue has an established GET endpoint `/exports/latest`. Its app
 The candidate selects the matched approved origin for Access-Control-Allow-Origin, uses Access-Control-Allow-Credentials with value true, exposes X-Export-Revision and preserves Origin variation. It does not emit both origins in one header or grant arbitrary subdomains. The worksheet keeps a missing session as an authentication case, not a reason to broaden the origin policy. It separately checks whether an intended error response remains readable by the approved client.
 
 If the client later adds an Authorization request header, that is a changed requirement: refresh the preflight branch and its owner review rather than assuming the original package covers it. These are authored expectations for invented inputs. No HTTP request, browser session, configuration parser, application, test or deployment was run for this illustration.
+
+### Fictional forbidden-header illustration, not executed
+
+An invented export client needs Content-Disposition for its save name and also tries to read Set-Cookie to decide whether to display “signed in.” Its draft exposure list contains both names. Review retains Content-Disposition as an ordinary explicit exposure requirement but rejects the cookie-read requirement. The login indicator remains blocked on an agreed application signal; the worksheet does not equate a hidden cookie header with failed sign-in.
+
+Expected handoff: one usable naming requirement and one precisely identified client-contract blocker, without changing session handling or copying secrets elsewhere. These are authored expectations. No request, login, browser check, cookie inspection, configuration change or test was performed.
