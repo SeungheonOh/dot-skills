@@ -54,6 +54,14 @@ Inspect font availability and the saved PDF's embedding/subsetting against the a
 
 Evaluate raster resolution at the placed physical size, not just the source file's resolution tag. For a simple unrotated image, effective pixels per inch is pixel width divided by placed width in inches; inspect both axes and actual transforms when relevant. Upsampling does not restore missing detail. Preserve a low-resolution finding and ask for a better source or accepted compromise rather than claiming a new metadata value fixed it.
 
+### Resolve white artwork and overprint explicitly
+
+When white text, logos or fine strokes sit over colored artwork, establish whether they are intended to reveal the substrate by knocking out underlying inks or to print with a real spot-white ink. A white-looking preview or a swatch name alone does not decide that production role. Record the affected page/object, actual process or spot color, fill/stroke overprint attributes and provider requirement before proposing a repair.
+
+[Adobe's white-overprint guidance](https://helpx.adobe.com/illustrator/using/white-overprint.html) describes unintended white overprint inherited from earlier object attributes or retained when a colored object becomes white. For ordinary process-white knockout artwork, treat unexpected overprint as a production finding rather than accepting an ordinary screen preview. Inspect fill and stroke separately where relevant. Do not disable every overprint in the document: intentional spot-white objects are a different case, and the provider's plate contract still governs them.
+
+Keep the source and exported result distinct. Illustrator's documented white-overprint suppression affects saved/output files without changing the artwork, and excludes spot-white objects. Record the actual export setting when this behavior is relied on; do not assume that the source was repaired, that another exporter behaves identically, or that a later export will preserve the same result. Correct only the established unintended attribute within the approved production scope, then regenerate and inspect the saved candidate. Hold an ambiguous ink role instead of changing a spot plate to process white.
+
 ## 4. Export a bounded production candidate
 
 Use an available supported exporter and the exact provider preset/options when supplied. Record application/version, selected pages, format variant, geometry, marks, color/conversion choices, font handling and warnings. Save to a fresh filename; do not replace the approved source or an existing production release while investigating.
@@ -76,6 +84,8 @@ Reconcile these independent properties:
 
 Inspect separations when the job depends on spots or overprint; an ordinary RGB preview cannot establish plate behavior. Do not claim calibrated color, physical trimming, press output, barcode scanning or recipient acceptance from a screen rendering. If a proof is requested, distinguish a local review image, printer-produced proof and physical proof approval.
 
+For affected white-artwork regions, inspect the saved candidate with an overprint-aware preview and the relevant individual plates. Use object inspection or an appropriate preflight finding to connect a visual difference to the actual attributes; do not diagnose from appearance alone. [Adobe's Output Preview documentation](https://helpx.adobe.com/acrobat/using/previewing-output-acrobat-pro.html) distinguishes overprint simulation, separation visibility and Object Inspector. Record the simulation profile and relevant preview settings alongside the result. A composite render that ignores overprint cannot close this finding, and a simulation is not physical ink or press acceptance. If suitable inspection is unavailable, name the exact held region and required provider check rather than labeling it verified.
+
 If preflight fixups change the file, treat it as a new candidate and repeat affected structural checks plus the page review. If a material requirement fails, deliver the finding with the candidate clearly held. Do not remove required content to obtain a green preflight report.
 
 ## Handoff and stopping point
@@ -95,3 +105,9 @@ This invented scenario is not a completed export, preflight, print order or phys
 **Expected decisions:** The required bleed extent is 154 by 111 mm before any additional outer area. Do not confuse that extent with finished size. Hold the missing back-edge artwork for an authorized source extension; enlarging a box is insufficient. Report the image's 200 ppi effective horizontal resolution and request a better source or approved exception. Do not silently upsample it or add marks.
 
 **Expected handoff:** A candidate and job ticket can be prepared, but acceptance remains held for the back-edge bleed and image requirement. After an authorized source repair, record the revised source identity, regenerate the candidate, rerun the relevant preflight and inspect both sides. Provider acceptance and physical color remain untested even if those local checks later pass.
+
+### Fictional white-artwork illustration, not executed
+
+An invented two-page package contains process-white lettering intended to knock out a cyan background on page 1, and an explicitly requested spot-white underbase on page 2. The supplied source report marks the page-1 lettering's fill as overprinting. The review holds that unintended attribute for a narrow correction and saved-output inspection; a normal composite preview showing the lettering is insufficient. The page-2 plate remains intentional and is not removed by a blanket “fix all white” operation.
+
+If an exporter instead suppresses the page-1 overprint only in its output, the handoff must distinguish the unchanged source from that particular candidate. Neither this authored scenario nor its expected dispositions establish an observed disappearance or successful repair. No artwork application, export, render, preflight, printer or physical proof was run.
