@@ -70,6 +70,16 @@ Carry inherited language onto a moved subtree when its new parent would change t
 
 Fictional, unexecuted illustration: a feed has `xml:base="https://journal.example/issues/"` and `xml:lang="fr"`; its entry has `xml:base="2026/"` and an alternate `href="note.html"`. Moving the entry into an English feed must preserve the destination `https://journal.example/issues/2026/note.html` and the French language context, while leaving its established ID unchanged. Copying only `2026/` under a different base would not preserve that destination. No feed was generated or reader exercised for this illustration.
 
+### Keep attribution when copying entries between feeds
+
+Resolve the effective author before moving an entry: its own authors take precedence, then authors in its `atom:source`, then those of its containing feed. Retain the selected author set after the move; destination-feed authors must not silently replace it. The feed-level requirement is separate: a feed needs authors unless every entry has its own author element. Authors only inside `source` do not satisfy that exception. See [RFC 4287 §§4.1.1 and 4.2.1](https://www.rfc-editor.org/rfc/rfc4287.html#section-4.2.1).
+
+Preserve an existing `source` rather than replacing its origin with the latest intermediary. If absent, preserve applicable original feed metadata there, excluding entries; for aggregation include the source feed's evidenced ID, title and update time. Do not confuse that ID with the entry ID or destination feed ID. [RFC 4287 §4.2.11](https://www.rfc-editor.org/rfc/rfc4287.html#section-4.2.11) defines this provenance container. Adding it to a signed entry can break its signature; hold signature-preserving work for a supported verification workflow rather than claiming unchanged authenticity ([§5.1](https://www.rfc-editor.org/rfc/rfc4287.html#section-5.1)).
+
+Record the before/after effective authors in the mapping. Missing original attribution is an unresolved input, not an invitation to credit the destination editor. Apply the existing audience and base/language checks to copied person and source fields too; do not preserve private emails merely to keep a metadata block byte-for-byte.
+
+Fictional, unexecuted illustration: Workshop Notes credits Rowan at feed level. Its selected entry has no author or source. A destination digest credits Morgan. The proposed copy retains Rowan through source metadata or an explicit entry author, with the original feed identity retained as provenance. A second entry explicitly credits Jules and has source metadata crediting Rowan; it still credits Jules. Inspect both cases after serialization, not merely the presence of Morgan on the destination feed. No feed or signature was processed for this illustration.
+
 ## 4. Serialize source values as values
 
 Use a namespace-aware XML serializer. Do not interpolate raw titles, summaries or author names into XML tags. XML escaping preserves text syntax; it does not authorize interpreting that text as HTML. Decide the representation before serialization and compare the decoded result to the approved source.
@@ -86,7 +96,7 @@ Reopen the candidate with a non-networking XML parser and an available Atom-awar
 
 1. **Well-formedness:** XML syntax, namespace identity, encoding and escaped literal values
 2. **Atom contract:** required members, authorship, date and ID syntax, content/link conditions and any selected extension rules
-3. **Source fidelity:** exact approved items and decoded fields, stable source-to-entry IDs, attribution, dates, resolved destinations and effective language before/after reparenting
+3. **Source fidelity:** exact approved items and decoded fields, stable source-to-entry IDs, attribution (including effective author precedence and retained source provenance), dates, resolved destinations and effective language before/after reparenting
 4. **Revision behavior:** unchanged items keep IDs and dates; an approved correction retains identity; a new item cannot overwrite an older item
 5. **Audience:** no unpublished content, private notes, unapproved author contact data, authentication links or unintended remote resources
 
