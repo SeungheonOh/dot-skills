@@ -56,6 +56,10 @@ For each class, list inputs that change the returned representation: path/query,
 
 Identify who generates ETag or Last-Modified and how it tracks the selected representation. Do not hard-code an invented validator in deployable configuration. A source inspection can establish the intended generator, not that production emits it correctly. If no validator exists, note that a policy requiring validation may need a full response rather than a conditional 304.
 
+Record validator strength as well as its value. [RFC 9110 §§8.8.3.2–8.8.3.3](https://www.rfc-editor.org/rfc/rfc9110.html#section-8.8.3.2) distinguishes byte-sensitive strong comparison from weak comparison. Gzip and unencoded representations need distinct strong tags; `Vary: Accept-Encoding` does not repair a shared strong tag. Transfer framing alone does not create another representation. Inspect whether compression occurs after tag generation and which owner keeps the final validator consistent.
+
+[If-None-Match](https://www.rfc-editor.org/rfc/rfc9110.html#section-13.1.2) uses weak comparison for cache validation, so a weak tag can still support conditional GET/HEAD. Do not strip `W/` to make it strong or treat a cache-validation match as proof of byte identity. Keep [conditional-write design](../design-api-contract/SKILL.md) and [range recovery](../interrupted-download-recovery/SKILL.md) separate: their stronger requirements are not established by a successful cache revalidation. If the generator or transformation behavior is unknown, hold the affected validator contract rather than inventing tags or silently changing compression.
+
 [RFC 9110's 304 requirements](https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.5) tie Not Modified to conditional GET/HEAD and prohibit response content. A 304 must include the applicable Content-Location, Date, ETag, Vary, Cache-Control and Expires fields that would accompany its 200 response. Check the owning conditional-response path, not only ordinary 200 handling. Do not mistake an empty 304 for missing content or fabricate an unconditional 304 example.
 
 ## 4. Translate into the actual owning layer
@@ -97,3 +101,9 @@ Expected review outcomes are three distinct policies, a visible fallback hold, p
 An invented public timetable has `Cache-Control: max-age=600, s-maxage=60` and no stale-serving extension. At an established current age of 90 seconds, an otherwise eligible browser copy is still within its 600-second lifetime, but the shared copy is stale. If origin validation cannot succeed, the shared cache must not serve that stale copy merely because the request accepts stale data. Replacing that two-lifetime policy with `max-age=60` would also shorten the browser lifetime; it is not an equivalent outage fix.
 
 The handoff should distinguish those two cache decisions and hold any requested stale-fallback redesign for owner review. These are authored expectations, not measured cache behavior. No request, cache process, outage simulation, deployment or test was executed.
+
+### Fictional compression-validator illustration, not executed
+
+An invented document route negotiates gzip at its gateway. The supplied candidate preserves `Vary: Accept-Encoding` but forwards the same strong `ETag: "notice-8"` for both the compressed and unencoded bodies. The worksheet rejects that validator contract even though its variant key is present. The package names the gateway/tag-generator dependency and holds activation until its owner establishes representation-specific strong tags or a deliberately reviewed weak-validator design.
+
+A separate conditional-GET worksheet compares stored `W/"notice-8"` with current `"notice-8"`. The opaque values match under weak comparison; the result is not a byte-equality certificate. These invented tag labels illustrate decisions, not deployable generators or observed responses. No compression, HTTP request, cache process, range request, write, test or deployment was performed.
