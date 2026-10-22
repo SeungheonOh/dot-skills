@@ -55,7 +55,11 @@ For XSPF, follow the [version 1 specification](https://www.xspf.org/spec): use t
 
 Use a proper URI representation for locations, then XML escaping for the serialized text. A filename containing a space, `#`, `%` or `&` needs the correct treatment at each layer; XML escaping alone does not make a filesystem path a URI. Preserve the exact decoded filename and avoid double-encoding an already encoded reference. Use forward-slash URI structure rather than pasting platform-specific path separators into a URL.
 
+Parse URI components before percent-decoding their data. For this local whole-file contract, hold unexpected schemes, authorities, queries or fragments rather than dropping them. `//host/item.wav` is a network-path reference; a leading `/` is not playlist-relative. A first-segment colon needs disambiguation, such as `./take:02.wav`, on a filesystem that permits that filename. A literal filename `%20.wav` needs `%2520.wav`; decoding twice would change its identity. These distinctions follow [RFC 3986 sections 2.4 and 4.2](https://www.rfc-editor.org/rfc/rfc3986.html#section-2.4). Do not use a generic URL join as a containment check: after resolution and the target's URI-to-file conversion, verify the actual authorized file, including symlink handling.
+
 Keep relative locations anchored to the delivered playlist's intended base. [Xiph's notes and errata](https://wiki.xiph.org/XSPF_v1_Notes_and_Errata) clarify that `playlist/location` is not the base for resolving track references; XML Base controls explicit base behavior. Avoid embedding an absolute personal directory in an otherwise portable playlist. Do not introduce a remote `xml:base` or copy a stale base from the source.
+
+For an imported XSPF, calculate the effective base at each `location`, including inherited and nested `xml:base` values, before mapping media. [XML Base sections 4.2–4.4](https://www.w3.org/TR/xmlbase/#granularity) specify inheritance and relative base resolution; an empty `xml:base` does not reset the base to the playlist file. Preserve the resolved source identity before removing or rewriting bases. For a simple self-contained output, prefer no explicit bases and regenerated relative locations. Verify the saved document has no remaining scoped override that redirects an otherwise innocent-looking entry.
 
 For M3U/M3U8 or another supported target profile, use that player's documented encoding, line interpretation, relative-path base and metadata conventions. Do not substitute HLS streaming rules for an ordinary local-media playlist just because both use an `.m3u8` suffix. Reject ambiguous newline-bearing filenames or directive-like entries unless the target has a documented faithful representation. A simpler supported format is preferable to inventing escaping the player may ignore.
 
@@ -67,7 +71,7 @@ Reopen the exact candidate as passive data and compare:
 
 1. Every selected occurrence is represented once or held with a reason, and intentional repeated references remain repeated
 2. Sequence order, display titles and exact media mappings agree with the approved occurrence list
-3. Each decoded local location resolves from the delivered base to the intended authorized file, without unexpected network locations or escaped-root dependencies
+3. Each location resolves using its effective base and parsed URI components to the intended authorized file; URI-to-file decoding preserves identity, and no unexpected authority, scoped base override or escaped-root dependency remains
 4. Copied media matches its source bytes when copying was part of the request; no media content or tags were changed
 5. Encoding and special-character filenames survive serialization; unsupported player directives are absent
 
@@ -94,3 +98,8 @@ A fictional local practice folder contains `media/Opening & Welcome.wav` and `me
 The proposed check resolves those locations against the playlist's folder and compares the three occurrences in order, then repeats resolution after an authorized folder relocation. It would hold part two if its file were absent, rather than removing it and calling the sequence complete.
 
 This is an authored illustration. No playlist was generated or parsed, media copied, application opened, track played or account changed for the example.
+
+## Additional fictional edge cases, not executed
+
+An imported track inherits `xml:base="../other/"` while its location says `opening.wav`. Its identity is not the same as `opening.wav` beside the playlist. Resolve and authorize the source first; stripping the base without rewriting the location would silently substitute a different recording. A separate literal `%20.wav` must not become a space-named file during readback. Hold either ambiguity rather than opening a guessed file. No URI parser, filesystem lookup or player was run for these illustrations.
+
