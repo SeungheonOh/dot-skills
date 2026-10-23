@@ -42,6 +42,22 @@ Use the provider's single-page/spread, duplex orientation and page-order rules. 
 
 Add only the requested marks and offsets, keeping them outside required live artwork. Adobe's [printer-mark guidance](https://helpx.adobe.com/indesign/desktop/print/page-set-up-and-printer-marks/set-printer-marks.html) distinguishes marks from bleed setup and calls for confirming the provider's expectations. A checkbox named “include bleed” is not evidence that edge artwork reaches the required boundary.
 
+### When booklet imposition is explicitly requested
+
+First name the stage that owns imposition: the source application, an authorized PDF-preparation tool, or the provider's production system. Reader spreads (adjacent pages in reading order) and printer spreads (positions on a sheet before folding) are not interchangeable. Keep the reading-order master. If the provider requests single pages and will impose them, deliver that contract rather than a second, pre-imposed version.
+
+For a specified folded booklet, establish binding direction, finished page size, sheet size, fold/binding scheme, selected source pages, cover treatment and any signature grouping. Identify the actual source page positions separately from printed folios. A cover, an unnumbered divider and a numbered text page all occupy physical positions. Do not infer a left binding from the language, or count only pages with printed numbers.
+
+Prepare a compact imposition map before accepting the candidate: signature/group, sheet, side, panel position, source page identity or intentional blank, rotation and scale. For the simple case of one nested, two-up, center-folded saddle-stitched booklet, each double-sided sheet supplies four reading-page positions. That count is a useful necessary check, not a complete imposition algorithm for other folds or bindings. A multi-signature job needs the provider's grouping, not one global outside-to-inside pairing.
+
+Reconcile every added or retained blank with its intended reading position. Automatically padding the end is not equivalent to preserving an internal blank, keeping a chapter on a particular side or keeping a back cover last. Adobe's [InDesign booklet settings](https://helpx.adobe.com/indesign/desktop/print/print-booklets/booklet-printing-settings.html) distinguish blank printer spreads added for a signature from blank pages already in the document; their output controls are separate. Retain necessary blanks through the supported settings and inspect the resulting map. Do not add visible placeholder artwork or move approved pages merely to defeat blank suppression.
+
+Check the actual print/export path. [InDesign's imposition guidance](https://helpx.adobe.com/indesign/desktop/print/print-booklets/impose-documents-for-booklet-printing.html) distinguishes imposed output from the reading-order document, whose pages are not rearranged by Print Booklet. A normal subsequent PDF export must not be assumed to contain the booklet arrangement. Confirm the saved candidate's panel identities and sheet-side dimensions directly. Label a settings-only handoff as instructions, not an imposed file.
+
+For a pre-imposed candidate, make the job ticket say that sheet-side layout is already applied and identify any downstream booklet or multiple-pages-per-sheet setting that would apply it again. Check actual scale against finished dimensions; an automatic fit can shrink an otherwise correct layout. Do not resolve insufficient printable area by silently reducing the agreed finished size. Preserve provider-specified bleed, marks and creep; do not invent a creep value from page count alone.
+
+Reconcile each logical position exactly once per intended copy, including blanks, then inspect all saved sheet sides and the proposed folded reading sequence. Correct panel pairs alone do not establish correct back-side rotation or paper handling. When a physical check is authorized and available, use a bounded proof with the actual device, stock and duplex/reinsertion route, then inspect front/back orientation, nesting and reading order. Otherwise leave those properties pending. Never assume one universal long-edge/short-edge or manual-feed instruction across devices. Preparation authority alone does not authorize submitting a print job.
+
 ## 3. Preserve color and resources deliberately
 
 Compare source color spaces, embedded profiles, spot names and overprint behavior with the production contract. Keep intentional spots separate from process colors when required. Do not replace a named ink with an arbitrary process approximation, merge similarly named spots, use registration color as ordinary black, or apply a blanket rich-black recipe.
@@ -111,3 +127,11 @@ This invented scenario is not a completed export, preflight, print order or phys
 An invented two-page package contains process-white lettering intended to knock out a cyan background on page 1, and an explicitly requested spot-white underbase on page 2. The supplied source report marks the page-1 lettering's fill as overprinting. The review holds that unintended attribute for a narrow correction and saved-output inspection; a normal composite preview showing the lettering is insufficient. The page-2 plate remains intentional and is not removed by a blanket “fix all white” operation.
 
 If an exporter instead suppresses the page-1 overprint only in its output, the handoff must distinguish the unchanged source from that particular candidate. Neither this authored scenario nor its expected dispositions establish an observed disappearance or successful repair. No artwork application, export, render, preflight, printer or physical proof was run.
+
+### Fictional booklet illustration, not executed
+
+An eight-position, left-bound, two-sheet saddle-stitched booklet has source pages 1–8, with source position 2 deliberately blank. In a flat-view convention where each side is viewed face-on with its intended top upward, the outer sheet pairs 8|1 and 2|7; the inner sheet pairs 6|3 and 4|5. These pairs describe panel identities, not a universal printer feed or duplex setting.
+
+Dropping the blank and padding the end would move later content to different reading positions despite leaving eight positions overall. A normal reading-order PDF exported after a booklet preview would also not establish an imposed deliverable. Hold either mismatch; preserve the internal blank and inspect the actual saved sheet-side map. An approved provider-owned imposition instead needs the original reading-order pages and their blank policy, not this pre-imposed layout.
+
+This authored illustration demonstrates the distinction only. No PDF was generated, printer configured, sheet printed, physical fold checked or provider contacted.
