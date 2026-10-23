@@ -61,6 +61,20 @@ For zonal summaries, define which pixel support counts: centres inside a zone, e
 
 Avoid claiming that raster alignment removes uncertainty in the inputs. Reprojection, interpolation, aggregation and thresholding can alter a result. Use a proportionate sensitivity check when a reasonable alternative resolution or inclusion rule changes the substantive answer; do not manufacture scenarios when the contract is settled and the effect immaterial.
 
+### Separate pixel fractions from physical-area weights
+
+Before calling a zonal statistic an area mean or a covered-area total, identify what its weights measure. Equal angular pixel dimensions do not establish equal surface areas, and a projected grid is not necessarily equal-area. The [terra cell-area documentation](https://rspatial.github.io/terra/reference/cellSize.html) explains this distinction, including area corrections for projected rasters. Record the physical area model and units when the requested result depends on ground area; multiplying angular resolutions produces square degrees, not square metres.
+
+Distinguish the fraction of a cell covered by a polygon from the physical area of that intersection. A fraction-weighted mean gives two fully included cells equal weight even when their surface areas differ. For an area-average intensive quantity, weight by the valid covered physical area and divide by that same area's sum. If using cell area times a coordinate-space coverage fraction as an approximation to intersection area, disclose that approximation where consequential; it is not automatically exact ground-area overlap.
+
+Inspect the actual operation rather than relying on a name such as mean or count. [exactextract's operation definitions](https://isciences.github.io/exactextract/operations.html) distinguish default coverage fractions, Cartesian coverage area, spherical area approximations and a separate weighting raster. Its default count sums coverage fractions; that is not a physical-area measurement. Check whether the selected coverage mode already includes area before supplying area as another weight, or area can be applied twice. Preserve the selected operation and options in the method note, without assuming all libraries use these defaults.
+
+Keep the measurement contract decisive. A density per square kilometre needs compatible covered-area units to estimate a total; a per-cell total must not be multiplied by cell area again. Allocating part of a cell total requires a justified within-cell distribution assumption. A population-weighted mean uses the intended population support, not ground area merely because both can be supplied as weights. These are different estimands, not alternative display formats.
+
+Align a separate weight raster with the value grid and establish validity for both. Keep missing weights distinct from known zero weights; do not silently replace either with one. Report the support excluded by missing values or weights and leave a zero-denominator mean undefined, rather than returning zero. Retain the numerator, denominator and units when needed to explain a consequential aggregation.
+
+**Fictional illustration, not executed:** two fully included cells have supplied ground areas of 2 and 1 square kilometres and temperatures of 10 and 40 degrees. The area mean is 20 degrees; the equal-cell mean is 25 degrees. If the second temperature is missing, the valid-area mean is 10 degrees over 2 of the 3 square kilometres, not an established whole-zone mean. These are stipulated values and hand-worked arithmetic, not measured geographic cells or an executed zonal analysis.
+
 ## Check the actual saved answer and map
 
 Reopen the delivered spatial file through a suitable native reader. Check CRS and axis interpretation, field types and IDs, geometry or grid structure, validity states and representative values. Verify that the output contains the intended sources and relationships, including excluded or unresolved records where needed. For a CSV or simpler export, state losses such as absent geometry/CRS metadata or ambiguous blank values, and preserve a way to interpret them.
