@@ -52,6 +52,14 @@ Make the visible contents useful, not a duplicate of every paragraph. Match its 
 
 Keep all intended chapters in the spine in the agreed order. A chapter present in the archive or linked from the contents can still be skipped during normal reading. Inventory assets against actual references so an omitted diagram or an accidentally bundled private file is caught.
 
+### Reconcile linked documents, not only chapter order
+
+A file can exist and its fragment can resolve while its publication placement is still wrong. Apply [EPUB 3.3's spine and itemref rules](https://www.w3.org/TR/epub-33/#sec-spine-elem): include content documents reached through hyperlinks from spine documents, recursively, and from the navigation document even when navigation itself is outside the spine. Embedded assets and external website links are not additional spine entries merely because they are referenced.
+
+Distinguish primary reading from auxiliary material. Each spine entry references a manifest item ID; no manifest item ID may be referenced more than once in the spine. At least one entry is linear. Omitted `linear` means `yes`. Use `linear="no"` for intentionally supplementary material, with a usable link to it; it is not a promise that every reader will hide, skip or show that material as a popup. An in-container foreign content document reached by hyperlink must also appear in the spine, with an EPUB content document in its manifest fallback chain.
+
+Extend the source map with document role, incoming link, manifest ID and intended linearity. Trace links without opening external destinations or executing publication content. Review newly discovered documents until none remain; track already inspected documents so note-return cycles terminate. Compare this map with the saved spine, not just the exporter's chapter list. Separately check each fragment: one document can contain many targets but needs only its own spine entry.
+
 ## 3. Check the exact saved ebook
 
 Separate four kinds of evidence:
@@ -60,6 +68,8 @@ Separate four kinds of evidence:
 2. **Content checks:** Reconcile chapters, protected strings, tables, note references, figures and credits against the source map. Check all local resource paths and fragment targets. Confirm the final package has no unintended source, review or temporary files
 3. **Reader checks:** Open the saved file in the intended authorized reader when available. Read through chapter boundaries; exercise the contents, representative deep links, notes and returns. Inspect every chapter and each unusual object at normal and enlarged text sizes and a narrow viewport. Check missing glyphs, clipped tables, cut-off images and unexplained blank screens
 4. **Accessibility checks:** Inspect heading order, language, text alternatives and reading sequence; test applicable keyboard or assistive-technology interaction when available. Keep this distinct from package validity. [EPUB Accessibility 1.1](https://www.w3.org/TR/epub-a11y-11/) provides requirements for accessibility claims and discovery metadata; only assert features or conformance actually established
+
+For publications with auxiliary documents, include their entry and return paths in reader coverage. Record whether the reader exposes supplementary material during sequential reading. Do not remove needed spine entries to imitate one reader's preferred display; repair the source map/export settings or disclose the compatibility limit.
 
 An ordinary browser view of extracted XHTML does not establish ebook-reader behavior. A single reader does not prove compatibility with all devices. A formally valid file can still have poor navigation or false content. Document the actual reader/version and checks rather than claiming universal support.
 
@@ -80,3 +90,9 @@ The fictional Alder Garden Club supplies three approved Markdown chapters, an or
 The planned result is `alder-handbook.epub`: three spine chapters, chapter/section contents, a body-start landmark, meaningful diagram alternatives, a linear companion for the wide table and a working cross-file note/return pair. There is no print-page list because the source has no stable print edition. The source map records the two occurrences that share the note and their separate return targets.
 
 Acceptance would require the final package to contain those chapters/assets, preserve the planting conditions and units, and navigate correctly after font enlargement in the chosen reader. An absent diagram, a link into a creator-only folder or a note returning to the wrong occurrence would fail. This example specifies intended behavior only; no ebook, application check or validator run is claimed.
+
+### Auxiliary-document variant
+
+Suppose the fictional handbook instead moves its shared note into `notes.xhtml`, and that note links to an explanation in `terms.xhtml`. Both are auxiliary documents, while the three chapters remain primary. The planned map includes both auxiliary documents and their return paths; the diagram embedded in chapter 2 remains an asset. A chapter-only spine would miss two documents even if every hyperlink resolves in an extracted-browser preview.
+
+Acceptance would inspect both auxiliary entries in the saved package and try the note-to-explanation-to-chapter path in the reader. Repeated references to the same note must not create repeated spine entries. This variant is an unexecuted design case, not a claimed EPUBCheck or reading-system result.
