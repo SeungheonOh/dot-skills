@@ -21,7 +21,7 @@ Use the available application's supported color-management and export path. Insp
 
 Before accepting an import prompt, distinguish the file's embedded profile from the application's working-space default and current document interpretation. Opening a file can trigger an automatic conversion. Record whether that occurred and retain the original source identity; an already converted working document is not the untouched input.
 
-Inspect the color model, precision and embedded profile through the supported file/application information. Use a profile's actual identity and relevant details, not just a basename that another profile could share. Preserve conflicting or unreadable metadata as a finding. Do not infer a source space from the image looking washed out, the file being a JPEG, or the destination requirement.
+Inspect the color model, precision and embedded profile through the supported file/application information. Use a profile's actual identity and relevant details, not just a basename that another profile could share. Preserve conflicting or unreadable metadata as a finding. Do not infer a source space from the image looking washed out, the file being a JPEG, or the destination requirement. For PNG, also establish the [color declarations beyond the ICC profile](#reconcile-png-color-declarations) before choosing the source interpretation.
 
 For an untagged image, seek provenance such as its original export settings or a confirmed authoring-space statement. An application fallback is not recovered provenance. [GIMP's assignment documentation](https://docs.gimp.org/3.0/en/gimp-image-color-profile-assign.html) shows that an untagged image can receive a built-in sRGB interpretation on import; that default may be wrong for the source. If the source space remains unknown, hold an appearance-preserving conversion claim. A user-approved assumption may support a clearly conditional derivative, but it must not be reported as recovered original color.
 
@@ -56,6 +56,18 @@ Compare the original under its established interpretation and the candidate unde
 Use the transformation record and saved-file inspection together. Pixel equality is not the general acceptance criterion because a valid conversion can change values; changed values alone do not establish the right transform. Lossy encoding and precision changes are separate effects and should not be mistaken for proof of conversion. Likewise, converting back to the source space is not a guarantee of reversibility or fidelity.
 
 If the intended consumer is available and its use is authorized, open the delivered copy there and check its documented color-management behavior and any warnings. Keep consumer acceptance separate from file inspection. An unchecked browser, printer, recipient screen or online service remains unchecked even when the editor's preview looks plausible.
+
+### Reconcile PNG color declarations
+
+For PNG inputs and outputs, inspect `cICP`, `iCCP`, `sRGB`, `gAMA` and `cHRM` with a supported chunk-aware reader. No ICC profile does not necessarily mean no color declaration. Do not report a chunk absent when the reader cannot expose it.
+
+[PNG Third Edition, §4.3 Table 1 and §11.3.2](https://www.w3.org/TR/png-3/) orders understood color declarations: `cICP`, then `iCCP`, then `sRGB`, then `cHRM`/`gAMA`. Its `cICP` section includes an SDR Display P3 example; this chunk is not exclusively HDR signaling. A correct embedded ICC profile can therefore be insufficient to establish the interpretation used by another reader.
+
+Record the source interpretation actually used and the declaration set intended for the converted samples. Do not blindly carry source color chunks through a profile conversion. Any retained compatibility declarations must describe or appropriately approximate the destination, not the former source space. Regenerate only the implicated metadata through a supported export path; stripping every tag is not a general repair. If source declarations disagree and provenance does not establish the sample meaning, hold the appearance-preserving conversion claim. Precedence describes decoder interpretation, not proof of the author's intended colors.
+
+Read back the complete declaration set in the saved candidate, then compare it with that plan. An editor's sRGB label or an ICC-only report cannot close an uninspected `cICP` dependency. When the available reader/exporter cannot establish or correct it, identify that exact limitation and preserve the candidate as held rather than repeatedly assigning profiles. Keep numerical conversion, declaration consistency and actual consumer behavior as separate results.
+
+**Fictional, unexecuted illustration:** an SDR PNG has been converted from Display P3 to sRGB and contains the intended sRGB ICC profile, but its exporter retained source `cICP` signaling for Display P3. The declaration review holds the candidate: a reader that understands that chunk should prioritize it over the ICC profile. The proposed recovery corrects the export's color declarations and repeats saved-file inspection; it does not convert the already-converted samples again. No image, metadata reader, editor, export or consumer was exercised.
 
 ## Recover and hand off
 
